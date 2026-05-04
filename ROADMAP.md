@@ -38,12 +38,10 @@ Login + layout autenticado + guarda de rota + tratamento global de 401.
 
 ## Dívidas técnicas (atacar antes/durante Fase 2)
 
-- ☐ **Crítico**: anotar `[ProducesResponseType(typeof(...), 200)]` nos controllers
-  do back e introduzir `ApiResponse<T>` / `ApiPaginatedResponse<T>` concretos.
-  Hoje os controllers retornam `new { dados = ... }` (objeto anônimo) e o
-  OpenAPI não tipa response bodies — por isso `src/api/types.ts` é mantido à
-  mão. Após o PR no back, regenerar `schema.d.ts` e remover/encolher
-  `types.ts`.
+- ☑ **Crítico**: anotar `[ProducesResponseType(typeof(...), 200)]` nos controllers
+  do back e introduzir `ApiResponse<T>` concreto + reuso do `ResultadoPaginadoDto<T>`.
+  `openapi.json` agora tipa os response bodies; `src/api/types.ts` virou apenas
+  aliases sobre `components['schemas']`.
 - ☐ Adicionar headers de segurança em produção (CSP estrita, `X-Frame-Options`,
   `Referrer-Policy`). Não afeta dev local.
 - ☐ Configurar GitHub Actions: `npm ci && npm run lint && npm run typecheck && npm test && npm run build` em PR.

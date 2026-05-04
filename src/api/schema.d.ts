@@ -33,7 +33,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["LoginResultDtoApiResponse"];
+                        "application/json": components["schemas"]["LoginResultDtoApiResponse"];
+                        "text/json": components["schemas"]["LoginResultDtoApiResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -61,8 +76,8 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -97,7 +112,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["UsuarioDtoApiResponse"];
+                        "application/json": components["schemas"]["UsuarioDtoApiResponse"];
+                        "text/json": components["schemas"]["UsuarioDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -133,12 +163,38 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -173,12 +229,34 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -215,7 +293,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ClienteDtoResultadoPaginadoDto"];
+                        "application/json": components["schemas"]["ClienteDtoResultadoPaginadoDto"];
+                        "text/json": components["schemas"]["ClienteDtoResultadoPaginadoDto"];
+                    };
                 };
             };
         };
@@ -235,12 +317,27 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -273,7 +370,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ClienteDtoApiResponse"];
+                        "application/json": components["schemas"]["ClienteDtoApiResponse"];
+                        "text/json": components["schemas"]["ClienteDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -294,12 +406,34 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -315,12 +449,23 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -352,7 +497,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["OrdemServicoResumoDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["OrdemServicoResumoDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["OrdemServicoResumoDtoIReadOnlyListApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -390,7 +550,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["HistoricoCobrancaDtoResultadoPaginadoDto"];
+                        "application/json": components["schemas"]["HistoricoCobrancaDtoResultadoPaginadoDto"];
+                        "text/json": components["schemas"]["HistoricoCobrancaDtoResultadoPaginadoDto"];
+                    };
                 };
             };
         };
@@ -425,7 +589,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CobrancaJobResultadoApiResponse"];
+                        "application/json": components["schemas"]["CobrancaJobResultadoApiResponse"];
+                        "text/json": components["schemas"]["CobrancaJobResultadoApiResponse"];
+                    };
                 };
             };
         };
@@ -456,7 +624,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ConfiguracaoDtoListApiResponse"];
+                        "application/json": components["schemas"]["ConfiguracaoDtoListApiResponse"];
+                        "text/json": components["schemas"]["ConfiguracaoDtoListApiResponse"];
+                    };
                 };
             };
         };
@@ -491,7 +663,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ConfiguracaoDtoApiResponse"];
+                        "application/json": components["schemas"]["ConfiguracaoDtoApiResponse"];
+                        "text/json": components["schemas"]["ConfiguracaoDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -512,12 +699,34 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -556,7 +765,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["OrdemServicoResumoDtoResultadoPaginadoDto"];
+                        "application/json": components["schemas"]["OrdemServicoResumoDtoResultadoPaginadoDto"];
+                        "text/json": components["schemas"]["OrdemServicoResumoDtoResultadoPaginadoDto"];
+                    };
                 };
             };
         };
@@ -576,12 +789,38 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -614,7 +853,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["OrdemServicoDetalheDtoApiResponse"];
+                        "application/json": components["schemas"]["OrdemServicoDetalheDtoApiResponse"];
+                        "text/json": components["schemas"]["OrdemServicoDetalheDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -635,12 +889,45 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -677,12 +964,49 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -714,12 +1038,34 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -754,12 +1100,49 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -791,12 +1174,34 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -825,12 +1230,34 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -860,12 +1287,34 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -900,7 +1349,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["OrdemPendenteDtoResultadoPaginadoDto"];
+                        "application/json": components["schemas"]["OrdemPendenteDtoResultadoPaginadoDto"];
+                        "text/json": components["schemas"]["OrdemPendenteDtoResultadoPaginadoDto"];
+                    };
                 };
             };
         };
@@ -935,7 +1388,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["PagamentoDtoListApiResponse"];
+                        "application/json": components["schemas"]["PagamentoDtoListApiResponse"];
+                        "text/json": components["schemas"]["PagamentoDtoListApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -971,12 +1439,49 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1007,12 +1512,23 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -1047,7 +1563,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ProdutoDtoResultadoPaginadoDto"];
+                        "application/json": components["schemas"]["ProdutoDtoResultadoPaginadoDto"];
+                        "text/json": components["schemas"]["ProdutoDtoResultadoPaginadoDto"];
+                    };
                 };
             };
         };
@@ -1067,12 +1587,27 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1103,7 +1638,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ProdutoDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["ProdutoDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["ProdutoDtoIReadOnlyListApiResponse"];
+                    };
                 };
             };
         };
@@ -1138,7 +1677,22 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["ProdutoDtoApiResponse"];
+                        "application/json": components["schemas"]["ProdutoDtoApiResponse"];
+                        "text/json": components["schemas"]["ProdutoDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -1159,12 +1713,34 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1180,12 +1756,23 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -1224,12 +1811,45 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1258,7 +1878,11 @@ export interface paths {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CatalogoServicoDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["CatalogoServicoDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["CatalogoServicoDtoIReadOnlyListApiResponse"];
+                    };
                 };
             };
         };
@@ -1278,12 +1902,27 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "text/plain": components["schemas"]["CriadoDtoApiResponse"];
+                        "application/json": components["schemas"]["CriadoDtoApiResponse"];
+                        "text/json": components["schemas"]["CriadoDtoApiResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1318,12 +1957,34 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1339,12 +2000,23 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
                 };
             };
         };
@@ -1383,12 +2055,34 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description OK */
-                200: {
+                /** @description No Content */
+                204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
                 };
             };
         };
@@ -1423,6 +2117,13 @@ export interface components {
         AjustarEstoqueBody: {
             /** Format: int32 */
             quantidade?: number;
+        };
+        ApiErrorResponse: {
+            erro?: string | null;
+        };
+        ApiValidationErrorResponse: {
+            erro?: string | null;
+            detalhes?: string[] | null;
         };
         AtualizarCatalogoServicoCommand: {
             /** Format: int64 */
@@ -1473,6 +2174,74 @@ export interface components {
             novaSenha?: string | null;
             ativo?: boolean;
         };
+        CatalogoServicoDto: {
+            /** Format: int64 */
+            id?: number;
+            nome?: string | null;
+            descricao?: string | null;
+            /** Format: double */
+            preco?: number;
+            ehMaoDeObraPadrao?: boolean;
+            ativo?: boolean;
+        };
+        CatalogoServicoDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["CatalogoServicoDto"][] | null;
+        };
+        ClienteDto: {
+            /** Format: int64 */
+            id?: number;
+            nome?: string | null;
+            telefone?: string | null;
+            email?: string | null;
+            cpf?: string | null;
+            endereco?: string | null;
+            /** Format: date-time */
+            criadoEm?: string;
+            ativo?: boolean;
+        };
+        ClienteDtoApiResponse: {
+            dados?: components["schemas"]["ClienteDto"];
+        };
+        ClienteDtoResultadoPaginadoDto: {
+            dados?: components["schemas"]["ClienteDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
+        };
+        CobrancaJobResultado: {
+            /** Format: int32 */
+            ordensVerificadas?: number;
+            /** Format: int32 */
+            enviadas?: number;
+            /** Format: int32 */
+            falhas?: number;
+            /** Format: int32 */
+            ignoradas?: number;
+        };
+        CobrancaJobResultadoApiResponse: {
+            dados?: components["schemas"]["CobrancaJobResultado"];
+        };
+        ConfiguracaoDto: {
+            chave?: string | null;
+            valor?: string | null;
+            descricao?: string | null;
+        };
+        ConfiguracaoDtoApiResponse: {
+            dados?: components["schemas"]["ConfiguracaoDto"];
+        };
+        ConfiguracaoDtoListApiResponse: {
+            dados?: components["schemas"]["ConfiguracaoDto"][] | null;
+        };
+        CriadoDto: {
+            /** Format: int64 */
+            id?: number;
+        };
+        CriadoDtoApiResponse: {
+            dados?: components["schemas"]["CriadoDto"];
+        };
         CriarCatalogoServicoCommand: {
             nome?: string | null;
             descricao?: string | null;
@@ -1510,9 +2279,205 @@ export interface components {
          * @enum {integer}
          */
         FormaPagamento: 1 | 2 | 3 | 4;
+        HistoricoCobrancaDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            ordemServicoId?: number;
+            ordemNumero?: string | null;
+            telefoneDestino?: string | null;
+            /** Format: date-time */
+            enviadoEm?: string;
+            sucesso?: boolean;
+            erroMensagem?: string | null;
+        };
+        HistoricoCobrancaDtoResultadoPaginadoDto: {
+            dados?: components["schemas"]["HistoricoCobrancaDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
+        };
+        ItemProdutoDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            produtoId?: number | null;
+            nomeProduto?: string | null;
+            /** Format: double */
+            precoUnitario?: number;
+            /** Format: int32 */
+            quantidade?: number;
+            produtoFornecidoPeloCliente?: boolean;
+            /** Format: double */
+            subtotal?: number;
+        };
+        ItemServicoDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            catalogoServicoId?: number;
+            nomeServico?: string | null;
+            /** Format: double */
+            precoUnitario?: number;
+            /** Format: int32 */
+            quantidade?: number;
+            /** Format: double */
+            subtotal?: number;
+        };
         LoginDto: {
             email?: string | null;
             senha?: string | null;
+        };
+        LoginResultDto: {
+            token?: string | null;
+            email?: string | null;
+            nomeCompleto?: string | null;
+            role?: string | null;
+            /** Format: date-time */
+            expiraEm?: string;
+        };
+        LoginResultDtoApiResponse: {
+            dados?: components["schemas"]["LoginResultDto"];
+        };
+        OrdemPendenteDto: {
+            /** Format: int64 */
+            ordemServicoId?: number;
+            numero?: string | null;
+            /** Format: int64 */
+            clienteId?: number;
+            clienteNome?: string | null;
+            clienteTelefone?: string | null;
+            /** Format: date-time */
+            fechadaEm?: string | null;
+            /** Format: date-time */
+            dataVencimentoPagamento?: string | null;
+            /** Format: double */
+            totalGeral?: number;
+            /** Format: double */
+            totalPago?: number;
+            /** Format: double */
+            saldoDevedor?: number;
+            vencida?: boolean;
+        };
+        OrdemPendenteDtoResultadoPaginadoDto: {
+            dados?: components["schemas"]["OrdemPendenteDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
+        };
+        OrdemServicoDetalheDto: {
+            /** Format: int64 */
+            id?: number;
+            numero?: string | null;
+            /** Format: int64 */
+            clienteId?: number;
+            clienteNome?: string | null;
+            descricaoProblema?: string | null;
+            observacoes?: string | null;
+            status?: components["schemas"]["StatusOrdem"];
+            /** Format: date-time */
+            abertaEm?: string;
+            /** Format: date-time */
+            fechadaEm?: string | null;
+            /** Format: date-time */
+            dataVencimentoPagamento?: string | null;
+            servicos?: components["schemas"]["ItemServicoDto"][] | null;
+            produtos?: components["schemas"]["ItemProdutoDto"][] | null;
+            /** Format: double */
+            totalServicos?: number;
+            /** Format: double */
+            totalProdutos?: number;
+            /** Format: double */
+            totalGeral?: number;
+            /** Format: double */
+            totalPago?: number;
+            /** Format: double */
+            saldoDevedor?: number;
+        };
+        OrdemServicoDetalheDtoApiResponse: {
+            dados?: components["schemas"]["OrdemServicoDetalheDto"];
+        };
+        OrdemServicoResumoDto: {
+            /** Format: int64 */
+            id?: number;
+            numero?: string | null;
+            /** Format: int64 */
+            clienteId?: number;
+            clienteNome?: string | null;
+            status?: components["schemas"]["StatusOrdem"];
+            /** Format: date-time */
+            abertaEm?: string;
+            /** Format: date-time */
+            fechadaEm?: string | null;
+            /** Format: date-time */
+            dataVencimentoPagamento?: string | null;
+            /** Format: double */
+            totalGeral?: number;
+            /** Format: double */
+            saldoDevedor?: number;
+        };
+        OrdemServicoResumoDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["OrdemServicoResumoDto"][] | null;
+        };
+        OrdemServicoResumoDtoResultadoPaginadoDto: {
+            dados?: components["schemas"]["OrdemServicoResumoDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
+        };
+        PagamentoDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            ordemServicoId?: number;
+            /** Format: double */
+            valor?: number;
+            forma?: components["schemas"]["FormaPagamento"];
+            /** Format: date-time */
+            pagoEm?: string;
+            observacao?: string | null;
+        };
+        PagamentoDtoListApiResponse: {
+            dados?: components["schemas"]["PagamentoDto"][] | null;
+        };
+        ProdutoDto: {
+            /** Format: int64 */
+            id?: number;
+            nome?: string | null;
+            referencia?: string | null;
+            /** Format: double */
+            precoCusto?: number;
+            /** Format: double */
+            precoVenda?: number;
+            /** Format: int32 */
+            quantidadeEstoque?: number;
+            /** Format: int32 */
+            estoqueMinimo?: number;
+            ativo?: boolean;
+        };
+        ProdutoDtoApiResponse: {
+            dados?: components["schemas"]["ProdutoDto"];
+        };
+        ProdutoDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["ProdutoDto"][] | null;
+        };
+        ProdutoDtoResultadoPaginadoDto: {
+            dados?: components["schemas"]["ProdutoDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
         };
         RegistrarPagamentoCommand: {
             /** Format: int64 */
@@ -1527,6 +2492,17 @@ export interface components {
          * @enum {integer}
          */
         StatusOrdem: 1 | 2 | 3 | 4 | 5;
+        UsuarioDto: {
+            /** Format: int64 */
+            id?: number;
+            nomeCompleto?: string | null;
+            email?: string | null;
+            role?: string | null;
+            ativo?: boolean;
+        };
+        UsuarioDtoApiResponse: {
+            dados?: components["schemas"]["UsuarioDto"];
+        };
     };
     responses: never;
     parameters: never;
