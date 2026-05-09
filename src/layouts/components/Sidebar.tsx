@@ -1,5 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Package, Settings2, Users, Wrench, type LucideIcon } from 'lucide-react'
+import {
+  ClipboardList,
+  LayoutDashboard,
+  Package,
+  Settings2,
+  Users,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react'
 import { cn } from '@/lib/cn'
 
 interface NavItem {
@@ -14,7 +22,8 @@ const items: NavItem[] = [
   { to: '/clientes', label: 'Clientes', icon: Users, end: false },
   { to: '/servicos', label: 'Catálogo', icon: Settings2, end: false },
   { to: '/produtos', label: 'Produtos', icon: Package, end: false },
-  // Próximos: Ordens, Pendências, Cobranças, Configurações
+  { to: '/ordens', label: 'Ordens de Serviço', icon: ClipboardList, end: false },
+  // Próximos: Pendências, Cobranças, Configurações
 ]
 
 export function Sidebar() {

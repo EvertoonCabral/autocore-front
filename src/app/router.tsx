@@ -13,6 +13,9 @@ import { ProdutosAbaixoMinimoPage } from '@/features/produtos/routes/ProdutosAba
 import { NovoProdutoPage } from '@/features/produtos/routes/NovoProdutoPage'
 import { ProdutoDetalhePage } from '@/features/produtos/routes/ProdutoDetalhePage'
 import { EditarProdutoPage } from '@/features/produtos/routes/EditarProdutoPage'
+import { OrdensListPage } from '@/features/ordens/routes/OrdensListPage'
+import { NovaOrdemPage } from '@/features/ordens/routes/NovaOrdemPage'
+import { OrdemDetalhePage } from '@/features/ordens/routes/OrdemDetalhePage'
 import { RequireAuth } from '@/shared/guards/RequireAuth'
 import { NotFound } from './NotFound'
 
@@ -39,6 +42,9 @@ const router = createBrowserRouter([
       { path: '/produtos/novo', element: <NovoProdutoPage /> },
       { path: '/produtos/:id', element: <ProdutoDetalhePage /> },
       { path: '/produtos/:id/editar', element: <EditarProdutoPage /> },
+      { path: '/ordens', element: <OrdensListPage /> },
+      { path: '/ordens/nova', element: <NovaOrdemPage /> },
+      { path: '/ordens/:id', element: <OrdemDetalhePage /> },
     ],
   },
   { path: '*', element: <NotFound /> },

@@ -114,17 +114,20 @@ calculados.
 
 > Antes: ler [`ordens-servico.md`](../AutoCore/docs/regras-negocio/ordens-servico.md).
 
-- ☐ Listar OSs com filtros (status enum, cliente, datas)
-- ☐ `EnumBadge<StatusOrdem>` em `shared/components/` com cores do mapa
-- ☐ Detalhar OS: header com Cliente, Status, Totais, SaldoDevedor; tabs "Itens" e "Pagamentos"
-- ☐ Abrir OS: select cliente (busca), descrição, observações
-- ☐ Adicionar item de serviço: select do catálogo (apenas ativos) + quantidade
-- ☐ Adicionar item de produto: select catálogo OU produto avulso, flag "fornecido pelo cliente"
-- ☐ Remover itens: lock se status ≠ `Aberta`/`EmAndamento`
-- ☐ Fechar OS: dialog confirmando, exibe `DataVencimentoPagamento` calculada
-- ☐ Cancelar OS: dialog destructive, lock se Concluída-com-pagamentos
-- ☐ Testes: status machine — botões aparecem/somem corretamente por estado
-- ☐ Item no Sidebar
+- ☑ Listar OSs com filtros: `status` (enum) + `abertaDe`/`abertaAte` (data) + paginação; tabela com Número, Cliente, Status badge, Aberta em, Total, Saldo (vermelho se > 0)
+- ☑ `StatusOrdemBadge` em `shared/components/` consumindo o mapa em `shared/enums/statusOrdem.ts` (5 status com cores light/dark)
+- ☑ Helpers de status machine espelhando o back: `podeEditarItens`, `podeFechar`, `podeCancelar`, `podeMudarStatus` + opções de Select (`STATUS_ORDEM_OPTIONS`, `STATUS_EDITAVEIS_OPTIONS`)
+- ☑ Detalhar OS: header com Cliente (link) / Status / Aberta em; cards de totais (Serviços, Produtos, Geral, Pago, Saldo); painel de edição inline; seções de Itens de Serviço / Itens de Produto; placeholder de Pagamentos para Fase 4
+- ☑ Abrir OS: rota `/ordens/nova` com `ClienteSelect` (busca embutida no select via `useListarClientes` debounced), descrição (≤1000) e observações (≤1000)
+- ☑ Adicionar item de serviço: dialog com select do catálogo (apenas ativos) + quantidade ≥ 1; aviso sobre snapshot
+- ☑ Adicionar item de produto: dialog com toggle "Do catálogo / Avulso"; modo catalogado mostra estoque atual; modo avulso exige nome+preço; flag "fornecido pelo cliente"
+- ☑ Remover itens: trash icon por linha, `ConfirmDialog` destructive; só visível em status editáveis (1 ou 2)
+- ☑ Edição inline (descrição, observações, status entre 1/2/3) pelo `EditarOrdemPanel` — salvar habilitado só com `isDirty`
+- ☑ Fechar OS: `ConfirmDialog` com aviso especial em vermelho quando OS sem itens
+- ☑ Cancelar OS: `ConfirmDialog` destructive avisando sobre estorno de estoque + redirect pra lista após sucesso
+- ☑ Status finais (Concluida/Cancelada): painel de edição vira card read-only; mostra `FechadaEm` e `DataVencimentoPagamento` quando aplicável
+- ☑ Testes: 14 casos de status machine (transições, edição, fechar, cancelar) + 13 casos de schemas (abrir, atualizar — bloqueia 4/5, item serviço, item produto avulso vs catalogado)
+- ☑ Item "Ordens de Serviço" no Sidebar (ícone `ClipboardList`)
 
 ---
 
