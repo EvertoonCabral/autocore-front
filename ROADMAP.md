@@ -60,25 +60,27 @@ nas fases seguintes.
 
 ### Plumbing compartilhado (faz uma vez, todo módulo reusa)
 
-- ☐ `shared/components/DataTable` (header sortable opcional, empty state, skeleton de loading)
-- ☐ `shared/components/Pagination` (consome `pagina`/`porPagina`/`total`)
-- ☐ `shared/components/SearchInput` (debounced, integrável com `useSearchParams`)
-- ☐ `shared/components/Can` (hide via `canPerform`) + `useCan`
-- ☐ `shared/components/ConfirmDialog` (AlertDialog + variant destructive)
-- ☐ `shared/hooks/usePagedQuery` (sincroniza filtros com URL)
-- ☐ `shared/components/FormPage` (esqueleto de página de form com header + actions)
-- ☐ shadcn primitives a adicionar: `dialog`, `alert-dialog`, `select`, `textarea`, `table`, `form` (Form do shadcn com FormField/Controller)
-- ☐ `lib/format`: `formatCpf`, `formatTelefone`, `formatBRL`, `formatData`
+- ☑ `shared/components/DataTable` (colunas tipadas, empty state, skeleton de loading, row click)
+- ☑ `shared/components/Pagination` (consome `pagina`/`porPagina`/`total` + page-size select)
+- ☑ `shared/components/SearchInput` (debounced via `useDebounce`, botão limpar)
+- ☑ `shared/components/Can` (hide via `canPerform`) + `useCan`
+- ☑ `shared/components/ConfirmDialog` (AlertDialog + variant destructive)
+- ☑ `shared/components/PageHeader` (título + descrição + slot de ações)
+- ☑ `shared/components/EmptyState` (ícone, título, descrição, ação)
+- ☑ `shared/hooks/useDebounce`
+- ☑ `shared/hooks/usePagedQuery` (sincroniza paginação + filtros com URL)
+- ☑ shadcn primitives adicionados: `dialog`, `alert-dialog`, `select`, `textarea`, `table`
+- ☑ `lib/format`: `formatTelefone`, `formatCpf`, `formatBRL`, `formatData`, `formatDataHora`, `onlyDigits`
 
 ### Clientes (primeiro módulo — define o padrão)
 
-- ☐ Listar: `useListarClientes` + página com busca por nome/telefone + toggle "incluir inativos"
-- ☐ Detalhar: `useObterCliente` + página com abas "Dados" e "Histórico de OS" (`/api/clientes/{id}/ordens`)
-- ☐ Criar: form + `useCriarCliente` + zod schema espelhando `CriarClienteCommandValidator`
-- ☐ Editar: form + `useAtualizarCliente`
-- ☐ Soft delete: botão Admin-only com `<Can>`, `ConfirmDialog`, `useDesativarCliente`
-- ☐ Item no Sidebar
-- ☐ Testes: schema (zod), hook de listagem (MSW), guarda de Admin no botão delete
+- ☑ Listar: `useListarClientes` + página com busca por nome/telefone + toggle "incluir inativos" + paginação
+- ☑ Detalhar: `useObterCliente` + página com card de dados (próximo: aba "Histórico de OS" — `useObterOrdensDoCliente` já existe)
+- ☑ Criar: form + `useCriarCliente` + zod schema espelhando `CriarClienteCommandValidator`
+- ☑ Editar: form (reutilizado) + `useAtualizarCliente`
+- ☑ Soft delete: botão Admin-only com `<Can>`, `ConfirmDialog` destructive, `useDesativarCliente`
+- ☑ Item no Sidebar
+- ☑ Testes: schema (zod, 9 casos), gating Admin no botão Desativar (Operador não vê) — 18/18 verdes
 
 ### Catálogo de Serviços
 

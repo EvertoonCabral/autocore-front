@@ -33,7 +33,7 @@ export default tseslint.config(
       ],
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true, allowExportNames: ['useAuth'] },
+        { allowConstantExport: true, allowExportNames: ['useAuth', 'useCan'] },
       ],
     },
   },
