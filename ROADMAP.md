@@ -84,23 +84,26 @@ nas fases seguintes.
 
 ### Catálogo de Serviços
 
-- ☐ Listar: nome, preço, badge "padrão" se `EhMaoDeObraPadrao`, badge "inativo"
-- ☐ Criar/Editar: nome, descrição, preço, flag padrão (radio que troca o anterior)
-- ☐ Atualizar preço (Admin only): endpoint dedicado `PATCH /preco`, dialog separado
-- ☐ Soft delete (Admin only)
-- ☐ Testes: regra "só um padrão por vez" — UI nunca permite ter dois marcados
+- ☑ Listar: nome, preço, badge "Padrão" (estrela) se `EhMaoDeObraPadrao`, badge "Inativo"
+- ☑ Criar/Editar: dialog inline na própria lista (sem rota separada — fluxo enxuto)
+- ☑ Atualizar preço (Admin only): `<Can>` + `AtualizarPrecoDialog` com endpoint `PATCH /preco`
+- ☑ Em modo edição, campo Preço fica `disabled` para Operador (com aviso "Apenas Admin pode alterar o preço")
+- ☑ Soft delete (Admin only) com `<Can permission="servicos.desativar">` + ConfirmDialog destructive
+- ☑ Testes: schema (7 casos cobrindo nome, preço >= 0, descrição <= 500, transformação null, coerção de string) + precoSchema (3 casos)
 
 ### Produtos
 
-- ☐ Listar: filtro nome/referência, badge "abaixo do mínimo" em vermelho
-- ☐ Tela `Produtos/abaixo-minimo` (atalho/filtro pre-aplicado)
-- ☐ Criar/Editar: campos completos, validação `>= 0`
-- ☐ Ajuste de estoque: dialog com input signed (positivo entrada, negativo saída) + preview "X → Y"
-- ☐ Soft delete (Admin only)
-- ☐ Testes: ajuste rejeita resultado negativo (validação client-side espelha o back)
+- ☑ Listar: filtro nome/referência (debounced), paginação, badge "Abaixo do mínimo" inline
+- ☑ Tela `/produtos/abaixo-minimo`: lista dedicada (`useListarProdutosAbaixoMinimo`), empty state amigável quando tudo OK
+- ☑ Criar (`/produtos/novo`) / Editar (`/produtos/:id/editar`) com `ProdutoForm`
+- ☑ Detalhe (`/produtos/:id`) com card de dados + ações
+- ☑ Ajuste de estoque: `AjustarEstoqueDialog` — input signed (+ entrada / − saída), preview "atual → novo" com destaque vermelho se ficar negativo, botão Confirmar desabilitado quando saldo < 0 (espelha a regra do back)
+- ☑ Form de edição esconde "Quantidade em estoque" — mudanças no saldo passam exclusivamente pelo dialog
+- ☑ Soft delete (Admin only)
+- ☑ Testes: produtoSchema (9 casos) + ajustarEstoqueSchema (4 casos: positivo, negativo, zero rejeitado, não inteiro rejeitado)
 
-**Definição de pronto da Fase 2:** todos os 3 módulos navegáveis, gating
-Admin verificado, paginação funcionando, sidebar populada.
+**Definição de pronto da Fase 2:** ☑ todos os 3 módulos navegáveis, gating Admin
+verificado, paginação funcionando, sidebar populada (Clientes, Catálogo, Produtos).
 
 ---
 

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Wrench, type LucideIcon } from 'lucide-react'
+import { LayoutDashboard, Package, Settings2, Users, Wrench, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/cn'
 
 interface NavItem {
@@ -12,7 +12,9 @@ interface NavItem {
 const items: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/clientes', label: 'Clientes', icon: Users, end: false },
-  // Próximos: Serviços, Produtos, Ordens, Pendências, Cobranças, Configurações
+  { to: '/servicos', label: 'Catálogo', icon: Settings2, end: false },
+  { to: '/produtos', label: 'Produtos', icon: Package, end: false },
+  // Próximos: Ordens, Pendências, Cobranças, Configurações
 ]
 
 export function Sidebar() {
