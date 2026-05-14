@@ -27,6 +27,55 @@ export function formatCpf(value: string | null | undefined): string {
   return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`
 }
 
+/** CNPJ: "12345678000190" → "12.345.678/0001-90". */
+export function formatCnpj(value: string | null | undefined): string {
+  if (!value) return ''
+  const digits = value.replace(/\D/g, '')
+  if (digits.length !== 14) return value
+  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}-${digits.slice(12)}`
+}
+
+/**
+ * Detecta automaticamente CPF (11 dígitos) ou CNPJ (14 dígitos) e formata.
+ * Para entradas parciais, devolve o valor mascarado progressivamente — útil
+ * para `onChange` de input.
+ */
+export function formatCpfCnpj(value: string | null | undefined): string {
+  if (!value) return ''
+  const digits = value.replace(/\D/g, '').slice(0, 14)
+  if (digits.length <= 11) {
+    // CPF progressivo
+    if (digits.length <= 3) return digits
+    if (digits.length <= 6) return `${digits.slice(0, 3)}.${digits.slice(3)}`
+    if (digits.length <= 9) return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6)}`
+    return `${digits.slice(0, 3)}.${digits.slice(3, 6)}.${digits.slice(6, 9)}-${digits.slice(9)}`
+  }
+  // CNPJ progressivo (12..14 dígitos)
+  const base = `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}/${digits.slice(8, 12)}`
+  if (digits.length === 12) return base
+  return `${base}-${digits.slice(12)}`
+}
+
+/**
+ * Aplica máscara de telefone PT-BR progressivamente conforme o usuário digita.
+ * 10 dígitos → `(44) 9999-0000`; 11 dígitos → `(44) 99999-0000`.
+ * Aceita até 11 dígitos locais (DDI 55 é stripado se vier).
+ */
+export function maskTelefoneInput(value: string | null | undefined): string {
+  if (!value) return ''
+  let digits = value.replace(/\D/g, '')
+  // Strip DDI 55 se vier prefixado
+  if (digits.length > 11 && digits.startsWith('55')) digits = digits.slice(2)
+  digits = digits.slice(0, 11)
+  if (digits.length === 0) return ''
+  if (digits.length <= 2) return `(${digits}`
+  if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`
+  }
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`
+}
+
 /** Moeda BRL: 51.25 → "R$ 51,25". */
 export function formatBRL(value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) return ''

@@ -5,8 +5,12 @@ import { z } from 'zod'
  *  - Nome: 3..150
  *  - Telefone: somente dígitos, 10..13 (DDD + número, com ou sem DDI 55)
  *  - Email: formato válido se preenchido
- *  - Cpf: exatamente 11 dígitos se preenchido
+ *  - CpfCnpj: 11 (CPF) ou 14 (CNPJ) dígitos se preenchido
  *  - Endereco: livre, opcional
+ *  - Observacoes: até 1000 caracteres
+ *
+ * Os campos texto opcionais são transformados em `null` quando vazios para
+ * casar com o back (que espera `null` em vez de string vazia).
  */
 export const clienteSchema = z.object({
   nome: z
@@ -26,10 +30,10 @@ export const clienteSchema = z.object({
     .transform((v) => (v === '' ? null : v))
     .nullable()
     .optional(),
-  cpf: z
+  cpfCnpj: z
     .string()
     .trim()
-    .regex(/^\d{11}$/, 'CPF deve conter exatamente 11 dígitos.')
+    .regex(/^\d{11}$|^\d{14}$/, 'CPF/CNPJ deve conter 11 (CPF) ou 14 (CNPJ) dígitos.')
     .or(z.literal(''))
     .transform((v) => (v === '' ? null : v))
     .nullable()
@@ -38,6 +42,14 @@ export const clienteSchema = z.object({
     .string()
     .trim()
     .max(500, 'Endereço deve ter no máximo 500 caracteres.')
+    .or(z.literal(''))
+    .transform((v) => (v === '' ? null : v))
+    .nullable()
+    .optional(),
+  observacoes: z
+    .string()
+    .trim()
+    .max(1000, 'Observações deve ter no máximo 1000 caracteres.')
     .or(z.literal(''))
     .transform((v) => (v === '' ? null : v))
     .nullable()

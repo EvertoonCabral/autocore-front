@@ -10,6 +10,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { DataTable, type ColumnDef } from '@/shared/components/DataTable'
 import { EmptyState } from '@/shared/components/EmptyState'
@@ -19,15 +29,29 @@ import { formatBRL } from '@/lib/format'
 import type { CatalogoServicoDto } from '@/api/types'
 import { ServicoForm } from '../components/ServicoForm'
 import { AtualizarPrecoDialog } from '../components/AtualizarPrecoDialog'
+import type { ServicoFormValues } from '../helpers/servicoSchema'
 import { useListarServicos } from '../hooks/useListarServicos'
 import { useCriarServico } from '../hooks/useCriarServico'
 import { useAtualizarServico } from '../hooks/useAtualizarServico'
 import { useDesativarServico } from '../hooks/useDesativarServico'
 
+/**
+ * Ação pendente quando o usuário tenta marcar um novo serviço como padrão e
+ * já existe outro padrão cadastrado. Resolvida pelo AlertDialog.
+ */
+interface PendenteTrocaPadrao {
+  values: ServicoFormValues
+  /** Id do serviço que está sendo editado (undefined = criação). */
+  editandoId?: number | undefined
+  /** Serviço que atualmente é padrão (será substituído). */
+  padraoAtual: CatalogoServicoDto
+}
+
 export function ServicosListPage() {
   const [incluirInativos, setIncluirInativos] = useState(false)
   const [novoOpen, setNovoOpen] = useState(false)
   const [editando, setEditando] = useState<CatalogoServicoDto | null>(null)
+  const [pendente, setPendente] = useState<PendenteTrocaPadrao | null>(null)
 
   const { data, isLoading } = useListarServicos(incluirInativos)
   const criar = useCriarServico()
@@ -35,6 +59,64 @@ export function ServicosListPage() {
   const desativar = useDesativarServico()
 
   const canAdmin = useCan('servicos.atualizarPreco')
+
+  /**
+   * Detecta se o submit do form precisa de confirmação. Retorna o serviço
+   * atual padrão se houver — caller decide o que fazer.
+   *
+   * Regra: aciona a confirmação quando
+   *   - usuário está marcando `ehMaoDeObraPadrao = true`
+   *   - já existe outro serviço ativo com a flag (que não seja o próprio)
+   */
+  function detectarConflitoPadrao(
+    values: ServicoFormValues,
+    editandoId?: number,
+  ): CatalogoServicoDto | null {
+    if (!values.ehMaoDeObraPadrao) return null
+    const padraoAtual = (data ?? []).find(
+      (s) => s.ehMaoDeObraPadrao && s.ativo && s.id !== editandoId,
+    )
+    return padraoAtual ?? null
+  }
+
+  async function persistirNovo(values: ServicoFormValues) {
+    try {
+      await criar.mutateAsync(values)
+      toast.success('Serviço cadastrado.')
+      setNovoOpen(false)
+    } catch (err) {
+      const apiErr = err as { kind?: string; message?: string }
+      if (apiErr.kind !== 'validation') {
+        toast.error(apiErr.message ?? 'Não foi possível cadastrar.')
+      }
+      throw err
+    }
+  }
+
+  async function persistirEdicao(id: number, values: ServicoFormValues) {
+    try {
+      await atualizar.mutateAsync({ id, values })
+      toast.success('Serviço atualizado.')
+      setEditando(null)
+    } catch (err) {
+      const apiErr = err as { kind?: string; message?: string }
+      if (apiErr.kind !== 'validation') {
+        toast.error(apiErr.message ?? 'Não foi possível salvar.')
+      }
+      throw err
+    }
+  }
+
+  async function confirmarTrocaPadrao() {
+    if (!pendente) return
+    const { values, editandoId } = pendente
+    setPendente(null)
+    if (editandoId == null) {
+      await persistirNovo(values)
+    } else {
+      await persistirEdicao(editandoId, values)
+    }
+  }
 
   const columns: ColumnDef<CatalogoServicoDto>[] = [
     {
@@ -141,17 +223,12 @@ export function ServicosListPage() {
                 submitLabel="Cadastrar"
                 onCancel={() => setNovoOpen(false)}
                 onSubmit={async (values) => {
-                  try {
-                    await criar.mutateAsync(values)
-                    toast.success('Serviço cadastrado.')
-                    setNovoOpen(false)
-                  } catch (err) {
-                    const apiErr = err as { kind?: string; message?: string }
-                    if (apiErr.kind !== 'validation') {
-                      toast.error(apiErr.message ?? 'Não foi possível cadastrar.')
-                    }
-                    throw err
+                  const conflito = detectarConflitoPadrao(values, undefined)
+                  if (conflito) {
+                    setPendente({ values, padraoAtual: conflito })
+                    return
                   }
+                  await persistirNovo(values)
                 }}
               />
             </DialogContent>
@@ -196,22 +273,67 @@ export function ServicosListPage() {
               }}
               onCancel={() => setEditando(null)}
               onSubmit={async (values) => {
-                try {
-                  await atualizar.mutateAsync({ id: editando.id ?? 0, values })
-                  toast.success('Serviço atualizado.')
-                  setEditando(null)
-                } catch (err) {
-                  const apiErr = err as { kind?: string; message?: string }
-                  if (apiErr.kind !== 'validation') {
-                    toast.error(apiErr.message ?? 'Não foi possível salvar.')
-                  }
-                  throw err
+                const conflito = detectarConflitoPadrao(values, editando.id ?? undefined)
+                if (conflito) {
+                  setPendente({
+                    values,
+                    editandoId: editando.id ?? undefined,
+                    padraoAtual: conflito,
+                  })
+                  return
                 }
+                await persistirEdicao(editando.id ?? 0, values)
               }}
             />
           )}
         </DialogContent>
       </Dialog>
+
+      {/* AlertDialog de confirmação de troca de mão-de-obra-padrão */}
+      <AlertDialog open={!!pendente} onOpenChange={(o) => !o && setPendente(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Trocar a mão de obra padrão?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm">
+                <p>
+                  Já existe um serviço marcado como <strong>mão de obra padrão</strong>:{' '}
+                  <span className="font-medium">{pendente?.padraoAtual.nome}</span>.
+                </p>
+                <p>
+                  Apenas um serviço pode ser padrão por vez. Ao confirmar:
+                </p>
+                <ul className="ml-5 list-disc space-y-1 text-muted-foreground">
+                  <li>
+                    <span className="font-medium text-foreground">
+                      {pendente?.padraoAtual.nome}
+                    </span>{' '}
+                    deixa de ser o serviço padrão.
+                  </li>
+                  <li>
+                    <span className="font-medium text-foreground">{pendente?.values.nome}</span>{' '}
+                    passa a ser o novo serviço padrão.
+                  </li>
+                </ul>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={criar.isPending || atualizar.isPending}>
+              Cancelar
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={criar.isPending || atualizar.isPending}
+              onClick={(e) => {
+                e.preventDefault()
+                void confirmarTrocaPadrao()
+              }}
+            >
+              Confirmar troca
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }

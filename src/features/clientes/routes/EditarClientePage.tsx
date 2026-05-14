@@ -48,8 +48,9 @@ export function EditarClientePage() {
               nome: cliente.nome ?? '',
               telefone: cliente.telefone ?? '',
               email: cliente.email ?? '',
-              cpf: cliente.cpf ?? '',
+              cpfCnpj: cliente.cpfCnpj ?? '',
               endereco: cliente.endereco ?? '',
+              observacoes: cliente.observacoes ?? '',
             }}
             onSubmit={async (values) => {
               try {

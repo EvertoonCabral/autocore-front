@@ -20,8 +20,9 @@ export function useAtualizarCliente() {
           nome: values.nome,
           telefone: values.telefone,
           email: values.email ?? null,
-          cpf: values.cpf ?? null,
+          cpfCnpj: values.cpfCnpj ?? null,
           endereco: values.endereco ?? null,
+          observacoes: values.observacoes ?? null,
         },
       })
       if (error) throw toApiError(error, response.status)

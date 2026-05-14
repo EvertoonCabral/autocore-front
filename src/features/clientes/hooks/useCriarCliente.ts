@@ -18,8 +18,9 @@ export function useCriarCliente() {
           nome: form.nome,
           telefone: form.telefone,
           email: form.email ?? null,
-          cpf: form.cpf ?? null,
+          cpfCnpj: form.cpfCnpj ?? null,
           endereco: form.endereco ?? null,
+          observacoes: form.observacoes ?? null,
         },
       })
       if (error || !data) throw toApiError(error, response.status)

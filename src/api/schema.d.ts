@@ -2140,8 +2140,9 @@ export interface components {
             nome?: string | null;
             telefone?: string | null;
             email?: string | null;
-            cpf?: string | null;
+            cpfCnpj?: string | null;
             endereco?: string | null;
+            observacoes?: string | null;
         };
         AtualizarConfiguracaoBody: {
             valor?: string | null;
@@ -2193,8 +2194,9 @@ export interface components {
             nome?: string | null;
             telefone?: string | null;
             email?: string | null;
-            cpf?: string | null;
+            cpfCnpj?: string | null;
             endereco?: string | null;
+            observacoes?: string | null;
             /** Format: date-time */
             criadoEm?: string;
             ativo?: boolean;
@@ -2253,8 +2255,9 @@ export interface components {
             nome?: string | null;
             telefone?: string | null;
             email?: string | null;
-            cpf?: string | null;
+            cpfCnpj?: string | null;
             endereco?: string | null;
+            observacoes?: string | null;
         };
         CriarProdutoCommand: {
             nome?: string | null;

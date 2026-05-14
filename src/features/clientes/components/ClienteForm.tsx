@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { onlyDigits } from '@/lib/format'
+import { formatCpfCnpj, maskTelefoneInput, onlyDigits } from '@/lib/format'
 import { clienteSchema, type ClienteFormValues } from '../helpers/clienteSchema'
 
 interface ClienteFormProps {
@@ -27,7 +27,7 @@ export function ClienteForm({
   const {
     register,
     handleSubmit,
-    setValue,
+    control,
     setError,
     reset,
     formState: { errors, isSubmitting },
@@ -37,8 +37,9 @@ export function ClienteForm({
       nome: '',
       telefone: '',
       email: '',
-      cpf: '',
+      cpfCnpj: '',
       endereco: '',
+      observacoes: '',
       ...defaultValues,
     },
   })
@@ -48,27 +49,34 @@ export function ClienteForm({
     if (defaultValues) {
       reset({
         nome: defaultValues.nome ?? '',
-        telefone: defaultValues.telefone ?? '',
+        telefone: maskTelefoneInput(defaultValues.telefone ?? ''),
         email: defaultValues.email ?? '',
-        cpf: defaultValues.cpf ?? '',
+        cpfCnpj: formatCpfCnpj(defaultValues.cpfCnpj ?? ''),
         endereco: defaultValues.endereco ?? '',
+        observacoes: defaultValues.observacoes ?? '',
       })
     }
   }, [defaultValues, reset])
 
   async function submit(values: ClienteFormValues) {
+    // Strip máscaras antes de enviar — back exige somente dígitos
+    const payload: ClienteFormValues = {
+      ...values,
+      telefone: onlyDigits(values.telefone),
+      cpfCnpj: values.cpfCnpj ? onlyDigits(values.cpfCnpj) : values.cpfCnpj,
+    }
     try {
-      await onSubmit(values)
+      await onSubmit(payload)
     } catch (err: unknown) {
       const apiErr = err as { kind?: string; detalhes?: string[] }
       if (apiErr.kind === 'validation' && apiErr.detalhes) {
-        // 422 — distribui detalhes por campo via heurística simples
         for (const detalhe of apiErr.detalhes) {
           if (/nome/i.test(detalhe)) setError('nome', { message: detalhe })
           else if (/telefone/i.test(detalhe)) setError('telefone', { message: detalhe })
           else if (/e-?mail/i.test(detalhe)) setError('email', { message: detalhe })
-          else if (/cpf/i.test(detalhe)) setError('cpf', { message: detalhe })
+          else if (/cpf|cnpj/i.test(detalhe)) setError('cpfCnpj', { message: detalhe })
           else if (/endere/i.test(detalhe)) setError('endereco', { message: detalhe })
+          else if (/observ/i.test(detalhe)) setError('observacoes', { message: detalhe })
         }
       }
     }
@@ -89,18 +97,25 @@ export function ClienteForm({
 
         <div className="space-y-2">
           <Label htmlFor="telefone">Telefone *</Label>
-          <Input
-            id="telefone"
-            inputMode="tel"
-            autoComplete="tel"
-            placeholder="44999990000"
-            aria-invalid={!!errors.telefone}
-            {...register('telefone', {
-              onBlur: (e) => setValue('telefone', onlyDigits(e.target.value), { shouldValidate: true }),
-            })}
+          <Controller
+            control={control}
+            name="telefone"
+            render={({ field }) => (
+              <Input
+                id="telefone"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="(44) 99999-0000"
+                aria-invalid={!!errors.telefone}
+                value={maskTelefoneInput(field.value)}
+                onChange={(e) => field.onChange(maskTelefoneInput(e.target.value))}
+                onBlur={field.onBlur}
+                ref={field.ref}
+              />
+            )}
           />
           <p className="text-xs text-muted-foreground">
-            Apenas dígitos (com DDD). Ex.: 44999990000.
+            DDD + número (10 a 11 dígitos). Aplicação remove a máscara antes de enviar.
           </p>
           {errors.telefone && (
             <p role="alert" className="text-sm text-destructive">
@@ -120,29 +135,55 @@ export function ClienteForm({
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="cpf">CPF</Label>
-          <Input
-            id="cpf"
-            inputMode="numeric"
-            placeholder="11 dígitos"
-            aria-invalid={!!errors.cpf}
-            {...register('cpf', {
-              onBlur: (e) => setValue('cpf', onlyDigits(e.target.value), { shouldValidate: true }),
-            })}
+          <Label htmlFor="cpfCnpj">CPF / CNPJ</Label>
+          <Controller
+            control={control}
+            name="cpfCnpj"
+            render={({ field }) => (
+              <Input
+                id="cpfCnpj"
+                inputMode="numeric"
+                placeholder="000.000.000-00 ou 00.000.000/0000-00"
+                aria-invalid={!!errors.cpfCnpj}
+                value={formatCpfCnpj(field.value ?? '')}
+                onChange={(e) => field.onChange(formatCpfCnpj(e.target.value))}
+                onBlur={field.onBlur}
+                ref={field.ref}
+              />
+            )}
           />
-          {errors.cpf && (
+          <p className="text-xs text-muted-foreground">
+            11 dígitos para CPF, 14 dígitos para CNPJ. A máscara se ajusta automaticamente.
+          </p>
+          {errors.cpfCnpj && (
             <p role="alert" className="text-sm text-destructive">
-              {errors.cpf.message}
+              {errors.cpfCnpj.message}
             </p>
           )}
         </div>
 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="endereco">Endereço</Label>
-          <Textarea id="endereco" rows={3} aria-invalid={!!errors.endereco} {...register('endereco')} />
+          <Textarea id="endereco" rows={2} aria-invalid={!!errors.endereco} {...register('endereco')} />
           {errors.endereco && (
             <p role="alert" className="text-sm text-destructive">
               {errors.endereco.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2 md:col-span-2">
+          <Label htmlFor="observacoes">Observações</Label>
+          <Textarea
+            id="observacoes"
+            rows={3}
+            placeholder="Anotações internas sobre o cliente (preferências, histórico, etc.)"
+            aria-invalid={!!errors.observacoes}
+            {...register('observacoes')}
+          />
+          {errors.observacoes && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.observacoes.message}
             </p>
           )}
         </div>

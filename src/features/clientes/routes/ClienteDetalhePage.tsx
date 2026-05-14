@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { Can } from '@/shared/components/Can'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
-import { formatCpf, formatDataHora, formatTelefone } from '@/lib/format'
+import { formatCpfCnpj, formatDataHora, formatTelefone } from '@/lib/format'
 import { useObterCliente } from '../hooks/useObterCliente'
 import { useDesativarCliente } from '../hooks/useDesativarCliente'
 
@@ -117,8 +117,10 @@ export function ClienteDetalhePage() {
           <dd className="text-base">{cliente.email ?? '—'}</dd>
         </div>
         <div>
-          <dt className="text-sm text-muted-foreground">CPF</dt>
-          <dd className="text-base tabular-nums">{cliente.cpf ? formatCpf(cliente.cpf) : '—'}</dd>
+          <dt className="text-sm text-muted-foreground">CPF / CNPJ</dt>
+          <dd className="text-base tabular-nums">
+            {cliente.cpfCnpj ? formatCpfCnpj(cliente.cpfCnpj) : '—'}
+          </dd>
         </div>
         <div>
           <dt className="text-sm text-muted-foreground">Cadastrado em</dt>
@@ -127,6 +129,10 @@ export function ClienteDetalhePage() {
         <div className="sm:col-span-2">
           <dt className="text-sm text-muted-foreground">Endereço</dt>
           <dd className="text-base whitespace-pre-line">{cliente.endereco ?? '—'}</dd>
+        </div>
+        <div className="sm:col-span-2">
+          <dt className="text-sm text-muted-foreground">Observações</dt>
+          <dd className="text-base whitespace-pre-line">{cliente.observacoes ?? '—'}</dd>
         </div>
       </dl>
     </div>
