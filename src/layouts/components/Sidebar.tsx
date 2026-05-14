@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   ClipboardList,
+  CreditCard,
   LayoutDashboard,
   Package,
   Settings2,
@@ -23,7 +24,8 @@ const items: NavItem[] = [
   { to: '/servicos', label: 'Catálogo', icon: Settings2, end: false },
   { to: '/produtos', label: 'Produtos', icon: Package, end: false },
   { to: '/ordens', label: 'Ordens de Serviço', icon: ClipboardList, end: false },
-  // Próximos: Pendências, Cobranças, Configurações
+  { to: '/pendencias', label: 'Pendências', icon: CreditCard, end: false },
+  // Próximos: Cobranças, Configurações
 ]
 
 export function Sidebar() {

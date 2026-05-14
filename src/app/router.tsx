@@ -16,6 +16,7 @@ import { EditarProdutoPage } from '@/features/produtos/routes/EditarProdutoPage'
 import { OrdensListPage } from '@/features/ordens/routes/OrdensListPage'
 import { NovaOrdemPage } from '@/features/ordens/routes/NovaOrdemPage'
 import { OrdemDetalhePage } from '@/features/ordens/routes/OrdemDetalhePage'
+import { PendenciasPage } from '@/features/pagamentos/routes/PendenciasPage'
 import { RequireAuth } from '@/shared/guards/RequireAuth'
 import { NotFound } from './NotFound'
 
@@ -45,6 +46,7 @@ const router = createBrowserRouter([
       { path: '/ordens', element: <OrdensListPage /> },
       { path: '/ordens/nova', element: <NovaOrdemPage /> },
       { path: '/ordens/:id', element: <OrdemDetalhePage /> },
+      { path: '/pendencias', element: <PendenciasPage /> },
     ],
   },
   { path: '*', element: <NotFound /> },

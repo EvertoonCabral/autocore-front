@@ -21,6 +21,7 @@ import { ItensServicoTable } from '../components/ItensServicoTable'
 import { ItensProdutoTable } from '../components/ItensProdutoTable'
 import { AdicionarItemServicoDialog } from '../components/AdicionarItemServicoDialog'
 import { AdicionarItemProdutoDialog } from '../components/AdicionarItemProdutoDialog'
+import { PagamentosOrdemSection } from '@/features/pagamentos/components/PagamentosOrdemSection'
 
 export function OrdemDetalhePage() {
   const { id } = useParams<{ id: string }>()
@@ -220,13 +221,13 @@ export function OrdemDetalhePage() {
         <ItensProdutoTable ordemId={numericId} itens={itensProduto} podeEditar={editavel} />
       </section>
 
-      {/* Pagamentos — placeholder, implementação na Fase 4 */}
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Pagamentos</h2>
-        <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">
-          Registro de pagamentos disponível na Fase 4 (Financeiro).
-        </p>
-      </section>
+      {/* Pagamentos — registrar + histórico + estorno Admin */}
+      <PagamentosOrdemSection
+        ordemId={numericId}
+        numero={ordem.numero ?? ''}
+        saldoDevedor={ordem.saldoDevedor ?? 0}
+        podeRegistrar={concluida}
+      />
     </div>
   )
 }

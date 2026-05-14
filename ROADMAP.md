@@ -137,13 +137,20 @@ Pagamentos parciais/totais, pendências, estorno (Admin only).
 
 > Antes: ler [`pagamentos.md`](../AutoCore/docs/regras-negocio/pagamentos.md).
 
-- ☐ Tela "Pendências" (`GET /api/pagamentos/pendencias`) com toggle "somente vencidas"
-- ☐ Registrar pagamento: dialog na OS detail com forma + valor + observação
-  - validação: valor > 0 e ≤ `SaldoDevedor` (mostra max permitido)
-  - lock se OS não está `Concluida`
-- ☐ Histórico de pagamentos da OS (tab na detail)
-- ☐ Estornar pagamento (Admin only): `<Can>` + `ConfirmDialog` destructive
-- ☐ Testes: regra "valor não pode exceder saldo" — UI nunca submete
+- ☑ `shared/enums/formaPagamento.ts` (Dinheiro=1, Pix=2, Cartao=3, Transferencia=4) com label PT-BR + marca visual + opções de Select
+- ☑ Tela `/pendencias` (`GET /api/pagamentos/pendencias`): toggle "Somente vencidas" persistido na URL, badge `Vencida` quando `DataVencimentoPagamento < hoje`, paginação, linha clicável navega para a OS
+- ☑ `RegistrarPagamentoDialog` injetado em `PagamentosOrdemSection` (renderizada na `OrdemDetalhePage`)
+  - Schema dinâmico `pagamentoSchemaComSaldo(saldoDevedor)` — UI **nunca** submete valor > saldo (validação client-side espelha o back)
+  - Tolerância de 0.001 para arredondamento decimal
+  - Pré-preenche com o saldo devedor atual (quitação total em 1 clique)
+  - Preview "Saldo devedor → Após este pagamento" com destaque verde quando zera
+  - Botão de gatilho desabilitado se OS não está `Concluida` ou se saldo já é zero
+  - Aviso inline quando OS não pode receber pagamento (status ≠ Concluída)
+- ☑ `PagamentosTable` com histórico de pagamentos da OS (data, forma com marca visual, valor, observação)
+- ☑ Estornar pagamento (Admin only): `<Can permission="pagamentos.estornar">` + `ConfirmDialog` destructive avisando sobre recálculo do saldo
+- ☑ Invalidações de cache cobrem: `pagamentos.all`, `pagamentos.daOrdem(ordemId)`, `ordens.detail(ordemId)` (totais recalculados) e `ordens.all`
+- ☑ Testes: 11 casos cobrindo schema base + `pagamentoSchemaComSaldo` (aceita quitação total, aceita parcial, **rejeita excesso de saldo**, tolerância de arredondamento, formas 1..4, observação max 300, transformação null, coerção de string)
+- ☑ Item "Pendências" no Sidebar (ícone `CreditCard`)
 
 ---
 
