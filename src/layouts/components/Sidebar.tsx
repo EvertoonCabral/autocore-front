@@ -3,6 +3,7 @@ import {
   ClipboardList,
   CreditCard,
   LayoutDashboard,
+  MessageCircle,
   Package,
   Settings2,
   Users,
@@ -25,7 +26,8 @@ const items: NavItem[] = [
   { to: '/produtos', label: 'Produtos', icon: Package, end: false },
   { to: '/ordens', label: 'Ordens de Serviço', icon: ClipboardList, end: false },
   { to: '/pendencias', label: 'Pendências', icon: CreditCard, end: false },
-  // Próximos: Cobranças, Configurações
+  { to: '/cobrancas', label: 'Cobranças', icon: MessageCircle, end: false },
+  // Configurações fica no UserMenu (Admin-only)
 ]
 
 export function Sidebar() {

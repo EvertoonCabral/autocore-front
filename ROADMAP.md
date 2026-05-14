@@ -163,18 +163,20 @@ Cobrança WhatsApp + tela de configurações (Admin only).
 
 ### Cobrança
 
-- ☐ Tela "Histórico de cobranças" (`GET /api/cobrancas/historico`) com filtros
-  `ordemServicoId`, `somenteFalhas`, paginação
-- ☐ Badge sucesso/falha + tooltip com `ErroMensagem` truncada
-- ☐ Botão "Disparar agora" (Admin only) — confirmação destructive variant default
+- ☑ Tela `/cobrancas` (`GET /api/cobrancas/historico`) com filtros `ordemServicoId`, `somenteFalhas` (URL-persistido via `usePagedQuery`), paginação
+- ☑ Coluna Status com badge verde "Enviado" / `destructive` "Falha"; mensagem de erro com `line-clamp-2` e tooltip mostrando texto completo (`title`); linha clicável navega para a OS relacionada
+- ☑ Hook `useDispararCobranca` (POST manual) + botão "Disparar agora" gateado por `<Can permission="cobrancas.disparar">` + `ConfirmDialog` com explicação da idempotência diária
+- ☑ Toast com resumo do resultado (`enviadas / falhas / ignoradas / verificadas` — campos do `CobrancaJobResultado`)
+- ☑ Item "Cobranças" no Sidebar (ícone `MessageCircle`)
 
 ### Configurações
 
-- ☐ Rota `/configuracoes` protegida por `<RequireRole role="Admin">`
-- ☐ Form com 3 campos do whitelist: `DiasParaCobranca`, `MensagemCobranca`, `PrecosAtualizadosEm`
-- ☐ Validação espelhando o back (DiasParaCobranca ≥ 0; MensagemCobranca 10-2000 chars)
-- ☐ Preview da `MensagemCobranca` com placeholders renderizados (`{Cliente}`, `{Numero}`, `{Valor}`, `{Vencimento}`)
-- ☐ Item "Configurações" no UserMenu (não na Sidebar — é admin-side)
+- ☑ Rota `/configuracoes` protegida por `<RequireRole role="Admin">` — Operador é redirecionado para `/`
+- ☑ `configuracaoSchema` (zod): `DiasParaCobranca` int ≥ 0 (limite 365), `MensagemCobranca` 10–2000 chars, `PrecosAtualizadosEm` vazio ou ISO-8601 (validado com `Date.parse`)
+- ☑ `useListarConfiguracoes` + `useAtualizarConfiguracao` (PUT por chave); o submit dispara `mutateAsync` **apenas** para os campos com `dirtyFields = true` (front respeita o endpoint por chave do back)
+- ☑ `MensagemPreview` com sample (`{Cliente}`=João Silva, `{Numero}`=OS-0007, `{Valor}`=150,00, `{Vencimento}`=06/05/2026); fallback para o template embutido do back quando o campo está vazio; suporta alias `{Vencimento:dd/MM/yyyy}`
+- ☑ Item "Configurações" no `UserMenu` (Admin only) — não vai no Sidebar
+- ☑ Testes: schema (9 casos) + render de placeholders (4 casos) + gating Admin no botão "Disparar agora"
 
 ---
 

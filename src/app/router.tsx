@@ -17,7 +17,10 @@ import { OrdensListPage } from '@/features/ordens/routes/OrdensListPage'
 import { NovaOrdemPage } from '@/features/ordens/routes/NovaOrdemPage'
 import { OrdemDetalhePage } from '@/features/ordens/routes/OrdemDetalhePage'
 import { PendenciasPage } from '@/features/pagamentos/routes/PendenciasPage'
+import { HistoricoCobrancaPage } from '@/features/cobrancas/routes/HistoricoCobrancaPage'
+import { ConfiguracoesPage } from '@/features/configuracoes/routes/ConfiguracoesPage'
 import { RequireAuth } from '@/shared/guards/RequireAuth'
+import { RequireRole } from '@/shared/guards/RequireRole'
 import { NotFound } from './NotFound'
 
 const router = createBrowserRouter([
@@ -47,6 +50,16 @@ const router = createBrowserRouter([
       { path: '/ordens/nova', element: <NovaOrdemPage /> },
       { path: '/ordens/:id', element: <OrdemDetalhePage /> },
       { path: '/pendencias', element: <PendenciasPage /> },
+      { path: '/cobrancas', element: <HistoricoCobrancaPage /> },
+      {
+        path: '/configuracoes',
+        element: (
+          // eslint-disable-next-line jsx-a11y/aria-role -- `role` é prop do nosso guard, não ARIA
+          <RequireRole role="Admin">
+            <ConfiguracoesPage />
+          </RequireRole>
+        ),
+      },
     ],
   },
   { path: '*', element: <NotFound /> },
