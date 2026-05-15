@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { Can } from '@/shared/components/Can'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
+import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
 import { formatCpfCnpj, formatDataHora, formatTelefone } from '@/lib/format'
 import { useObterCliente } from '../hooks/useObterCliente'
 import { useDesativarCliente } from '../hooks/useDesativarCliente'
@@ -135,6 +136,13 @@ export function ClienteDetalhePage() {
           <dd className="text-base whitespace-pre-line">{cliente.observacoes ?? '—'}</dd>
         </div>
       </dl>
+
+      <AuditoriaInfo
+        criadoEm={cliente.criadoEm}
+        criadoPorUsuarioNome={cliente.criadoPorUsuarioNome}
+        atualizadoEm={cliente.atualizadoEm}
+        atualizadoPorUsuarioNome={cliente.atualizadoPorUsuarioNome}
+      />
     </div>
   )
 }

@@ -22,6 +22,7 @@ import { ItensProdutoTable } from '../components/ItensProdutoTable'
 import { AdicionarItemServicoDialog } from '../components/AdicionarItemServicoDialog'
 import { AdicionarItemProdutoDialog } from '../components/AdicionarItemProdutoDialog'
 import { PagamentosOrdemSection } from '@/features/pagamentos/components/PagamentosOrdemSection'
+import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
 
 export function OrdemDetalhePage() {
   const { id } = useParams<{ id: string }>()
@@ -227,6 +228,13 @@ export function OrdemDetalhePage() {
         numero={ordem.numero ?? ''}
         saldoDevedor={ordem.saldoDevedor ?? 0}
         podeRegistrar={concluida}
+      />
+
+      <AuditoriaInfo
+        criadoEm={ordem.abertaEm}
+        criadoPorUsuarioNome={ordem.criadoPorUsuarioNome}
+        atualizadoEm={ordem.atualizadoEm}
+        atualizadoPorUsuarioNome={ordem.atualizadoPorUsuarioNome}
       />
     </div>
   )

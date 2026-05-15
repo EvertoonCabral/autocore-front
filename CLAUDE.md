@@ -75,6 +75,31 @@ Mapa em `src/shared/guards/permissions.ts`, espelhando
 
 ---
 
+## Auditoria — regra de exibição
+
+Toda entidade persistida no back tem colunas padronizadas de auditoria
+(`CriadoEm`, `CriadoPorUsuarioId`, `CriadoPorUsuarioNome`, `AtualizadoEm`,
+`AtualizadoPorUsuarioId`, `AtualizadoPorUsuarioNome` — ver
+`../AutoCore/CLAUDE.md`).
+
+No front:
+
+- **Telas de detalhe** das entidades exibem o componente
+  `<AuditoriaInfo>` (em `shared/components/`) no rodapé. Renderiza
+  "Criado em X por Y" e, quando aplicável, "Atualizado em A por B".
+- O nome é **snapshot** do back — preservado mesmo se o usuário for
+  desativado/renomeado depois.
+- `(sistema)` aparece quando `usuarioNome` é `null` — caso de operação
+  automática (job recorrente do back, seed inicial).
+- DTOs gerados pelo openapi-typescript já incluem os campos no top-level;
+  basta passar para o `<AuditoriaInfo>` sem mapear nada à mão.
+
+Quando criar uma nova feature de detalhe (Fase 6 em diante), **sempre**
+adicione o `<AuditoriaInfo>` na tela — é a fonte de verdade para o usuário
+saber quem fez o quê.
+
+---
+
 ## Estrutura
 
 ```

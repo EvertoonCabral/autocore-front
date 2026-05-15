@@ -603,6 +603,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/cobrancas/disparar/{ordemServicoId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    ordemServicoId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                        "application/json": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                        "text/json": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/configuracoes": {
         parameters: {
             query?: never;
@@ -2184,6 +2234,16 @@ export interface components {
             preco?: number;
             ehMaoDeObraPadrao?: boolean;
             ativo?: boolean;
+            /** Format: date-time */
+            criadoEm?: string;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
         };
         CatalogoServicoDtoIReadOnlyListApiResponse: {
             dados?: components["schemas"]["CatalogoServicoDto"][] | null;
@@ -2200,6 +2260,14 @@ export interface components {
             /** Format: date-time */
             criadoEm?: string;
             ativo?: boolean;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
         };
         ClienteDtoApiResponse: {
             dados?: components["schemas"]["ClienteDto"];
@@ -2212,6 +2280,14 @@ export interface components {
             pagina?: number;
             /** Format: int32 */
             porPagina?: number;
+        };
+        CobrancaIndividualResultado: {
+            status?: string | null;
+            mensagem?: string | null;
+            erroEnvio?: string | null;
+        };
+        CobrancaIndividualResultadoApiResponse: {
+            dados?: components["schemas"]["CobrancaIndividualResultado"];
         };
         CobrancaJobResultado: {
             /** Format: int32 */
@@ -2230,6 +2306,16 @@ export interface components {
             chave?: string | null;
             valor?: string | null;
             descricao?: string | null;
+            /** Format: date-time */
+            criadoEm?: string;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
         };
         ConfiguracaoDtoApiResponse: {
             dados?: components["schemas"]["ConfiguracaoDto"];
@@ -2293,6 +2379,9 @@ export interface components {
             enviadoEm?: string;
             sucesso?: boolean;
             erroMensagem?: string | null;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
         };
         HistoricoCobrancaDtoResultadoPaginadoDto: {
             dados?: components["schemas"]["HistoricoCobrancaDto"][] | null;
@@ -2402,6 +2491,14 @@ export interface components {
             totalPago?: number;
             /** Format: double */
             saldoDevedor?: number;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
         };
         OrdemServicoDetalheDtoApiResponse: {
             dados?: components["schemas"]["OrdemServicoDetalheDto"];
@@ -2448,6 +2545,9 @@ export interface components {
             /** Format: date-time */
             pagoEm?: string;
             observacao?: string | null;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
         };
         PagamentoDtoListApiResponse: {
             dados?: components["schemas"]["PagamentoDto"][] | null;
@@ -2466,6 +2566,16 @@ export interface components {
             /** Format: int32 */
             estoqueMinimo?: number;
             ativo?: boolean;
+            /** Format: date-time */
+            criadoEm?: string;
+            /** Format: int64 */
+            criadoPorUsuarioId?: number | null;
+            criadoPorUsuarioNome?: string | null;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
         };
         ProdutoDtoApiResponse: {
             dados?: components["schemas"]["ProdutoDto"];

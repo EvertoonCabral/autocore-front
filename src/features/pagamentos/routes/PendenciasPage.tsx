@@ -9,6 +9,7 @@ import { usePagedQuery } from '@/shared/hooks/usePagedQuery'
 import { formatBRL, formatData, formatTelefone } from '@/lib/format'
 import type { OrdemPendenteDto } from '@/api/types'
 import { useListarPendencias } from '../hooks/useListarPendencias'
+import { CobrarOrdemButton } from '@/features/cobrancas/components/CobrarOrdemButton'
 
 export function PendenciasPage() {
   const navigate = useNavigate()
@@ -81,6 +82,30 @@ export function PendenciasPage() {
         <span className="tabular-nums font-medium text-destructive">
           {formatBRL(p.saldoDevedor ?? 0)}
         </span>
+      ),
+    },
+    {
+      id: 'acoes',
+      header: <span className="sr-only">Ações</span>,
+      className: 'w-32 text-right',
+      cell: (p) => (
+        <div
+          className="flex justify-end"
+          // role="presentation" + stop propagation evita que o clique do botão
+          // navegue para /ordens/:id (a linha inteira é clicável).
+          role="presentation"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <CobrarOrdemButton
+            ordemServicoId={p.ordemServicoId ?? 0}
+            numero={p.numero ?? ''}
+            clienteNome={p.clienteNome ?? ''}
+            clienteTelefone={p.clienteTelefone ?? ''}
+            saldoDevedor={p.saldoDevedor ?? 0}
+            dataVencimento={p.dataVencimentoPagamento}
+            vencida={p.vencida ?? false}
+          />
+        </div>
       ),
     },
   ]
