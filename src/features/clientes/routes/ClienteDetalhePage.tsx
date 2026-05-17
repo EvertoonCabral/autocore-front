@@ -8,6 +8,8 @@ import { PageHeader } from '@/shared/components/PageHeader'
 import { Can } from '@/shared/components/Can'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
+import { AuditoriaTimeline } from '@/features/auditoria/components/AuditoriaTimeline'
+import { useCan } from '@/shared/components/Can'
 import { formatCpfCnpj, formatDataHora, formatTelefone } from '@/lib/format'
 import { useObterCliente } from '../hooks/useObterCliente'
 import { useDesativarCliente } from '../hooks/useDesativarCliente'
@@ -19,6 +21,7 @@ export function ClienteDetalhePage() {
 
   const { data: cliente, isLoading, isError } = useObterCliente(numericId)
   const desativar = useDesativarCliente()
+  const podeVerAuditoria = useCan('auditoria.ver')
 
   if (isLoading) {
     return (
@@ -143,6 +146,13 @@ export function ClienteDetalhePage() {
         atualizadoEm={cliente.atualizadoEm}
         atualizadoPorUsuarioNome={cliente.atualizadoPorUsuarioNome}
       />
+
+      {podeVerAuditoria && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-medium">Histórico de alterações</h3>
+          <AuditoriaTimeline tipoEntidade="Cliente" entidadeId={numericId} />
+        </section>
+      )}
     </div>
   )
 }

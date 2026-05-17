@@ -4,6 +4,91 @@
  */
 
 export interface paths {
+    "/api/auditoria/{tipoEntidade}/{entidadeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    tipoEntidade: string;
+                    entidadeId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["AuditoriaOperacaoDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["AuditoriaOperacaoDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["AuditoriaOperacaoDtoIReadOnlyListApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auditoria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    usuarioId?: number;
+                    tipoEntidade?: string;
+                    operacao?: string;
+                    de?: string;
+                    ate?: string;
+                    pagina?: number;
+                    porPagina?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["AuditoriaOperacaoDtoResultadoPaginadoDto"];
+                        "application/json": components["schemas"]["AuditoriaOperacaoDtoResultadoPaginadoDto"];
+                        "text/json": components["schemas"]["AuditoriaOperacaoDtoResultadoPaginadoDto"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/login": {
         parameters: {
             query?: never;
@@ -146,7 +231,28 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["UsuarioDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["UsuarioDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["UsuarioDtoIReadOnlyListApiResponse"];
+                    };
+                };
+            };
+        };
         put?: never;
         post: {
             parameters: {
@@ -256,6 +362,58 @@ export interface paths {
                         "text/plain": components["schemas"]["ApiValidationErrorResponse"];
                         "application/json": components["schemas"]["ApiValidationErrorResponse"];
                         "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/usuarios/{id}/permissao-auditoria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarPermissaoAuditoriaDto"];
+                    "text/json": components["schemas"]["AtualizarPermissaoAuditoriaDto"];
+                    "application/*+json": components["schemas"]["AtualizarPermissaoAuditoriaDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
                     };
                 };
             };
@@ -2204,6 +2362,9 @@ export interface components {
             observacoes?: string | null;
             status?: components["schemas"]["StatusOrdem"];
         };
+        AtualizarPermissaoAuditoriaDto: {
+            podeVerAuditoria?: boolean;
+        };
         AtualizarPrecoBody: {
             /** Format: double */
             preco?: number;
@@ -2224,6 +2385,32 @@ export interface components {
             nomeCompleto?: string | null;
             novaSenha?: string | null;
             ativo?: boolean;
+        };
+        AuditoriaOperacaoDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: date-time */
+            ocorridoEm?: string;
+            tipoEntidade?: string | null;
+            /** Format: int64 */
+            entidadeId?: number;
+            operacao?: string | null;
+            descricao?: string | null;
+            /** Format: int64 */
+            usuarioId?: number | null;
+            usuarioNome?: string | null;
+        };
+        AuditoriaOperacaoDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["AuditoriaOperacaoDto"][] | null;
+        };
+        AuditoriaOperacaoDtoResultadoPaginadoDto: {
+            dados?: components["schemas"]["AuditoriaOperacaoDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
         };
         CatalogoServicoDto: {
             /** Format: int64 */
@@ -2612,9 +2799,13 @@ export interface components {
             email?: string | null;
             role?: string | null;
             ativo?: boolean;
+            podeVerAuditoria?: boolean;
         };
         UsuarioDtoApiResponse: {
             dados?: components["schemas"]["UsuarioDto"];
+        };
+        UsuarioDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["UsuarioDto"][] | null;
         };
     };
     responses: never;

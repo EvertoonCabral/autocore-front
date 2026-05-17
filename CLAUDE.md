@@ -98,6 +98,39 @@ Quando criar uma nova feature de detalhe (Fase 6 em diante), **sempre**
 adicione o `<AuditoriaInfo>` na tela — é a fonte de verdade para o usuário
 saber quem fez o quê.
 
+### Timeline de operações (`<AuditoriaTimeline>`)
+
+Além do bloco "Criado em X · Atualizado por Y" (`<AuditoriaInfo>`), telas
+de detalhe podem exibir o **histórico completo** de operações daquela
+entidade via `<AuditoriaTimeline tipoEntidade="..." entidadeId={...} />`
+(em `features/auditoria/components/`).
+
+- Componente é **gateado por permissão**: Admin sempre vê; Operador
+  precisa de `podeVerAuditoria === true` no payload de `/api/auth/me`
+  (flag liberada pelo Admin em `/configuracoes` → "Acesso à Auditoria").
+- Use `useCan('auditoria.ver')` para condicionar o título da seção
+  (`<h3>Histórico de alterações</h3>`) — sem isso o título fica órfão
+  quando o usuário não tem permissão.
+- Timeline vazia não renderiza nada — não polui a UI.
+- Disponível hoje em `ClienteDetalhePage` e `OrdemDetalhePage`. Plug-in
+  em telas novas: importar o componente + condicionar seção pelo `useCan`.
+
+### Relatório global de auditoria
+
+Rota `/relatorios/auditoria` exibe log paginado com filtros (usuário,
+tipo de entidade, operação, intervalo de datas). Mesmo gating
+(`auditoria.ver`). Sidebar mostra o item apenas quando autorizado.
+
+### `permissions.ts` — flags vs roles
+
+Permissões podem ser:
+- **`AdminOnlyPermission`**: gating por role (`canPerform(role, perm)`)
+- **`FlagPermission`**: gating por flag do usuário (`canPerform(role, perm, flags)`)
+
+`auditoria.ver` é a primeira `FlagPermission` — Admin sempre passa, mas
+Operador precisa de `flags.podeVerAuditoria === true`. Use `<Can>` ou
+`useCan(perm)` — ambos propagam as flags do `useAuth().user` automaticamente.
+
 ---
 
 ## Estrutura

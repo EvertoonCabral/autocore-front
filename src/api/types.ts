@@ -25,6 +25,7 @@ export type HistoricoCobrancaDto    = components['schemas']['HistoricoCobrancaDt
 export type ConfiguracaoDto         = components['schemas']['ConfiguracaoDto']
 export type CobrancaJobResultado    = components['schemas']['CobrancaJobResultado']
 export type CobrancaIndividualResultado = components['schemas']['CobrancaIndividualResultado']
+export type AuditoriaOperacaoDto    = components['schemas']['AuditoriaOperacaoDto']
 
 // ─── Envelopes ─────────────────────────────────────────────────────────────
 /** `{ dados: T }` — envelope padrão de item único. */

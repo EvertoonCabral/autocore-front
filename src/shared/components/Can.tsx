@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react'
 import { useAuth } from '@/features/auth/auth-context'
-import { canPerform, type AdminOnlyPermission } from '@/shared/guards/permissions'
+import { canPerform, type Permission, type Role } from '@/shared/guards/permissions'
 
 interface CanProps {
-  permission: AdminOnlyPermission
+  permission: Permission
   children: ReactNode
   /** Conteúdo a renderizar quando o usuário não tem permissão. Default: nada. */
   fallback?: ReactNode
@@ -16,7 +16,9 @@ export function Can({ permission, children, fallback = null }: CanProps) {
 }
 
 /** Hook complementar — útil para `disabled={!useCan('...')}` em botões. */
-export function useCan(permission: AdminOnlyPermission): boolean {
+export function useCan(permission: Permission): boolean {
   const { user } = useAuth()
-  return canPerform(user?.role as 'Admin' | 'Operador' | undefined, permission)
+  return canPerform(user?.role as Role | undefined, permission, {
+    podeVerAuditoria: user?.podeVerAuditoria,
+  })
 }

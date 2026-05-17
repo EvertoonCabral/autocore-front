@@ -23,6 +23,8 @@ import { AdicionarItemServicoDialog } from '../components/AdicionarItemServicoDi
 import { AdicionarItemProdutoDialog } from '../components/AdicionarItemProdutoDialog'
 import { PagamentosOrdemSection } from '@/features/pagamentos/components/PagamentosOrdemSection'
 import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
+import { AuditoriaTimeline } from '@/features/auditoria/components/AuditoriaTimeline'
+import { useCan } from '@/shared/components/Can'
 
 export function OrdemDetalhePage() {
   const { id } = useParams<{ id: string }>()
@@ -32,6 +34,7 @@ export function OrdemDetalhePage() {
   const { data: ordem, isLoading, isError } = useObterOrdem(numericId)
   const fechar = useFecharOrdem()
   const cancelar = useCancelarOrdem()
+  const podeVerAuditoria = useCan('auditoria.ver')
 
   if (isLoading) {
     return (
@@ -229,6 +232,13 @@ export function OrdemDetalhePage() {
         saldoDevedor={ordem.saldoDevedor ?? 0}
         podeRegistrar={concluida}
       />
+
+      {podeVerAuditoria && (
+        <section className="space-y-3">
+          <h3 className="text-sm font-medium">Histórico de alterações</h3>
+          <AuditoriaTimeline tipoEntidade="OrdemServico" entidadeId={numericId} />
+        </section>
+      )}
 
       <AuditoriaInfo
         criadoEm={ordem.abertaEm}

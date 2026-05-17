@@ -28,10 +28,12 @@ function setupAdmin() {
           email: 'admin@autocore.com',
           role: 'Admin',
           ativo: true,
+          podeVerAuditoria: true,
         },
       }),
     ),
     http.get(`${API}/api/clientes/7`, () => HttpResponse.json({ dados: cliente })),
+    http.get(`${API}/api/auditoria/Cliente/7`, () => HttpResponse.json({ dados: [] })),
   )
 }
 
@@ -45,6 +47,7 @@ function setupOperador() {
           email: 'op@autocore.com',
           role: 'Operador',
           ativo: true,
+          podeVerAuditoria: false,
         },
       }),
     ),

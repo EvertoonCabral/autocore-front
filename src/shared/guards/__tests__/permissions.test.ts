@@ -17,4 +17,12 @@ describe('canPerform', () => {
   it('sem role autenticada nada é permitido', () => {
     expect(canPerform(undefined, 'clientes.desativar')).toBe(false)
   })
+
+  it('auditoria.ver: Admin sempre passa, Operador depende da flag', () => {
+    expect(canPerform('Admin', 'auditoria.ver')).toBe(true)
+    expect(canPerform('Operador', 'auditoria.ver')).toBe(false)
+    expect(canPerform('Operador', 'auditoria.ver', { podeVerAuditoria: false })).toBe(false)
+    expect(canPerform('Operador', 'auditoria.ver', { podeVerAuditoria: true })).toBe(true)
+    expect(canPerform(undefined, 'auditoria.ver', { podeVerAuditoria: true })).toBe(false)
+  })
 })
