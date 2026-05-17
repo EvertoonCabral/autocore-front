@@ -71,4 +71,46 @@ describe('clienteSchema', () => {
     expect(r.endereco).toBeNull()
     expect(r.observacoes).toBeNull()
   })
+
+  // ─── Stripping de máscara antes da validação ─────────────────────────
+  // O input do form mantém máscara visual; schema remove antes de validar
+  // e antes de enviar ao back. Sem isso, o usuário editando um cliente vê
+  // o erro "Telefone deve conter apenas dígitos" mesmo digitando um número
+  // válido (bug reportado).
+
+  it('aceita telefone com máscara "(45) 99992-5801" e exporta só dígitos', () => {
+    const r = clienteSchema.parse({ ...valido, telefone: '(45) 99992-5801' })
+    expect(r.telefone).toBe('45999925801')
+  })
+
+  it('aceita telefone com hífen "44999990000" sem alteração', () => {
+    const r = clienteSchema.parse({ ...valido, telefone: '44999990000' })
+    expect(r.telefone).toBe('44999990000')
+  })
+
+  it('rejeita telefone mascarado quando o total de dígitos é insuficiente', () => {
+    const r = clienteSchema.safeParse({ ...valido, telefone: '(44) 9999-000' })
+    expect(r.success).toBe(false)
+  })
+
+  it('aceita CPF com máscara "012.345.678-91" e exporta só dígitos', () => {
+    const r = clienteSchema.parse({ ...valido, cpfCnpj: '012.345.678-91' })
+    expect(r.cpfCnpj).toBe('01234567891')
+  })
+
+  it('aceita CNPJ com máscara "12.345.678/0001-90" e exporta só dígitos', () => {
+    const r = clienteSchema.parse({ ...valido, cpfCnpj: '12.345.678/0001-90' })
+    expect(r.cpfCnpj).toBe('12345678000190')
+  })
+
+  it('rejeita CPF/CNPJ mascarado quando o total de dígitos não bate', () => {
+    const r = clienteSchema.safeParse({ ...valido, cpfCnpj: '012.345.678-9' })
+    expect(r.success).toBe(false)
+  })
+
+  it('aceita CPF/CNPJ vazio mesmo com caracteres-máscara digitados sem dígitos', () => {
+    // se o user apaga tudo e sobra só pontuação, normaliza para null
+    const r = clienteSchema.parse({ ...valido, cpfCnpj: '...---' })
+    expect(r.cpfCnpj).toBeNull()
+  })
 })

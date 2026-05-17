@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { formatCpfCnpj, maskTelefoneInput, onlyDigits } from '@/lib/format'
+import { formatCpfCnpj, maskTelefoneInput } from '@/lib/format'
 import { clienteSchema, type ClienteFormValues } from '../helpers/clienteSchema'
 
 interface ClienteFormProps {
@@ -59,14 +59,10 @@ export function ClienteForm({
   }, [defaultValues, reset])
 
   async function submit(values: ClienteFormValues) {
-    // Strip máscaras antes de enviar — back exige somente dígitos
-    const payload: ClienteFormValues = {
-      ...values,
-      telefone: onlyDigits(values.telefone),
-      cpfCnpj: values.cpfCnpj ? onlyDigits(values.cpfCnpj) : values.cpfCnpj,
-    }
+    // Schema (clienteSchema) já remove a máscara via .transform — values
+    // chegam aqui com telefone/cpfCnpj só-dígitos.
     try {
-      await onSubmit(payload)
+      await onSubmit(values)
     } catch (err: unknown) {
       const apiErr = err as { kind?: string; detalhes?: string[] }
       if (apiErr.kind === 'validation' && apiErr.detalhes) {

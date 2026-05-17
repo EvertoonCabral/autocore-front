@@ -11,7 +11,14 @@ import { z } from 'zod'
  *
  * Os campos texto opcionais são transformados em `null` quando vazios para
  * casar com o back (que espera `null` em vez de string vazia).
+ *
+ * Telefone e CpfCnpj passam por `transform` que remove a máscara antes da
+ * validação regex — o usuário digita "(45) 99992-5801" no input, mas o
+ * schema valida e exporta "45999925801". Centraliza o stripping aqui em vez
+ * de duplicá-lo na hora do submit.
  */
+const stripNonDigits = (v: string) => v.replace(/\D/g, '')
+
 export const clienteSchema = z.object({
   nome: z
     .string()
@@ -21,7 +28,15 @@ export const clienteSchema = z.object({
   telefone: z
     .string()
     .trim()
-    .regex(/^\d{10,13}$/, 'Telefone deve conter apenas dígitos (10 a 13 caracteres, com DDD).'),
+    .transform(stripNonDigits)
+    .pipe(
+      z
+        .string()
+        .regex(
+          /^\d{10,13}$/,
+          'Telefone deve conter apenas dígitos (10 a 13 caracteres, com DDD).',
+        ),
+    ),
   email: z
     .string()
     .trim()
@@ -33,8 +48,16 @@ export const clienteSchema = z.object({
   cpfCnpj: z
     .string()
     .trim()
-    .regex(/^\d{11}$|^\d{14}$/, 'CPF/CNPJ deve conter 11 (CPF) ou 14 (CNPJ) dígitos.')
-    .or(z.literal(''))
+    .transform(stripNonDigits)
+    .pipe(
+      z
+        .string()
+        .regex(
+          /^\d{11}$|^\d{14}$/,
+          'CPF/CNPJ deve conter 11 (CPF) ou 14 (CNPJ) dígitos.',
+        )
+        .or(z.literal('')),
+    )
     .transform((v) => (v === '' ? null : v))
     .nullable()
     .optional(),
