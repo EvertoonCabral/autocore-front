@@ -967,6 +967,151 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/configuracoes/cobranca": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ConfiguracaoCobrancaDtoApiResponse"];
+                        "application/json": components["schemas"]["ConfiguracaoCobrancaDtoApiResponse"];
+                        "text/json": components["schemas"]["ConfiguracaoCobrancaDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarConfiguracaoCobrancaDto"];
+                    "text/json": components["schemas"]["AtualizarConfiguracaoCobrancaDto"];
+                    "application/*+json": components["schemas"]["AtualizarConfiguracaoCobrancaDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/configuracoes/cobranca/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StatusConexaoCobrancaDtoApiResponse"];
+                        "application/json": components["schemas"]["StatusConexaoCobrancaDtoApiResponse"];
+                        "text/json": components["schemas"]["StatusConexaoCobrancaDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/configuracoes/cobranca/reescanear-qr": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["QrCodeCobrancaDtoApiResponse"];
+                        "application/json": components["schemas"]["QrCodeCobrancaDtoApiResponse"];
+                        "text/json": components["schemas"]["QrCodeCobrancaDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ordens": {
         parameters: {
             query?: never;
@@ -2377,6 +2522,12 @@ export interface components {
         AtualizarConfiguracaoBody: {
             valor?: string | null;
         };
+        AtualizarConfiguracaoCobrancaDto: {
+            baseUrl?: string | null;
+            apiKey?: string | null;
+            instancia?: string | null;
+            usarStub?: boolean;
+        };
         AtualizarOrdemServicoCommand: {
             /** Format: int64 */
             id?: number;
@@ -2510,6 +2661,20 @@ export interface components {
         };
         CobrancaJobResultadoApiResponse: {
             dados?: components["schemas"]["CobrancaJobResultado"];
+        };
+        ConfiguracaoCobrancaDto: {
+            baseUrl?: string | null;
+            apiKeyDefinida?: boolean;
+            instancia?: string | null;
+            usarStub?: boolean;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
+        };
+        ConfiguracaoCobrancaDtoApiResponse: {
+            dados?: components["schemas"]["ConfiguracaoCobrancaDto"];
         };
         ConfiguracaoDto: {
             chave?: string | null;
@@ -2801,6 +2966,15 @@ export interface components {
             /** Format: int32 */
             porPagina?: number;
         };
+        QrCodeCobrancaDto: {
+            qrCodeBase64?: string | null;
+            erroMensagem?: string | null;
+            /** Format: date-time */
+            consultadoEm?: string;
+        };
+        QrCodeCobrancaDtoApiResponse: {
+            dados?: components["schemas"]["QrCodeCobrancaDto"];
+        };
         RegistrarPagamentoCommand: {
             /** Format: int64 */
             ordemServicoId?: number;
@@ -2808,6 +2982,17 @@ export interface components {
             valor?: number;
             forma?: components["schemas"]["FormaPagamento"];
             observacao?: string | null;
+        };
+        StatusConexaoCobrancaDto: {
+            conectado?: boolean;
+            numero?: string | null;
+            estadoBruto?: string | null;
+            erroMensagem?: string | null;
+            /** Format: date-time */
+            consultadoEm?: string;
+        };
+        StatusConexaoCobrancaDtoApiResponse: {
+            dados?: components["schemas"]["StatusConexaoCobrancaDto"];
         };
         /**
          * Format: int32

@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { ConfiguracoesGeralForm } from '../components/ConfiguracoesGeralForm'
 import { AcessoAuditoriaTab } from '../components/AcessoAuditoriaTab'
+import { ConfiguracaoCobrancaTab } from '../components/ConfiguracaoCobrancaTab'
 
 export function ConfiguracoesPage() {
   return (
@@ -14,10 +15,14 @@ export function ConfiguracoesPage() {
       <Tabs defaultValue="geral">
         <TabsList>
           <TabsTrigger value="geral">Geral</TabsTrigger>
+          <TabsTrigger value="cobranca">Cobrança WhatsApp</TabsTrigger>
           <TabsTrigger value="acesso-auditoria">Acesso à Auditoria</TabsTrigger>
         </TabsList>
         <TabsContent value="geral">
           <ConfiguracoesGeralForm />
+        </TabsContent>
+        <TabsContent value="cobranca">
+          <ConfiguracaoCobrancaTab />
         </TabsContent>
         <TabsContent value="acesso-auditoria">
           <AcessoAuditoriaTab />
