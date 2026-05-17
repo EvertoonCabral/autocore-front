@@ -809,9 +809,20 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["ApiErrorResponse"];
-                        "application/json": components["schemas"]["ApiErrorResponse"];
-                        "text/json": components["schemas"]["ApiErrorResponse"];
+                        "text/plain": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                        "application/json": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                        "text/json": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                    };
+                };
+                /** @description Bad Gateway */
+                502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                        "application/json": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
+                        "text/json": components["schemas"]["CobrancaIndividualResultadoApiResponse"];
                     };
                 };
             };

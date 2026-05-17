@@ -16,6 +16,16 @@ import { pagamentosKeys } from '@/features/pagamentos/hooks/useListarPendencias'
  * - Idempotência diária (1 envio com sucesso por OS por dia)
  *
  * O resultado discrimina o status: Enviada, Falha, JaEnviadaHoje, OsInvalida.
+ *
+ * Mapeamento HTTP no back:
+ *   - Enviada / JaEnviadaHoje → 200 OK
+ *   - OsInvalida → 400 Bad Request
+ *   - Falha (Evolution API indisponível) → 502 Bad Gateway
+ *
+ * Em todos os casos o body é o mesmo envelope `ApiResponse<CobrancaIndividualResultado>`.
+ * Este hook normaliza: sucesso ou erro com discriminador retorna o objeto para
+ * o caller fazer `switch (r.status)`; erros sem discriminador (401, 500 inesperado, etc.)
+ * caem no `throw toApiError(...)` clássico.
  */
 export function useCobrarOrdem() {
   const queryClient = useQueryClient()
@@ -25,13 +35,25 @@ export function useCobrarOrdem() {
         params: { path: { ordemServicoId } },
       })) as {
         data?: { dados?: CobrancaIndividualResultado | null }
-        error?: unknown
+        error?: { dados?: CobrancaIndividualResultado | null } | unknown
         response: Response
       }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
+
+      // 200 OK — caminho feliz
+      if (result.data?.dados) {
+        return unwrap<CobrancaIndividualResultado>(result.data)
       }
-      return unwrap<CobrancaIndividualResultado>(result.data)
+
+      // 400 (OsInvalida) e 502 (Falha) ainda trazem o discriminador no body —
+      // extraímos e retornamos como se fosse sucesso para o caller decidir
+      // a mensagem pelo r.status. (Sem isso, o caller cairia no catch
+      // genérico e perderia "erroEnvio"/"mensagem" específica do back.)
+      const errBody = result.error as { dados?: CobrancaIndividualResultado | null } | undefined
+      if (errBody?.dados && typeof errBody.dados.status === 'string') {
+        return errBody.dados
+      }
+
+      throw toApiError(result.error, result.response.status)
     },
     onSuccess: async () => {
       await Promise.all([
