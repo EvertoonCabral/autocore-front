@@ -31,15 +31,19 @@ estão no schema OpenAPI.**
 - O TypeScript estrito vai apontar exatamente os pontos a ajustar. PR sem
   `schema.d.ts` regenerado está incompleto — não passa no review.
 
-### Limitação atual
+### Tipos de resposta — fully typed
 
-Os controllers retornam objetos anônimos (`new { dados = ... }`), então o
-OpenAPI **não tipa response bodies**. Enquanto o back não adiciona
-`[ProducesResponseType(typeof(...), 200)]` + um envelope concreto
-(`ApiResponse<T>`), mantemos os tipos de resposta **manualmente** em
-`src/api/types.ts`. Esses tipos espelham as DTOs em
-`AutoCore.Application/DTOs/`. Trocar isso pelo schema gerado é dívida
-técnica do back.
+Desde o commit `cbd90cc` do back, todos os controllers usam
+`[ProducesResponseType(typeof(ApiResponse<T>), 200)]` + envelope concreto
+(`ApiResponse<T>`, `CriadoDto`, `ApiErrorResponse`,
+`ApiValidationErrorResponse`) — o OpenAPI agora tipa response bodies
+inteiros. O `src/api/types.ts` ficou reduzido a **aliases** sobre
+`components['schemas']` gerados, sem redigitar shapes à mão.
+
+Se precisar adicionar um novo DTO no front: derive de
+`components['schemas']['NomeDto']` em `src/api/types.ts`. Não crie
+interfaces manuais espelhando DTOs do back — isso é exatamente o que o
+schema gerado evita.
 
 ---
 
