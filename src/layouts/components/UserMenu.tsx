@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { LogOut, Settings, User } from 'lucide-react'
+import { LogOut, Settings, User, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -39,6 +39,15 @@ export function UserMenu() {
         <DropdownMenuSeparator />
         {isAdmin && (
           <>
+            <DropdownMenuItem
+              onSelect={(e) => {
+                e.preventDefault()
+                navigate('/usuarios')
+              }}
+            >
+              <Users className="h-4 w-4" />
+              Usuários
+            </DropdownMenuItem>
             <DropdownMenuItem
               onSelect={(e) => {
                 e.preventDefault()

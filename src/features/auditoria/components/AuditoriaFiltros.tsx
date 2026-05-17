@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { useAuth } from '@/features/auth/auth-context'
-import { useListarUsuarios } from '../hooks/useListarUsuarios'
+import { useListarUsuarios } from '@/shared/hooks/useListarUsuarios'
 import {
   OPERACAO_LABEL,
   OPERACAO_VALUES,

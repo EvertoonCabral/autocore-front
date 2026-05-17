@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { toApiError, type ApiError } from '@/api/errors'
 import type { UsuarioDto } from '@/api/types'
-import { usuariosKeys } from './useListarUsuarios'
+import { usuariosKeys } from '@/shared/hooks/useListarUsuarios'
 
 export interface AtualizarPermissaoVars {
   usuarioId: number

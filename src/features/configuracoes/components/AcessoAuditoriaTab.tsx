@@ -6,7 +6,7 @@ import { DataTable, type ColumnDef } from '@/shared/components/DataTable'
 import { EmptyState } from '@/shared/components/EmptyState'
 import type { UsuarioDto } from '@/api/types'
 import { useAuth } from '@/features/auth/auth-context'
-import { useListarUsuarios } from '@/features/auditoria/hooks/useListarUsuarios'
+import { useListarUsuarios } from '@/shared/hooks/useListarUsuarios'
 import { useAtualizarPermissaoAuditoria } from '@/features/auditoria/hooks/useAtualizarPermissaoAuditoria'
 
 export function AcessoAuditoriaTab() {

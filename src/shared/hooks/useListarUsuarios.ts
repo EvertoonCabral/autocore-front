@@ -4,6 +4,11 @@ import { toApiError } from '@/api/errors'
 import { unwrap } from '@/api/envelope'
 import type { UsuarioDto } from '@/api/types'
 
+/**
+ * Query key factory para listagens de usuários. Compartilhado entre
+ * `features/usuarios` (CRUD) e `features/auditoria` (toggle de permissão),
+ * por isso vive em `shared/hooks`.
+ */
 export const usuariosKeys = {
   all: ['auth', 'usuarios'] as const,
   list: ['auth', 'usuarios', 'list'] as const,

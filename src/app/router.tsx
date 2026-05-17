@@ -19,6 +19,7 @@ import { OrdemDetalhePage } from '@/features/ordens/routes/OrdemDetalhePage'
 import { PendenciasPage } from '@/features/pagamentos/routes/PendenciasPage'
 import { HistoricoCobrancaPage } from '@/features/cobrancas/routes/HistoricoCobrancaPage'
 import { ConfiguracoesPage } from '@/features/configuracoes/routes/ConfiguracoesPage'
+import { UsuariosPage } from '@/features/usuarios/routes/UsuariosPage'
 import { AuditoriaRelatorioPage } from '@/features/auditoria/routes/AuditoriaRelatorioPage'
 import { RequireAuth } from '@/shared/guards/RequireAuth'
 import { RequireRole } from '@/shared/guards/RequireRole'
@@ -53,6 +54,7 @@ const router = createBrowserRouter([
       { path: '/pendencias', element: <PendenciasPage /> },
       { path: '/cobrancas', element: <HistoricoCobrancaPage /> },
       { path: '/relatorios/auditoria', element: <AuditoriaRelatorioPage /> },
+      { path: '/usuarios', element: <UsuariosPage /> },
       {
         path: '/configuracoes',
         element: (
