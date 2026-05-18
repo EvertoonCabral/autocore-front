@@ -310,18 +310,20 @@ dedicada `/produtos/:id` e `/servicos/:id` com auditoria visível.
 - ☑ Botões "Editar" e "Desativar" movidos da listagem para a tela de detalhe
 - ☑ Serviço padronizado em 3 rotas dedicadas (novo, detalhe, editar), espelhando Cliente e Produto
 
-### Dashboard real ☐
+### Dashboard real ☑
 
 Hoje a `/` é placeholder "Bem-vindo, {nome}". Vamos popular com indicadores.
 
-- ☐ Cards de KPIs: OSs abertas / em andamento / aguardando produto · Pendências
-      vencidas (count + R$ total) · Produtos abaixo do mínimo (count) · Faturamento
-      do mês corrente
-- ☐ Lista compacta "Últimas OSs abertas" (5 itens) com link para detalhe
-- ☐ Lista compacta "Pendências mais antigas" (5 itens) com link
-- ☐ Hook `useDashboardResumo` (pode reusar endpoints existentes + agregar no front, ou criar `GET /api/dashboard/resumo` no back se for caro)
-- ☐ Skeleton de loading consistente com as demais páginas
-- ☐ Permanece acessível a todos os autenticados (Operador também vê seu painel)
+- ☑ Endpoint dedicado `GET /api/dashboard/resumo` no back — agregação num shot
+      (contagens por status, pendências vencidas count+total, estoque abaixo do
+      mínimo, faturamento do mês, últimas 5 OSs, 5 pendências mais antigas)
+- ☑ Hook `useDashboardResumo` com `staleTime: 60s`
+- ☑ 6 KPI cards (`<KpiCard>`) com border-l colorida por variant (info/warning/
+      destructive/success), skeleton de loading consistente
+- ☑ `<UltimasOrdensCard>` (5 itens, link para `/ordens/{id}`)
+- ☑ `<PendenciasAntigasCard>` (5 itens, badge "Vencida", saldo em vermelho)
+- ☑ Acessível a todos os autenticados (Admin e Operador)
+- ☑ Testes: handler back (8 casos com EF InMemory) + helpers/components front (22)
 
 ### Plug-ins menores ☐
 

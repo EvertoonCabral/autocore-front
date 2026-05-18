@@ -1112,6 +1112,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/dashboard/resumo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["DashboardResumoDtoApiResponse"];
+                        "application/json": components["schemas"]["DashboardResumoDtoApiResponse"];
+                        "text/json": components["schemas"]["DashboardResumoDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ordens": {
         parameters: {
             query?: never;
@@ -2773,6 +2810,43 @@ export interface components {
             email?: string | null;
             senha?: string | null;
             role?: string | null;
+        };
+        DashboardContagensOsDto: {
+            /** Format: int32 */
+            abertas?: number;
+            /** Format: int32 */
+            emAndamento?: number;
+            /** Format: int32 */
+            aguardandoProduto?: number;
+        };
+        DashboardEstoqueDto: {
+            /** Format: int32 */
+            produtosAbaixoMinimo?: number;
+        };
+        DashboardFaturamentoDto: {
+            /** Format: int32 */
+            mes?: number;
+            /** Format: int32 */
+            ano?: number;
+            /** Format: double */
+            total?: number;
+        };
+        DashboardPendenciasDto: {
+            /** Format: int32 */
+            vencidasCount?: number;
+            /** Format: double */
+            vencidasValorTotal?: number;
+        };
+        DashboardResumoDto: {
+            contagensOs?: components["schemas"]["DashboardContagensOsDto"];
+            pendencias?: components["schemas"]["DashboardPendenciasDto"];
+            estoque?: components["schemas"]["DashboardEstoqueDto"];
+            faturamento?: components["schemas"]["DashboardFaturamentoDto"];
+            ultimasOrdens?: components["schemas"]["OrdemServicoResumoDto"][] | null;
+            pendenciasMaisAntigas?: components["schemas"]["OrdemPendenteDto"][] | null;
+        };
+        DashboardResumoDtoApiResponse: {
+            dados?: components["schemas"]["DashboardResumoDto"];
         };
         /**
          * Format: int32

@@ -26,6 +26,11 @@ export type ConfiguracaoDto         = components['schemas']['ConfiguracaoDto']
 export type CobrancaJobResultado    = components['schemas']['CobrancaJobResultado']
 export type CobrancaIndividualResultado = components['schemas']['CobrancaIndividualResultado']
 export type AuditoriaOperacaoDto    = components['schemas']['AuditoriaOperacaoDto']
+export type DashboardResumoDto      = components['schemas']['DashboardResumoDto']
+export type DashboardContagensOsDto = components['schemas']['DashboardContagensOsDto']
+export type DashboardPendenciasDto  = components['schemas']['DashboardPendenciasDto']
+export type DashboardEstoqueDto     = components['schemas']['DashboardEstoqueDto']
+export type DashboardFaturamentoDto = components['schemas']['DashboardFaturamentoDto']
 
 // ─── Envelopes ─────────────────────────────────────────────────────────────
 /** `{ dados: T }` — envelope padrão de item único. */
