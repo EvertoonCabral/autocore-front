@@ -8,6 +8,9 @@ import { NovoClientePage } from '@/features/clientes/routes/NovoClientePage'
 import { ClienteDetalhePage } from '@/features/clientes/routes/ClienteDetalhePage'
 import { EditarClientePage } from '@/features/clientes/routes/EditarClientePage'
 import { ServicosListPage } from '@/features/servicos/routes/ServicosListPage'
+import { NovoServicoPage } from '@/features/servicos/routes/NovoServicoPage'
+import { ServicoDetalhePage } from '@/features/servicos/routes/ServicoDetalhePage'
+import { EditarServicoPage } from '@/features/servicos/routes/EditarServicoPage'
 import { ProdutosListPage } from '@/features/produtos/routes/ProdutosListPage'
 import { ProdutosAbaixoMinimoPage } from '@/features/produtos/routes/ProdutosAbaixoMinimoPage'
 import { NovoProdutoPage } from '@/features/produtos/routes/NovoProdutoPage'
@@ -43,6 +46,9 @@ const router = createBrowserRouter([
       { path: '/clientes/:id', element: <ClienteDetalhePage /> },
       { path: '/clientes/:id/editar', element: <EditarClientePage /> },
       { path: '/servicos', element: <ServicosListPage /> },
+      { path: '/servicos/novo', element: <NovoServicoPage /> },
+      { path: '/servicos/:id', element: <ServicoDetalhePage /> },
+      { path: '/servicos/:id/editar', element: <EditarServicoPage /> },
       { path: '/produtos', element: <ProdutosListPage /> },
       { path: '/produtos/abaixo-minimo', element: <ProdutosAbaixoMinimoPage /> },
       { path: '/produtos/novo', element: <NovoProdutoPage /> },

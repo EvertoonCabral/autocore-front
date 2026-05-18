@@ -2314,7 +2314,41 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["CatalogoServicoDtoApiResponse"];
+                        "application/json": components["schemas"]["CatalogoServicoDtoApiResponse"];
+                        "text/json": components["schemas"]["CatalogoServicoDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
         put: {
             parameters: {
                 query?: never;
@@ -2604,6 +2638,9 @@ export interface components {
             /** Format: int64 */
             atualizadoPorUsuarioId?: number | null;
             atualizadoPorUsuarioNome?: string | null;
+        };
+        CatalogoServicoDtoApiResponse: {
+            dados?: components["schemas"]["CatalogoServicoDto"];
         };
         CatalogoServicoDtoIReadOnlyListApiResponse: {
             dados?: components["schemas"]["CatalogoServicoDto"][] | null;

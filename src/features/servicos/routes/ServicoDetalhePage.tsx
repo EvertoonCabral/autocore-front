@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { AlertTriangle, ArrowLeft, Pencil, Trash2 } from 'lucide-react'
+import { ArrowLeft, Pencil, Star, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,17 +10,17 @@ import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
 import { AuditoriaTimeline } from '@/features/auditoria/components/AuditoriaTimeline'
 import { formatBRL } from '@/lib/format'
-import { AjustarEstoqueDialog } from '../components/AjustarEstoqueDialog'
-import { useObterProduto } from '../hooks/useObterProduto'
-import { useDesativarProduto } from '../hooks/useDesativarProduto'
+import { AtualizarPrecoDialog } from '../components/AtualizarPrecoDialog'
+import { useObterServico } from '../hooks/useObterServico'
+import { useDesativarServico } from '../hooks/useDesativarServico'
 
-export function ProdutoDetalhePage() {
+export function ServicoDetalhePage() {
   const { id } = useParams<{ id: string }>()
   const numericId = Number(id)
   const navigate = useNavigate()
 
-  const { data: produto, isLoading, isError } = useObterProduto(numericId)
-  const desativar = useDesativarProduto()
+  const { data: servico, isLoading, isError } = useObterServico(numericId)
+  const desativar = useDesativarServico()
   const podeVerAuditoria = useCan('auditoria.ver')
 
   if (isLoading) {
@@ -32,66 +32,67 @@ export function ProdutoDetalhePage() {
     )
   }
 
-  if (isError || !produto) {
+  if (isError || !servico) {
     return (
       <div className="space-y-3">
         <Button asChild variant="outline">
-          <Link to="/produtos">
+          <Link to="/servicos">
             <ArrowLeft className="h-4 w-4" />
             Voltar
           </Link>
         </Button>
-        <p className="text-sm text-destructive">Produto não encontrado.</p>
+        <p className="text-sm text-destructive">Serviço não encontrado.</p>
       </div>
     )
   }
 
-  const isAtivo = produto.ativo ?? true
-  const abaixoMinimo = (produto.quantidadeEstoque ?? 0) < (produto.estoqueMinimo ?? 0)
+  const isAtivo = servico.ativo ?? true
 
   return (
     <div className="space-y-5">
       <PageHeader
-        title={produto.nome ?? '(sem nome)'}
+        title={servico.nome ?? '(sem nome)'}
         description={
           <span className="flex items-center gap-2">
-            <span>Produto #{produto.id}</span>
-            {!isAtivo && <Badge variant="secondary">Inativo</Badge>}
-            {isAtivo && abaixoMinimo && (
-              <Badge variant="destructive">
-                <AlertTriangle className="h-3 w-3" />
-                Abaixo do mínimo
+            <span>Serviço #{servico.id}</span>
+            {servico.ehMaoDeObraPadrao && (
+              <Badge>
+                <Star className="h-3 w-3" />
+                Padrão
               </Badge>
             )}
+            {!isAtivo && <Badge variant="secondary">Inativo</Badge>}
           </span>
         }
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Button asChild variant="outline">
-              <Link to="/produtos">
+              <Link to="/servicos">
                 <ArrowLeft className="h-4 w-4" />
                 Voltar
               </Link>
             </Button>
             {isAtivo && (
-              <AjustarEstoqueDialog
-                produto={{
-                  id: numericId,
-                  nome: produto.nome ?? '',
-                  quantidadeEstoque: produto.quantidadeEstoque ?? 0,
-                }}
-              />
+              <Can permission="servicos.atualizarPreco">
+                <AtualizarPrecoDialog
+                  servico={{
+                    id: servico.id ?? 0,
+                    nome: servico.nome ?? '',
+                    preco: servico.preco ?? 0,
+                  }}
+                />
+              </Can>
             )}
             {isAtivo && (
               <Button asChild>
-                <Link to={`/produtos/${numericId}/editar`}>
+                <Link to={`/servicos/${numericId}/editar`}>
                   <Pencil className="h-4 w-4" />
                   Editar
                 </Link>
               </Button>
             )}
             {isAtivo && (
-              <Can permission="produtos.desativar">
+              <Can permission="servicos.desativar">
                 <ConfirmDialog
                   trigger={
                     <Button variant="destructive">
@@ -99,11 +100,11 @@ export function ProdutoDetalhePage() {
                       Desativar
                     </Button>
                   }
-                  title="Desativar produto?"
+                  title="Desativar serviço?"
                   description={
                     <span>
-                      O produto <strong>{produto.nome}</strong> ficará indisponível para novas
-                      OSs. Itens já adicionados a OSs preservam o snapshot.
+                      O serviço <strong>{servico.nome}</strong> ficará indisponível para novas
+                      OSs. As OSs já abertas mantêm o snapshot do nome e preço.
                     </span>
                   }
                   confirmLabel="Desativar"
@@ -112,8 +113,8 @@ export function ProdutoDetalhePage() {
                   onConfirm={async () => {
                     try {
                       await desativar.mutateAsync(numericId)
-                      toast.success('Produto desativado.')
-                      navigate('/produtos')
+                      toast.success('Serviço desativado.')
+                      navigate('/servicos')
                     } catch (err) {
                       const apiErr = err as { message?: string }
                       toast.error(apiErr.message ?? 'Não foi possível desativar.')
@@ -128,40 +129,34 @@ export function ProdutoDetalhePage() {
 
       <dl className="grid grid-cols-1 gap-x-8 gap-y-4 rounded-md border bg-card p-6 sm:grid-cols-2">
         <div>
-          <dt className="text-sm text-muted-foreground">Referência</dt>
-          <dd className="text-base">{produto.referencia ?? '—'}</dd>
+          <dt className="text-sm text-muted-foreground">Nome</dt>
+          <dd className="text-base">{servico.nome ?? '—'}</dd>
         </div>
         <div>
-          <dt className="text-sm text-muted-foreground">Estoque atual</dt>
-          <dd className={`text-base tabular-nums ${abaixoMinimo ? 'text-destructive font-medium' : ''}`}>
-            {produto.quantidadeEstoque} <span className="text-muted-foreground">unidades</span>
-          </dd>
+          <dt className="text-sm text-muted-foreground">Preço</dt>
+          <dd className="text-base tabular-nums">{formatBRL(servico.preco ?? 0)}</dd>
+        </div>
+        <div className="sm:col-span-2">
+          <dt className="text-sm text-muted-foreground">Descrição</dt>
+          <dd className="text-base whitespace-pre-line">{servico.descricao ?? '—'}</dd>
         </div>
         <div>
-          <dt className="text-sm text-muted-foreground">Estoque mínimo</dt>
-          <dd className="text-base tabular-nums">{produto.estoqueMinimo}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-muted-foreground">Preço de custo</dt>
-          <dd className="text-base tabular-nums">{formatBRL(produto.precoCusto ?? 0)}</dd>
-        </div>
-        <div>
-          <dt className="text-sm text-muted-foreground">Preço de venda</dt>
-          <dd className="text-base tabular-nums">{formatBRL(produto.precoVenda ?? 0)}</dd>
+          <dt className="text-sm text-muted-foreground">Mão de obra padrão</dt>
+          <dd className="text-base">{servico.ehMaoDeObraPadrao ? 'Sim' : 'Não'}</dd>
         </div>
       </dl>
 
       <AuditoriaInfo
-        criadoEm={produto.criadoEm}
-        criadoPorUsuarioNome={produto.criadoPorUsuarioNome}
-        atualizadoEm={produto.atualizadoEm}
-        atualizadoPorUsuarioNome={produto.atualizadoPorUsuarioNome}
+        criadoEm={servico.criadoEm}
+        criadoPorUsuarioNome={servico.criadoPorUsuarioNome}
+        atualizadoEm={servico.atualizadoEm}
+        atualizadoPorUsuarioNome={servico.atualizadoPorUsuarioNome}
       />
 
       {podeVerAuditoria && (
         <section className="space-y-3">
           <h3 className="text-sm font-medium">Histórico de alterações</h3>
-          <AuditoriaTimeline tipoEntidade="Produto" entidadeId={numericId} />
+          <AuditoriaTimeline tipoEntidade="CatalogoServico" entidadeId={numericId} />
         </section>
       )}
     </div>

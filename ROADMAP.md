@@ -299,15 +299,16 @@ Admin para criar/editar/desativar operadores sem precisar ir ao banco.
 - ☐ Item "Usuários" no UserMenu (não Sidebar — admin-side)
 - ☐ Testes: schema (zod), gating, mutation otimista
 
-### Telas de detalhe Produto e Serviço ☐
+### Telas de detalhe Produto e Serviço ☑
 
 Hoje criar/editar funcionam via dialog na própria lista. Falta rota
 dedicada `/produtos/:id` e `/servicos/:id` com auditoria visível.
 
-- ☐ `ProdutoDetalhePage` (`/produtos/:id`): dados + `<AuditoriaInfo>` + `<AuditoriaTimeline>`
-- ☐ `ServicoDetalhePage` (`/servicos/:id`): dados + `<AuditoriaInfo>` + `<AuditoriaTimeline>`
-- ☐ Linha da listagem vira clicável (já é padrão em outras features)
-- ☐ Botões "Editar" e "Desativar" movidos da listagem para a tela de detalhe
+- ☑ `ProdutoDetalhePage` (`/produtos/:id`): dados + `<AuditoriaInfo>` + `<AuditoriaTimeline>`
+- ☑ `ServicoDetalhePage` (`/servicos/:id`): dados + `<AuditoriaInfo>` + `<AuditoriaTimeline>`
+- ☑ Linha da listagem vira clicável (já é padrão em outras features)
+- ☑ Botões "Editar" e "Desativar" movidos da listagem para a tela de detalhe
+- ☑ Serviço padronizado em 3 rotas dedicadas (novo, detalhe, editar), espelhando Cliente e Produto
 
 ### Dashboard real ☐
 

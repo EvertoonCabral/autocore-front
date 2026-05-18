@@ -7,6 +7,7 @@ import type { CatalogoServicoDto } from '@/api/types'
 export const servicosKeys = {
   all: ['servicos'] as const,
   list: (incluirInativos: boolean) => ['servicos', 'list', { incluirInativos }] as const,
+  detail: (id: number) => ['servicos', 'detail', id] as const,
 }
 
 export function useListarServicos(incluirInativos = false) {
