@@ -324,6 +324,7 @@ Hoje a `/` é placeholder "Bem-vindo, {nome}". Vamos popular com indicadores.
 - ☑ `<PendenciasAntigasCard>` (5 itens, badge "Vencida", saldo em vermelho)
 - ☑ Acessível a todos os autenticados (Admin e Operador)
 - ☑ Testes: handler back (8 casos com EF InMemory) + helpers/components front (22)
+- ☑ Gráficos: faturamento mensal (1/3/6/12), formas de pagamento, status OSs em aberto + ícones lucide nos KPI cards (recharts + chart shadcn)
 
 ### Plug-ins menores ☐
 

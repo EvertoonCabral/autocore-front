@@ -1149,6 +1149,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/dashboard/faturamento": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    meses?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["MesFaturamentoDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["MesFaturamentoDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["MesFaturamentoDtoIReadOnlyListApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ordens": {
         parameters: {
             query?: never;
@@ -2842,11 +2892,32 @@ export interface components {
             pendencias?: components["schemas"]["DashboardPendenciasDto"];
             estoque?: components["schemas"]["DashboardEstoqueDto"];
             faturamento?: components["schemas"]["DashboardFaturamentoDto"];
+            distribuicoes?: components["schemas"]["DistribuicoesDashboardDto"];
             ultimasOrdens?: components["schemas"]["OrdemServicoResumoDto"][] | null;
             pendenciasMaisAntigas?: components["schemas"]["OrdemPendenteDto"][] | null;
         };
         DashboardResumoDtoApiResponse: {
             dados?: components["schemas"]["DashboardResumoDto"];
+        };
+        DistribuicaoFormaPagamentoDto: {
+            /** Format: int32 */
+            forma?: number;
+            formaLabel?: string | null;
+            /** Format: double */
+            valor?: number;
+            /** Format: int32 */
+            quantidade?: number;
+        };
+        DistribuicaoStatusOsDto: {
+            /** Format: int32 */
+            status?: number;
+            statusLabel?: string | null;
+            /** Format: int32 */
+            quantidade?: number;
+        };
+        DistribuicoesDashboardDto: {
+            pagamentosMes?: components["schemas"]["DistribuicaoFormaPagamentoDto"][] | null;
+            statusOsAbertas?: components["schemas"]["DistribuicaoStatusOsDto"][] | null;
         };
         /**
          * Format: int32
@@ -2918,6 +2989,18 @@ export interface components {
         };
         LoginResultDtoApiResponse: {
             dados?: components["schemas"]["LoginResultDto"];
+        };
+        MesFaturamentoDto: {
+            /** Format: int32 */
+            mes?: number;
+            /** Format: int32 */
+            ano?: number;
+            mesLabel?: string | null;
+            /** Format: double */
+            total?: number;
+        };
+        MesFaturamentoDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["MesFaturamentoDto"][] | null;
         };
         OrdemPendenteDto: {
             /** Format: int64 */

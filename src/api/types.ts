@@ -31,6 +31,10 @@ export type DashboardContagensOsDto = components['schemas']['DashboardContagensO
 export type DashboardPendenciasDto  = components['schemas']['DashboardPendenciasDto']
 export type DashboardEstoqueDto     = components['schemas']['DashboardEstoqueDto']
 export type DashboardFaturamentoDto = components['schemas']['DashboardFaturamentoDto']
+export type DistribuicoesDashboardDto       = components['schemas']['DistribuicoesDashboardDto']
+export type DistribuicaoFormaPagamentoDto   = components['schemas']['DistribuicaoFormaPagamentoDto']
+export type DistribuicaoStatusOsDto         = components['schemas']['DistribuicaoStatusOsDto']
+export type MesFaturamentoDto               = components['schemas']['MesFaturamentoDto']
 
 // ─── Envelopes ─────────────────────────────────────────────────────────────
 /** `{ dados: T }` — envelope padrão de item único. */

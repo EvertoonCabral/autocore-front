@@ -1,6 +1,17 @@
+import {
+  AlertTriangle,
+  ClipboardList,
+  PackageOpen,
+  PackageX,
+  TrendingUp,
+  Wrench,
+} from 'lucide-react'
 import { useAuth } from '@/features/auth/auth-context'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { formatBRL } from '@/lib/format'
+import { DistribuicaoPagamentosChart } from '../components/DistribuicaoPagamentosChart'
+import { DistribuicaoStatusChart } from '../components/DistribuicaoStatusChart'
+import { FaturamentoChart } from '../components/FaturamentoChart'
 import { KpiCard } from '../components/KpiCard'
 import { PendenciasAntigasCard } from '../components/PendenciasAntigasCard'
 import { UltimasOrdensCard } from '../components/UltimasOrdensCard'
@@ -19,7 +30,7 @@ export function DashboardPage() {
     <div className="space-y-6">
       <PageHeader
         title={`Bem-vindo${user?.nomeCompleto ? ', ' + user.nomeCompleto : ''}`}
-        description="Panorama da oficina em tempo real."
+        description="Panorama da empresa em tempo real."
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
@@ -28,55 +39,65 @@ export function DashboardPage() {
           value={data?.contagensOs?.abertas}
           variant="info"
           loading={isLoading}
+          icon={<ClipboardList className="h-5 w-5" />}
         />
         <KpiCard
           title="Em andamento"
           value={data?.contagensOs?.emAndamento}
           variant="warning"
           loading={isLoading}
+          icon={<Wrench className="h-5 w-5" />}
         />
         <KpiCard
           title="Aguardando produto"
           value={data?.contagensOs?.aguardandoProduto}
           variant="warning"
           loading={isLoading}
+          icon={<PackageOpen className="h-5 w-5" />}
         />
         <KpiCard
           title="Pendências vencidas"
           value={data?.pendencias?.vencidasCount}
-          sub={
-            data?.pendencias
-              ? formatBRL(data.pendencias.vencidasValorTotal)
-              : undefined
-          }
+          sub={data?.pendencias ? formatBRL(data.pendencias.vencidasValorTotal) : undefined}
           variant="destructive"
           loading={isLoading}
+          icon={<AlertTriangle className="h-5 w-5" />}
         />
         <KpiCard
           title="Estoque crítico"
           sub="Produtos abaixo do mínimo"
           value={data?.estoque?.produtosAbaixoMinimo}
           variant={
-            data && (data.estoque?.produtosAbaixoMinimo ?? 0) > 0
-              ? 'destructive'
-              : 'success'
+            data && (data.estoque?.produtosAbaixoMinimo ?? 0) > 0 ? 'destructive' : 'success'
           }
           loading={isLoading}
+          icon={<PackageX className="h-5 w-5" />}
         />
         <KpiCard
           title={tituloMes}
           value={data?.faturamento ? formatBRL(data.faturamento.total) : undefined}
           variant="success"
           loading={isLoading}
+          icon={<TrendingUp className="h-5 w-5" />}
+        />
+      </div>
+
+      <FaturamentoChart />
+
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <DistribuicaoPagamentosChart
+          pagamentos={data?.distribuicoes?.pagamentosMes ?? []}
+          loading={isLoading}
+        />
+        <DistribuicaoStatusChart
+          statusOsAbertas={data?.distribuicoes?.statusOsAbertas ?? []}
+          loading={isLoading}
         />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <UltimasOrdensCard ordens={data?.ultimasOrdens ?? []} loading={isLoading} />
-        <PendenciasAntigasCard
-          pendencias={data?.pendenciasMaisAntigas ?? []}
-          loading={isLoading}
-        />
+        <PendenciasAntigasCard pendencias={data?.pendenciasMaisAntigas ?? []} loading={isLoading} />
       </div>
 
       {isError ? (

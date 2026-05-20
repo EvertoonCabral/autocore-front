@@ -30,4 +30,17 @@ describe('<KpiCard>', () => {
     renderWithProviders(<KpiCard title="Vazio" />, { withAuth: false })
     expect(screen.getByText('-')).toBeInTheDocument()
   })
+
+  it('renderiza ícone opcional no header', () => {
+    renderWithProviders(
+      <KpiCard
+        title="Com ícone"
+        value={1}
+        icon={<svg data-testid="kpi-icon" aria-hidden="true" />}
+      />,
+      { withAuth: false },
+    )
+
+    expect(screen.getByTestId('kpi-icon')).toBeInTheDocument()
+  })
 })

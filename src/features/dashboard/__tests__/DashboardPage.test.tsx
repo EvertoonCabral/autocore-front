@@ -43,6 +43,9 @@ function mockResumo(resumo: DashboardResumoMock) {
     http.get(`${API}/api/dashboard/resumo`, () =>
       HttpResponse.json({ dados: resumo }),
     ),
+    http.get(`${API}/api/dashboard/faturamento`, () =>
+      HttpResponse.json({ dados: [] }),
+    ),
   )
 }
 
@@ -50,6 +53,9 @@ function mockResumoError() {
   server.use(
     http.get(`${API}/api/dashboard/resumo`, () =>
       HttpResponse.json({ erro: 'Falha' }, { status: 500 }),
+    ),
+    http.get(`${API}/api/dashboard/faturamento`, () =>
+      HttpResponse.json({ dados: [] }),
     ),
   )
 }
@@ -110,6 +116,9 @@ describe('<DashboardPage>', () => {
         await new Promise(() => {})
         return HttpResponse.json({ dados: resumoCompleto })
       }),
+      http.get(`${API}/api/dashboard/faturamento`, () =>
+        HttpResponse.json({ dados: [] }),
+      ),
     )
 
     const { container } = renderWithProviders(<DashboardPage />)
@@ -167,6 +176,29 @@ describe('<DashboardPage>', () => {
         screen.getByText(/não foi possível carregar o painel/i),
       ).toBeInTheDocument(),
     )
+  })
+
+  it('renderiza os 3 novos componentes de gráfico no DOM', async () => {
+    mockResumo({
+      ...resumoCompleto,
+      // adiciona distribuicoes via spread — campo opcional do back
+    } as DashboardResumoMock & {
+      distribuicoes: {
+        pagamentosMes: Array<{ forma: number; formaLabel: string; valor: number; quantidade: number }>
+        statusOsAbertas: Array<{ status: number; statusLabel: string; quantidade: number }>
+      }
+    })
+
+    renderWithProviders(<DashboardPage />)
+
+    // Faturamento (header)
+    await waitFor(() =>
+      expect(screen.getByText(/^Faturamento$/i)).toBeInTheDocument(),
+    )
+    // Donut de formas de pagamento
+    expect(screen.getByText(/formas de pagamento/i)).toBeInTheDocument()
+    // Donut de status
+    expect(screen.getByText(/status das oss em aberto/i)).toBeInTheDocument()
   })
 
   it('mostra estado vazio em listas quando arrays vazios', async () => {
