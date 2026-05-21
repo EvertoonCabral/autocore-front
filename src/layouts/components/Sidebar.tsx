@@ -8,11 +8,11 @@ import {
   Package,
   Settings2,
   Users,
-  Wrench,
   type LucideIcon,
 } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { useCan } from '@/shared/components/Can'
+import { MarcaEmpresa } from '@/shared/components/MarcaEmpresa'
 import type { Permission } from '@/shared/guards/permissions'
 
 interface NavItem {
@@ -44,11 +44,8 @@ const items: NavItem[] = [
 export function Sidebar() {
   return (
     <aside className="hidden w-60 shrink-0 border-r bg-card md:flex md:flex-col">
-      <div className="flex h-16 items-center gap-2 border-b px-6">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
-          <Wrench className="h-4 w-4" />
-        </div>
-        <span className="text-lg font-semibold">AutoCore</span>
+      <div className="flex h-16 items-center border-b px-6">
+        <MarcaEmpresa size="sm" fallback="icon-square" />
       </div>
       <nav className="flex-1 space-y-1 p-3" aria-label="Menu principal">
         {items.map((item) => (
