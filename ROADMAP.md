@@ -435,7 +435,47 @@ A timeline atual mostra mudanças de status. Pode ficar mais rica:
 - ☐ Service Worker + manifest para instalável
 - ☐ Layout responsivo testado em iPhone/Android (atendente no balcão)
 - ☐ Modo offline para consultas (último cache válido)
-- ☐ Câmera para anexar fotos do veículo na OS (futuro — exige bucket S3)
+- ☐ Câmera para anexar fotos do veículo na OS (depende de "Storage externo" abaixo)
+
+### Storage externo para arquivos ☐
+
+Hoje a logo da empresa fica em `configuracao_empresa.logo_conteudo`
+(bytea no Postgres) — funcional para uma imagem pequena, mas não escala
+para múltiplos uploads por OS, galerias de produtos, anexos de documentos.
+Quando o volume de imagens crescer, migrar para storage externo.
+
+**Disparadores para fazer essa migração:**
+- Anexar **fotos do veículo** na OS (entrada, durante o serviço, conclusão)
+- **Avatar** no cadastro de usuário (operadores e clientes)
+- **Galeria de produtos** com foto do item
+- **Documentos anexos** (orçamento assinado em PDF, comprovante de pagamento,
+  NFe emitida)
+
+**Mudanças necessárias:**
+
+- ☐ Escolher provedor:
+  - **AWS S3** (padrão; integra com a opção 7 do roadmap, ALB/CloudFront)
+  - **MinIO self-hosted** (S3-compatible, sem dependência de cloud)
+  - **Cloudflare R2** (S3-compatible, sem egress fee — atrativo para imagens)
+- ☐ Abstração `IArmazenamentoArquivos` no back (Application) com
+  implementações `S3ArmazenamentoArquivos` / `MinioArmazenamentoArquivos` —
+  controlador via configuração
+- ☐ Endpoints retornam **URLs presigned** (curtas, com expiração) para o
+  front renderizar `<img>` direto do bucket — sem proxy via API
+- ☐ Migrar logo da empresa para o bucket; manter `logo_conteudo` (bytea)
+  como fallback durante transição; depois drop da coluna
+- ☐ Novo módulo "Anexos de OS" — entidade `AnexoOrdemServico` com
+  `OrdemServicoId`, `Categoria` (entrada/durante/conclusão/documento),
+  `NomeOriginal`, `ChaveBucket`, `TamanhoBytes`, auditoria
+- ☐ Limites por OS (ex.: max 20 anexos, max 5MB cada — configurável)
+- ☐ Antivirus scan opcional via Lambda/triggers do S3
+- ☐ Política de retenção: anexos de OS canceladas + 30 dias → apagar
+- ☐ Front: componente `<UploadArquivo>` reutilizável com drag-n-drop,
+  preview, validações client-side; `<GaleriaArquivos>` com lightbox
+
+**Trade-off "fazer junto ou separar":**
+- Se a migração para AWS (Fase 7) já trouxer S3, faz sentido fazer junto.
+- Se ficar em VPS dedicada, MinIO no mesmo host é mais barato e suficiente.
 
 ### Multi-tenant ☐ (eventual)
 
