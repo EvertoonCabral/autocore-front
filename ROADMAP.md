@@ -331,6 +331,7 @@ Hoje a `/` é placeholder "Bem-vindo, {nome}". Vamos popular com indicadores.
 - ☐ `<AuditoriaInfo>` na tela de Configuração (mostrar quem alterou cada chave)
 - ☐ `<AuditoriaTimeline>` em `ConfiguracoesPage` (timeline das mudanças)
 - ☐ Aviso visual em OS Concluída há mais de N dias sem pagamento (badge "Atrasada >30d")
+- ☑ Configuração de empresa: nome + logo com upload (PNG/JPG/WebP, max 2MB), preview, remoção, exibição no header global com cache ETag
 
 **Definição de pronto da Fase 6:** ☐ admin não precisa mais tocar no banco
 para operações cotidianas; dashboard mostra estado real do negócio; todas as

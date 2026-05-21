@@ -1112,6 +1112,195 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/configuracoes/empresa": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ConfiguracaoEmpresaDtoApiResponse"];
+                        "application/json": components["schemas"]["ConfiguracaoEmpresaDtoApiResponse"];
+                        "text/json": components["schemas"]["ConfiguracaoEmpresaDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarConfiguracaoEmpresaDto"];
+                    "text/json": components["schemas"]["AtualizarConfiguracaoEmpresaDto"];
+                    "application/*+json": components["schemas"]["AtualizarConfiguracaoEmpresaDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/configuracoes/empresa/logo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Modified */
+                304: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProblemDetails"];
+                        "application/json": components["schemas"]["ProblemDetails"];
+                        "text/json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "multipart/form-data": {
+                        /** Format: binary */
+                        arquivo?: string;
+                    };
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["LogoAtualizadoDtoApiResponse"];
+                        "application/json": components["schemas"]["LogoAtualizadoDtoApiResponse"];
+                        "text/json": components["schemas"]["LogoAtualizadoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/dashboard/resumo": {
         parameters: {
             query?: never;
@@ -2649,6 +2838,9 @@ export interface components {
             instancia?: string | null;
             usarStub?: boolean;
         };
+        AtualizarConfiguracaoEmpresaDto: {
+            nomeEmpresa?: string | null;
+        };
         AtualizarOrdemServicoCommand: {
             /** Format: int64 */
             id?: number;
@@ -2821,6 +3013,21 @@ export interface components {
         ConfiguracaoDtoListApiResponse: {
             dados?: components["schemas"]["ConfiguracaoDto"][] | null;
         };
+        ConfiguracaoEmpresaDto: {
+            nomeEmpresa?: string | null;
+            logoHash?: string | null;
+            logoMimeType?: string | null;
+            /** Format: date-time */
+            logoAtualizadoEm?: string | null;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
+        };
+        ConfiguracaoEmpresaDtoApiResponse: {
+            dados?: components["schemas"]["ConfiguracaoEmpresaDto"];
+        };
         CriadoDto: {
             /** Format: int64 */
             id?: number;
@@ -2990,6 +3197,12 @@ export interface components {
         LoginResultDtoApiResponse: {
             dados?: components["schemas"]["LoginResultDto"];
         };
+        LogoAtualizadoDto: {
+            logoHash?: string | null;
+        };
+        LogoAtualizadoDtoApiResponse: {
+            dados?: components["schemas"]["LogoAtualizadoDto"];
+        };
         MesFaturamentoDto: {
             /** Format: int32 */
             mes?: number;
@@ -3119,6 +3332,16 @@ export interface components {
         };
         PagamentoDtoListApiResponse: {
             dados?: components["schemas"]["PagamentoDto"][] | null;
+        };
+        ProblemDetails: {
+            type?: string | null;
+            title?: string | null;
+            /** Format: int32 */
+            status?: number | null;
+            detail?: string | null;
+            instance?: string | null;
+        } & {
+            [key: string]: unknown;
         };
         ProdutoDto: {
             /** Format: int64 */
