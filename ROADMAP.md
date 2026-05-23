@@ -44,7 +44,16 @@ Login + layout autenticado + guarda de rota + tratamento global de 401.
   aliases sobre `components['schemas']`.
 - ☑ Adicionar headers de segurança em produção (Fase 7.3): CSP estrita no
   nginx do front + `SecurityHeadersMiddleware` no back. Detalhes na Fase 7.
-- ☑ Configurar GitHub Actions: `npm ci && npm run lint && npm run typecheck && npm test && npm run build` em PR. Workflows em `.github/workflows/ci.yml` nos dois repos; back roda `dotnet restore && build (Release, warnings-as-errors) && test`. Cache de NuGet/npm via hash do lock; concurrency cancela runs antigos. Badges no README.
+- ☑ Configurar GitHub Actions. Workflows em `.github/workflows/ci.yml` nos
+  dois repos, estruturados em **2 jobs sequenciais** para feedback granular
+  e fail-fast:
+  - **Front**: `static-checks` (typecheck + lint, ~50s) → `test-and-build`
+    (test + build, ~2min). 2º job só roda se 1º passar.
+  - **Back**: `build` (restore + build com `-warnaserror`, ~1min) → `test`
+    (testes, ~2min). 2º job só roda se 1º passar.
+  - Cache de NuGet/npm via hash do lock compartilhado entre jobs;
+    `concurrency` cancela runs antigos; setup-dotnet via `global.json` e
+    setup-node via `.nvmrc`. Badges no README.
 
 ---
 

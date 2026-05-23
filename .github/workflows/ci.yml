@@ -12,11 +12,21 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Estrutura em 2 jobs:
+#   1. static-checks: typecheck + lint (rápido, ~50s) — falha cedo se erro
+#      de tipo ou estilo. Bloqueia o próximo job.
+#   2. test-and-build: test + build (~2min). Só roda se checks estáticos
+#      passarem — evita gastar minutos de Actions em código que nem compila.
+#
+# Cada job recheckout/setup independentes, mas o cache do npm (via
+# setup-node) é compartilhado entre eles — npm ci no 2º job acerta cache
+# e leva ~10s em vez de ~40s.
+
 jobs:
-  validate:
-    name: Lint + typecheck + test + build
+  static-checks:
+    name: Typecheck + lint
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 5
 
     steps:
       - name: Checkout
@@ -25,24 +35,36 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          # .nvmrc fixa em 20 — Node 20 LTS (Iron)
           node-version-file: .nvmrc
-          # actions/setup-node já faz cache do npm quando há package-lock.json
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
-
-      # api:types depende do openapi.json do repo do back (path relativo).
-      # Em CI o back não está montado, mas src/api/schema.d.ts é commitado —
-      # então pulamos a regeneração aqui. typecheck garante que o schema
-      # commitado está consistente com o código.
 
       - name: Typecheck
         run: npm run typecheck
 
       - name: Lint
         run: npm run lint
+
+  test-and-build:
+    name: Test + build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: static-checks # só roda se typecheck + lint passaram
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Test
         # package.json já tem "test": "vitest run" — não precisa de --run extra
