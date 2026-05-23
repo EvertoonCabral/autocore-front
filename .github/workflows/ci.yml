@@ -53,6 +53,16 @@ jobs:
     timeout-minutes: 10
     needs: static-checks # só roda se typecheck + lint passaram
 
+    # src/lib/env.ts faz parse zod das envs no momento do import (chamado
+    # pelo api/client.ts → consumido por hooks de feature). Sem essa env,
+    # qualquer teste/build que carregue o api/client crasha com:
+    #   "VITE_API_BASE_URL não está definida ou é inválida"
+    # Em dev local, vem do .env (gitignored). Em CI, é placeholder — o
+    # Vite só substitui literais no bundle; testes mockam via MSW e não
+    # batem nessa URL.
+    env:
+      VITE_API_BASE_URL: http://localhost:5206
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
