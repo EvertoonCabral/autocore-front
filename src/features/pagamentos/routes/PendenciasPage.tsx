@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom'
-import { AlertCircle } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { Pagination } from '@/shared/components/Pagination'
 import { DataTable, type ColumnDef } from '@/shared/components/DataTable'
 import { EmptyState } from '@/shared/components/EmptyState'
+import { BadgeVencimento } from '@/shared/components/BadgeVencimento'
 import { usePagedQuery } from '@/shared/hooks/usePagedQuery'
-import { formatBRL, formatData, formatTelefone } from '@/lib/format'
+import { formatBRL, formatTelefone } from '@/lib/format'
 import type { OrdemPendenteDto } from '@/api/types'
 import { useListarPendencias } from '../hooks/useListarPendencias'
 import { CobrarOrdemButton } from '@/features/cobrancas/components/CobrarOrdemButton'
@@ -49,15 +48,10 @@ export function PendenciasPage() {
       header: 'Vencimento',
       className: 'w-32',
       cell: (p) => (
-        <div className="flex flex-col">
-          <span className="tabular-nums">{formatData(p.dataVencimentoPagamento)}</span>
-          {p.vencida && (
-            <Badge variant="destructive" className="mt-1 self-start text-xs">
-              <AlertCircle className="h-3 w-3" />
-              Vencida
-            </Badge>
-          )}
-        </div>
+        <BadgeVencimento
+          dataVencimento={p.dataVencimentoPagamento}
+          vencida={p.vencida ?? false}
+        />
       ),
     },
     {

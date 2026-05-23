@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Save } from 'lucide-react'
@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
+import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
 import {
   CONFIG_KEYS,
   configuracoesFormSchema,
@@ -49,6 +50,25 @@ export function ConfiguracoesGeralForm() {
   }, [configuracoes, reset])
 
   const mensagemAtual = watch('mensagemCobranca') ?? ''
+
+  // Auditoria consolidada — pega a entrada mais recente entre todas as chaves
+  // visíveis nesta aba (cada Configuracao é uma entidade separada no back com
+  // sua própria auditoria; aqui mostramos só a última alteração).
+  const auditoriaMaisRecente = useMemo(() => {
+    if (!configuracoes || configuracoes.length === 0) return null
+    const chavesVisiveis = new Set<string>([
+      CONFIG_KEYS.DiasParaCobranca,
+      CONFIG_KEYS.MensagemCobranca,
+      CONFIG_KEYS.PrecosAtualizadosEm,
+    ])
+    const candidatas = configuracoes.filter((c) => c.chave && chavesVisiveis.has(c.chave))
+    if (candidatas.length === 0) return null
+    return candidatas.reduce((acc, c) => {
+      const accTs = acc.atualizadoEm ?? acc.criadoEm ?? ''
+      const cTs = c.atualizadoEm ?? c.criadoEm ?? ''
+      return cTs > accTs ? c : acc
+    })
+  }, [configuracoes])
 
   async function onSubmit(values: ConfiguracoesFormValues) {
     const ops: Array<Promise<unknown>> = []
@@ -182,6 +202,16 @@ export function ConfiguracoesGeralForm() {
           Salvar alterações
         </Button>
       </div>
+
+      {auditoriaMaisRecente && (
+        <AuditoriaInfo
+          criadoEm={auditoriaMaisRecente.criadoEm}
+          criadoPorUsuarioNome={auditoriaMaisRecente.criadoPorUsuarioNome}
+          atualizadoEm={auditoriaMaisRecente.atualizadoEm}
+          atualizadoPorUsuarioNome={auditoriaMaisRecente.atualizadoPorUsuarioNome}
+          className="pt-4 border-t"
+        />
+      )}
     </form>
   )
 }

@@ -1,5 +1,6 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import {
+  diasDesde,
   formatCnpj,
   formatCpf,
   formatCpfCnpj,
@@ -89,5 +90,44 @@ describe('onlyDigits', () => {
     expect(onlyDigits('(44) 99999-0000')).toBe('44999990000')
     expect(onlyDigits('123.456.789-01')).toBe('12345678901')
     expect(onlyDigits('12.345.678/9012-34')).toBe('12345678901234')
+  })
+})
+
+describe('diasDesde', () => {
+  // Congela "hoje" para 2026-06-15 UTC — testes determinísticos
+  beforeEach(() => {
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date('2026-06-15T12:00:00Z'))
+  })
+  afterEach(() => vi.useRealTimers())
+
+  it('retorna null quando data é vazia ou inválida', () => {
+    expect(diasDesde(null)).toBeNull()
+    expect(diasDesde(undefined)).toBeNull()
+    expect(diasDesde('')).toBeNull()
+    expect(diasDesde('texto-invalido')).toBeNull()
+  })
+
+  it('retorna 0 quando data é hoje', () => {
+    expect(diasDesde('2026-06-15T00:00:00Z')).toBe(0)
+    expect(diasDesde('2026-06-15T23:59:59Z')).toBe(0)
+  })
+
+  it('retorna positivo quando data já passou', () => {
+    expect(diasDesde('2026-06-14T00:00:00Z')).toBe(1)
+    expect(diasDesde('2026-06-01T00:00:00Z')).toBe(14)
+    expect(diasDesde('2026-05-16T00:00:00Z')).toBe(30)
+    expect(diasDesde('2026-05-15T00:00:00Z')).toBe(31)
+  })
+
+  it('retorna negativo quando data é futura', () => {
+    expect(diasDesde('2026-06-16T00:00:00Z')).toBe(-1)
+    expect(diasDesde('2026-07-15T00:00:00Z')).toBe(-30)
+  })
+
+  it('ignora hora do dia — compara em UTC truncado', () => {
+    // mesmo dia, horas diferentes → 0
+    expect(diasDesde('2026-06-15T03:00:00Z')).toBe(0)
+    expect(diasDesde('2026-06-15T22:00:00Z')).toBe(0)
   })
 })

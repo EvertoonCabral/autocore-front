@@ -106,3 +106,26 @@ export function formatData(iso: string | null | undefined): string {
 export function onlyDigits(value: string | null | undefined): string {
   return (value ?? '').replace(/\D/g, '')
 }
+
+/**
+ * Quantos dias se passaram desde `iso` até hoje (UTC). Retorna número
+ * positivo se a data já passou (atraso), 0 se é hoje, negativo se futura.
+ * Retorna `null` se a data for inválida ou ausente.
+ *
+ * Útil para badges de aging (ex.: "Atrasada >30d" em pendências).
+ */
+export function diasDesde(iso: string | null | undefined): number | null {
+  if (!iso) return null
+  try {
+    const data = parseISO(iso)
+    if (isNaN(data.getTime())) return null
+    const hoje = new Date()
+    // Compara em UTC truncado para dia (evita variação por hora do dia)
+    const msPorDia = 24 * 60 * 60 * 1000
+    const dataUtc = Date.UTC(data.getUTCFullYear(), data.getUTCMonth(), data.getUTCDate())
+    const hojeUtc = Date.UTC(hoje.getUTCFullYear(), hoje.getUTCMonth(), hoje.getUTCDate())
+    return Math.floor((hojeUtc - dataUtc) / msPorDia)
+  } catch {
+    return null
+  }
+}
