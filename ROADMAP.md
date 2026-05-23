@@ -42,8 +42,8 @@ Login + layout autenticado + guarda de rota + tratamento global de 401.
   do back e introduzir `ApiResponse<T>` concreto + reuso do `ResultadoPaginadoDto<T>`.
   `openapi.json` agora tipa os response bodies; `src/api/types.ts` virou apenas
   aliases sobre `components['schemas']`.
-- ☐ Adicionar headers de segurança em produção (CSP estrita, `X-Frame-Options`,
-  `Referrer-Policy`). Não afeta dev local.
+- ☑ Adicionar headers de segurança em produção (Fase 7.3): CSP estrita no
+  nginx do front + `SecurityHeadersMiddleware` no back. Detalhes na Fase 7.
 - ☑ Configurar GitHub Actions: `npm ci && npm run lint && npm run typecheck && npm test && npm run build` em PR. Workflows em `.github/workflows/ci.yml` nos dois repos; back roda `dotnet restore && build (Release, warnings-as-errors) && test`. Cache de NuGet/npm via hash do lock; concurrency cancela runs antigos. Badges no README.
 
 ---
@@ -361,10 +361,26 @@ em AWS. Pré-requisito para qualquer uso real.
 - ☑ `docker-compose.yml` no back orquestra postgres + back + front; volumes persistentes nomeados (postgres_data, dataprotection_keys, back_logs); healthcheck do postgres antes do back subir
 - ☑ Documentação em `docs/DEPLOY.md` (back) cobrindo uso, variáveis de ambiente, backup dos volumes, comandos úteis
 
-### Headers de segurança ☐
+### Headers de segurança ☑
 
-- ☐ CSP estrita (`default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; ...`)
-- ☐ Validar via [securityheaders.com](https://securityheaders.com) — target A+
+- ☑ CSP estrita no `nginx.conf` (`default-src 'self'`, `script-src 'self'`,
+  `style-src 'self' 'unsafe-inline'` — necessário para Radix/Recharts —,
+  `img-src 'self' data: blob:`, `frame-ancestors 'none'`, `base-uri 'self'`,
+  `form-action 'self'`, `object-src 'none'`, `upgrade-insecure-requests`)
+- ☑ `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
+  `Referrer-Policy: strict-origin-when-cross-origin`
+- ☑ `Permissions-Policy` desligando câmera/mic/geo/etc. (até a Fase 8.5
+  habilitar `camera` para fotos de OS)
+- ☑ Cross-Origin policies (`COOP same-origin`, `CORP same-site`) — defesa
+  contra Spectre
+- ☑ Back: `SecurityHeadersMiddleware` adiciona headers em todas responses
+  da API. CSP `default-src 'none'` (API só serve JSON). HSTS só em
+  ambientes não-Development. Aplicado antes do `ExceptionMiddleware` no pipeline
+- ☑ HSTS deixado **comentado** no nginx por segurança — descomentar apenas
+  quando o domínio servir 100% via HTTPS (header errado tranca o domínio
+  por 2 anos no browser)
+- ☐ Validar via [securityheaders.com](https://securityheaders.com) após o
+  primeiro deploy em domínio HTTPS — target A+
 
 ### AWS ☐
 
