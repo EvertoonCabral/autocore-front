@@ -1,0 +1,39 @@
+# Build artifacts
+node_modules/
+dist/
+build/
+coverage/
+.vite/
+
+# IDE & ferramentas
+.vscode/
+.idea/
+
+# Repo metadata
+.git/
+.github/
+.claude/
+.gitignore
+.gitattributes
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Logs
+*.log
+npm-debug.log*
+
+# Docs (não vão pra imagem do site)
+*.md
+ROADMAP.md
+CLAUDE.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testes
+src/test/
+**/__tests__/
+**/*.test.*
+**/*.spec.*

@@ -353,14 +353,13 @@ em AWS. Pré-requisito para qualquer uso real.
 - ☐ Build de produção do front pushed para ECR (ou destino escolhido)
 - ☐ Build do back pushed para ECR
 
-### Containerização ☐
+### Containerização ☑
 
-- ☐ `Dockerfile` multi-stage do front: stage Node para `npm run build`, stage nginx para servir `/dist`
-- ☐ `Dockerfile` do back: stage SDK para `dotnet publish`, stage runtime aspnet
-- ☐ `nginx.conf` com `try_files $uri $uri/ /index.html` (SPA fallback) +
-      headers de segurança (CSP, X-Frame-Options, Referrer-Policy,
-      Permissions-Policy, Strict-Transport-Security)
-- ☐ `docker-compose.yml` para dev local — back + front + PostgreSQL + (opcional) Evolution API
+- ☑ `Dockerfile` multi-stage do front (`node:20-alpine` build → `nginx:alpine` runtime). `VITE_API_BASE_URL` como `--build-arg` (Vite resolve em build-time)
+- ☑ `Dockerfile` do back (`sdk:10.0` build → `aspnet:10.0` runtime), usuário não-root, healthcheck, volume para DataProtection keys + logs
+- ☑ `nginx.conf` com SPA fallback + cache agressivo para `/assets/*` (immutable) + headers básicos (`X-Content-Type-Options`, `X-Frame-Options DENY`, `Referrer-Policy`). CSP estrita virá na 7.3
+- ☑ `docker-compose.yml` no back orquestra postgres + back + front; volumes persistentes nomeados (postgres_data, dataprotection_keys, back_logs); healthcheck do postgres antes do back subir
+- ☑ Documentação em `docs/DEPLOY.md` (back) cobrindo uso, variáveis de ambiente, backup dos volumes, comandos úteis
 
 ### Headers de segurança ☐
 
