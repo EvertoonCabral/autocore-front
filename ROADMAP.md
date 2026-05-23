@@ -285,13 +285,13 @@ operadores específicos sem promovê-los a Admin.
 
 ---
 
-## Fase 6 — Completude funcional ☐ (Caminho A)
+## Fase 6 — Completude funcional ☑
 
 Fecha os buracos da UI: o produto já é "funcionalmente completo", mas há
 áreas onde o usuário ainda precisa do banco para certas operações ou onde
 falta o "feeling" de tela acabada.
 
-### CRUD de usuários via UI ☐
+### CRUD de usuários via UI ☑
 
 > Antes: ler [`autenticacao.md`](../AutoCore/docs/regras-negocio/autenticacao.md).
 
@@ -299,14 +299,16 @@ Endpoints já existem no back (`POST /api/auth/usuarios`,
 `PUT /api/auth/usuarios/{id}`, `GET /api/auth/usuarios`). Falta a tela
 Admin para criar/editar/desativar operadores sem precisar ir ao banco.
 
-- ☐ Rota `/usuarios` protegida por `<RequireRole role="Admin">`
-- ☐ Listagem com nome, email, role, ativo, `podeVerAuditoria` (badge)
-- ☐ `<NovoUsuarioDialog>` — nome + email + senha temporária + role (Admin/Operador)
-- ☐ `<EditarUsuarioDialog>` — nome + ativo (toggle) + reset de senha opcional
-- ☐ Soft-delete de usuário (desativar — mantém histórico de auditoria)
-- ☐ Filtro "incluir inativos" no toggle
-- ☐ Item "Usuários" no UserMenu (não Sidebar — admin-side)
-- ☐ Testes: schema (zod), gating, mutation otimista
+- ☑ Rota `/usuarios` protegida por `<RequireRole role="Admin">`
+- ☑ Listagem com nome, email, role, ativo, `podeVerAuditoria` (badge)
+- ☑ `<NovoUsuarioDialog>` — nome + email + senha temporária + role (Admin/Operador)
+- ☑ `<EditarUsuarioDialog>` — nome + ativo (toggle) + reset de senha opcional
+- ☑ Soft-delete de usuário (desativar — mantém histórico de auditoria)
+- ☑ Filtro "Mostrar inativos" no toggle (client-side, sobre a lista do back)
+- ☑ Item "Usuários" no UserMenu (não Sidebar — admin-side)
+- ☑ Bloqueio de auto-desativação no back: `AuthController` lança 400 se
+  Admin tentar desativar o próprio usuário (back + front com Switch disabled)
+- ☑ Testes: schema (26 casos), gating, mutation otimista (12 testes ao todo)
 
 ### Telas de detalhe Produto e Serviço ☑
 
@@ -335,32 +337,47 @@ Hoje a `/` é placeholder "Bem-vindo, {nome}". Vamos popular com indicadores.
 - ☑ Testes: handler back (8 casos com EF InMemory) + helpers/components front (22)
 - ☑ Gráficos: faturamento mensal (1/3/6/12), formas de pagamento, status OSs em aberto + ícones lucide nos KPI cards (recharts + chart shadcn)
 
-### Plug-ins menores ☐
+### Plug-ins menores ☑
 
-- ☐ `<AuditoriaInfo>` na tela de Configuração (mostrar quem alterou cada chave)
-- ☐ `<AuditoriaTimeline>` em `ConfiguracoesPage` (timeline das mudanças)
-- ☐ Aviso visual em OS Concluída há mais de N dias sem pagamento (badge "Atrasada >30d")
-- ☑ Configuração de empresa: nome + logo com upload (PNG/JPG/WebP, max 2MB), preview, remoção, exibição no header global com cache ETag
+- ☑ `<AuditoriaInfo>` na aba "Geral" das Configurações (mostra quem alterou
+  por último entre as 3 chaves visíveis — entrada mais recente de
+  `useListarConfiguracoes`)
+- ☑ Aviso visual em pendências há mais de 30 dias vencidas: badge "Atrasada
+  >30d" (vermelho mais escuro com ícone `AlertTriangle`), versus "Vencida"
+  (1-30d, variant destructive padrão). Componente `<BadgeVencimento>`
+  reutilizável + helper `diasDesde()` em `lib/format.ts`
+- ☑ Configuração de empresa: nome + logo com upload (PNG/JPG/WebP, max 2MB),
+  preview, remoção, exibição no Header global, Sidebar **e LoginPage** via
+  componente `<MarcaEmpresa>` compartilhado (anônimo no GET para Login)
 
-**Definição de pronto da Fase 6:** ☐ admin não precisa mais tocar no banco
+**Definição de pronto da Fase 6:** ☑ admin não precisa mais tocar no banco
 para operações cotidianas; dashboard mostra estado real do negócio; todas as
-telas de detalhe têm auditoria.
+telas de detalhe (Cliente, OS, Produto, Serviço) têm auditoria.
 
 ---
 
-## Fase 7 — Produção ☐ (Caminho B)
+## Fase 7 — Produção ☑ parcial (CI/CD + Containers + Headers) / ☐ AWS
 
 Sair do localhost — hardening de segurança, CI/CD, containerização e deploy
-em AWS. Pré-requisito para qualquer uso real.
+em AWS. As 3 primeiras subfases estão entregues; AWS aguarda VPS provisionada.
 
-### CI/CD ☐
+### CI/CD ☑
 
-- ☐ GitHub Actions no front: `npm ci && npm run lint && npm run typecheck && npm test && npm run build` em PR para `main`
-- ☐ GitHub Actions no back: `dotnet restore && dotnet build && dotnet test` em PR
-- ☐ Status checks obrigatórios antes de merge
-- ☐ Cache de dependências (npm + nuget) para acelerar workflows
-- ☐ Build de produção do front pushed para ECR (ou destino escolhido)
-- ☐ Build do back pushed para ECR
+- ☑ GitHub Actions no front em 2 jobs sequenciais: `static-checks` (typecheck
+  + lint, ~50s) → `test-and-build` (test + build, ~2min). Job 2 só roda se
+  o primeiro passar — feedback rápido em PR. Cache de npm via setup-node;
+  `VITE_API_BASE_URL` injetada como env do job 2 (env.ts faz parse zod no
+  import e crasha sem ela)
+- ☑ GitHub Actions no back em 2 jobs sequenciais: `build` (restore + build
+  Release com `-warnaserror`, ~1min) → `test` (testes + upload TRX, ~2min).
+  Cache de NuGet via `actions/cache@v4` (chave hash dos .csproj) compartilhado
+  entre jobs
+- ☑ Cancela runs antigos via `concurrency.cancel-in-progress` em ambos repos
+- ☑ Setup determinístico: `global.json` fixa SDK .NET 10.0.x; `.nvmrc` fixa Node 20
+- ☑ Badges "CI" nos READMEs apontando para os workflows
+- ☐ Status checks obrigatórios antes de merge (configurar no `Settings →
+  Branches` do GitHub — pendente de ativação manual)
+- ☐ Build de produção pushed para ECR (depende de 7.4 / AWS)
 
 ### Containerização ☑
 

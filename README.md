@@ -20,10 +20,15 @@ Cliente web do sistema AutoCore (gestão de auto elétrica automotiva).
 
 ```bash
 npm install
-cp .env.example .env
+cp .env.example .env    # define VITE_API_BASE_URL=http://localhost:5206
 npm run api:types       # gera src/api/schema.d.ts a partir do openapi do back
 npm run dev             # http://localhost:5173
 ```
+
+> O `.env` é **obrigatório** — `src/lib/env.ts` faz parse zod no momento
+> do import e crasha se `VITE_API_BASE_URL` não estiver definida. O
+> `.env.example` já vem com o valor padrão para dev local. Em CI, a env
+> é injetada pelo workflow; em produção, vem como `--build-arg` no Docker.
 
 Acesso inicial: `admin@autocore.com` / `AutoCore@2024!`.
 
