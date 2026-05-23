@@ -1,5 +1,7 @@
 # AutoCore Front-end
 
+[![CI](https://github.com/EvertoonCabral/autocore-front/actions/workflows/ci.yml/badge.svg)](https://github.com/EvertoonCabral/autocore-front/actions/workflows/ci.yml)
+
 Cliente web do sistema AutoCore (gestão de auto elétrica automotiva).
 
 > Backend: `../AutoCore/` · Stack: Vite · React 18 · TypeScript estrito ·

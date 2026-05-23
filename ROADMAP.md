@@ -44,7 +44,7 @@ Login + layout autenticado + guarda de rota + tratamento global de 401.
   aliases sobre `components['schemas']`.
 - ☐ Adicionar headers de segurança em produção (CSP estrita, `X-Frame-Options`,
   `Referrer-Policy`). Não afeta dev local.
-- ☐ Configurar GitHub Actions: `npm ci && npm run lint && npm run typecheck && npm test && npm run build` em PR.
+- ☑ Configurar GitHub Actions: `npm ci && npm run lint && npm run typecheck && npm test && npm run build` em PR. Workflows em `.github/workflows/ci.yml` nos dois repos; back roda `dotnet restore && build (Release, warnings-as-errors) && test`. Cache de NuGet/npm via hash do lock; concurrency cancela runs antigos. Badges no README.
 
 ---
 
