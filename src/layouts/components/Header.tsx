@@ -1,5 +1,6 @@
 import { MarcaEmpresa } from '@/shared/components/MarcaEmpresa'
 import { BadgeNotificacoes } from '@/features/notificacoes/components/BadgeNotificacoes'
+import { ThemeToggle } from '@/shared/theme/ThemeToggle'
 import { UserMenu } from './UserMenu'
 
 export function Header() {
@@ -10,6 +11,7 @@ export function Header() {
       </div>
       <div className="ml-auto flex items-center gap-3">
         <BadgeNotificacoes />
+        <ThemeToggle />
         <UserMenu />
       </div>
     </header>

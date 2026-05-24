@@ -5,6 +5,13 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AutoCore</title>
+    <!--
+      Anti-FOUC do tema: aplica `dark` em <html> ANTES do React montar.
+      Arquivo estático em /public para passar no CSP estrito do nginx
+      (`script-src 'self'`). Bloqueante de propósito — roda antes do
+      primeiro paint para evitar flash branco em quem usa tema escuro.
+    -->
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="root"></div>
