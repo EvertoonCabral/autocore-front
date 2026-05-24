@@ -432,19 +432,23 @@ HTTPS próprio, CI bloqueando merge sem testes, deploy automatizado via push par
 
 ---
 
-## Fase 8 — Funcionalidades novas ☐ (Caminho C)
+## Fase 8 — Funcionalidades novas ☑ parcial
 
 Expansões além do roadmap original. Cada item é independente — pode ser
 priorizado conforme demanda real do uso em produção.
 
-### Exportar OS em PDF ☐
+### Exportar OS em PDF ☑
 
-- ☐ Lib server-side (QuestPDF ou similar) ou client-side (jsPDF/react-pdf)
-- ☐ Layout: cabeçalho com logo da oficina, dados do cliente, itens (serviços + produtos),
-      totais, condições de pagamento, assinatura
-- ☐ Botão "Imprimir orçamento" na tela da OS (status Aberta/EmAndamento)
-- ☐ Botão "Imprimir recibo" na tela da OS (status Concluida + pagamento total)
-- ☐ Watermark "ORÇAMENTO" / "RECIBO" para diferenciação
+- ☑ Lib server-side (**QuestPDF** — Community License, MIT-friendly até $1M ARR)
+- ☑ Layout: cabeçalho com logo da oficina + nome, dados do cliente,
+      itens (serviços + produtos), totais, condições de pagamento,
+      assinatura no recibo
+- ☑ Botão "Imprimir orçamento" na tela da OS (status Aberta/EmAndamento/AguardandoProduto)
+- ☑ Botão "Imprimir recibo" na tela da OS (status Concluida + totalmente paga)
+- ☑ Watermark/título "ORÇAMENTO" (laranja) / "RECIBO" (verde) para diferenciação
+- ☑ Endpoint `GET /api/ordens/{id}/pdf?tipo=orcamento|recibo` retornando
+      `application/pdf` direto (sem envelope). Front abre numa nova aba via
+      `URL.createObjectURL`.
 
 ### Relatórios ☐
 
@@ -456,20 +460,35 @@ priorizado conforme demanda real do uso em produção.
 - ☐ Item "Relatórios" no Sidebar como grupo (já tem Auditoria — agrupar)
 - ☐ Exportar relatórios em CSV/Excel
 
-### Notificações ☐
+### Notificações ☑ parcial
 
-- ☐ Email como fallback do WhatsApp (cliente sem WhatsApp mas com email)
-- ☐ Badge no header com count de pendências vencidas e OSs aguardando produto há +N dias
+- ☑ Email como fallback do WhatsApp (cliente sem WhatsApp mas com email)
+  - Entidade `ConfiguracaoEmail` singleton (SMTP host/porta/credenciais/TLS/stub/fallback)
+  - `IEmailService` + `SmtpEmailService` (MailKit) + modo stub para dev
+  - Enum `CanalCobranca` (WhatsApp=1, Email=2) em `HistoricoCobranca`
+  - `CobrancaJobService` tenta WhatsApp primeiro; se falhar e `FallbackHabilitado`
+    estiver ligado e cliente tiver email cadastrado, tenta email — grava
+    histórico separado por canal
+  - Aba "Email (fallback)" em `/configuracoes` (Admin) com form SMTP completo
+- ☑ Badge no header com count de pendências vencidas e OSs aguardando produto há +7 dias
+  - Endpoint `GET /api/dashboard/pendencias` retornando duas contagens
+  - Sino com badge no header, dropdown linkando para `/ordens` filtrada
+  - Polling: refetch a cada 5 min com `staleTime` 60s
 - ☐ Toast notifications quando uma cobrança automática falha em massa
 
-### Histórico rico de OS ☐
+### Histórico rico de OS ☑
 
-A timeline atual mostra mudanças de status. Pode ficar mais rica:
+A timeline anterior (Auditoria) mostra mudanças de status. Agora também temos
+**TimelineOrdem** que unifica todas as fontes:
 
-- ☐ Timeline inclui pagamentos registrados e estornados (já tem o dado em Pagamento)
-- ☐ Timeline inclui itens adicionados/removidos (já tem em ItemServico/ItemProduto)
-- ☐ Timeline inclui cobranças disparadas (já tem em HistoricoCobranca)
-- ☐ Visualização unificada na `OrdemDetalhePage` numa tab dedicada
+- ☑ Timeline inclui pagamentos registrados (com valor + forma)
+- ☑ Timeline inclui itens adicionados (serviço e produto)
+- ☑ Timeline inclui cobranças disparadas (sucesso/falha visualmente diferenciados)
+- ☑ Visualização unificada na `OrdemDetalhePage` como seção "Histórico da OS"
+      (visível para todos; a auditoria detalhada continua restrita a quem tem
+      permissão)
+- ☑ Endpoint agregador `GET /api/ordens/{id}/timeline` retornando
+      `TimelineEntradaOrdemDto[]` ordenado desc por `ocorridoEm`
 
 ### Mobile-first / PWA ☐
 

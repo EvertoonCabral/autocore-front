@@ -3,6 +3,7 @@ import { PageHeader } from '@/shared/components/PageHeader'
 import { ConfiguracoesGeralForm } from '../components/ConfiguracoesGeralForm'
 import { AcessoAuditoriaTab } from '../components/AcessoAuditoriaTab'
 import { ConfiguracaoCobrancaTab } from '../components/ConfiguracaoCobrancaTab'
+import { ConfiguracaoEmailTab } from '../components/ConfiguracaoEmailTab'
 import { ConfiguracaoEmpresaTab } from '../components/ConfiguracaoEmpresaTab'
 
 export function ConfiguracoesPage() {
@@ -17,6 +18,7 @@ export function ConfiguracoesPage() {
         <TabsList>
           <TabsTrigger value="geral">Geral</TabsTrigger>
           <TabsTrigger value="cobranca">Cobrança WhatsApp</TabsTrigger>
+          <TabsTrigger value="email">Email (fallback)</TabsTrigger>
           <TabsTrigger value="empresa">Empresa</TabsTrigger>
           <TabsTrigger value="acesso-auditoria">Acesso à Auditoria</TabsTrigger>
         </TabsList>
@@ -25,6 +27,9 @@ export function ConfiguracoesPage() {
         </TabsContent>
         <TabsContent value="cobranca">
           <ConfiguracaoCobrancaTab />
+        </TabsContent>
+        <TabsContent value="email">
+          <ConfiguracaoEmailTab />
         </TabsContent>
         <TabsContent value="empresa">
           <ConfiguracaoEmpresaTab />

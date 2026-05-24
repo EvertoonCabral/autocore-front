@@ -22,6 +22,8 @@ import { ItensProdutoTable } from '../components/ItensProdutoTable'
 import { AdicionarItemServicoDialog } from '../components/AdicionarItemServicoDialog'
 import { AdicionarItemProdutoDialog } from '../components/AdicionarItemProdutoDialog'
 import { PagamentosOrdemSection } from '@/features/pagamentos/components/PagamentosOrdemSection'
+import { PdfDownloadButtons } from '../components/PdfDownloadButtons'
+import { TimelineOrdem } from '../components/TimelineOrdem'
 import { AuditoriaInfo } from '@/shared/components/AuditoriaInfo'
 import { AuditoriaTimeline } from '@/features/auditoria/components/AuditoriaTimeline'
 import { useCan } from '@/shared/components/Can'
@@ -91,6 +93,12 @@ export function OrdemDetalhePage() {
                 Voltar
               </Link>
             </Button>
+            <PdfDownloadButtons
+              ordemId={numericId}
+              status={status}
+              totalGeral={ordem.totalGeral ?? 0}
+              totalPago={ordem.totalPago ?? 0}
+            />
             {podeFechar(status) && (
               <ConfirmDialog
                 trigger={
@@ -233,9 +241,14 @@ export function OrdemDetalhePage() {
         podeRegistrar={concluida}
       />
 
+      <section className="space-y-3">
+        <h3 className="text-sm font-medium">Histórico da OS</h3>
+        <TimelineOrdem ordemId={numericId} />
+      </section>
+
       {podeVerAuditoria && (
         <section className="space-y-3">
-          <h3 className="text-sm font-medium">Histórico de alterações</h3>
+          <h3 className="text-sm font-medium">Auditoria detalhada</h3>
           <AuditoriaTimeline tipoEntidade="OrdemServico" entidadeId={numericId} />
         </section>
       )}

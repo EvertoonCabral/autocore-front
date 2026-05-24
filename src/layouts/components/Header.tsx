@@ -1,4 +1,5 @@
 import { MarcaEmpresa } from '@/shared/components/MarcaEmpresa'
+import { BadgeNotificacoes } from '@/features/notificacoes/components/BadgeNotificacoes'
 import { UserMenu } from './UserMenu'
 
 export function Header() {
@@ -8,6 +9,7 @@ export function Header() {
         <MarcaEmpresa size="sm" />
       </div>
       <div className="ml-auto flex items-center gap-3">
+        <BadgeNotificacoes />
         <UserMenu />
       </div>
     </header>
