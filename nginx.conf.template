@@ -1,28 +1,26 @@
-# nginx config do AutoCore Front
-# Serve o bundle estático do Vite + SPA fallback + headers de segurança
-# estritos (Fase 7.3 do ROADMAP).
+# nginx config do AutoCore Front (template — processado por envsubst no boot)
+# Serve o bundle estático do Vite + proxy same-origin /api + SPA fallback +
+# headers de segurança estritos.
+#
+# Só `${API_UPSTREAM}` é substituído no boot (é a única env var definida no
+# container); as variáveis internas do nginx ($uri, $host, ...) ficam intactas.
 #
 # Para verificar o grau de segurança após deploy:
 #   https://securityheaders.com/?q=https://app.suaempresa.com.br
 # Target: grade A+
 
 # ─── CSP — Content Security Policy ──────────────────────────────────────────
-# Construída em escopo de mapa para deixar uma única string usável em
-# add_header. Comentários explicam cada diretiva.
-#
-# IMPORTANTE: o `connect-src` precisa permitir a URL da API. Em dev local
-# isso é http://localhost:5206; em produção, ajuste para o seu domínio (ex.
-# https://api.suaempresa.com.br). Para evitar rebuild da imagem do front
-# por mudança de host, considere usar mesma origem (proxy via nginx) em prod.
+# connect-src 'self': na topologia same-origin (proxy /api abaixo) o browser
+# só fala com a própria origem do front. Se optar por front e API em domínios
+# distintos (build com VITE_API_BASE_URL absoluta), adicione aqui o domínio da
+# API em connect-src (ex.: https://api.suaempresa.com.br).
 #
 # `'unsafe-inline'` em `style-src` é necessário porque Radix UI, Recharts e
 # alguns componentes injetam estilos inline. Migrar para nonces é trabalho
 # futuro — alto custo de manutenção para baixo benefício real.
 map $sent_http_content_type $csp_policy {
-    # nginx NÃO concatena strings por quebra de linha (cada "..." vira
-    # argumento separado → erro "invalid number of the map parameters").
-    # Tudo em uma linha só.
-    default "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' http://localhost:5206 https://*; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests";
+    # Tudo em uma linha só (nginx não concatena "..." por quebra de linha).
+    default "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests";
 }
 
 server {
@@ -36,6 +34,20 @@ server {
         access_log off;
         return 200 "ok\n";
         add_header Content-Type text/plain;
+    }
+
+    # ─── Proxy same-origin para a API ───────────────────────────────────────
+    # O bundle chama /api/... (VITE_API_BASE_URL vazio = caminho relativo).
+    # Servir front e API na mesma origem elimina CORS e faz o cookie httpOnly
+    # SameSite=Strict funcionar sem depender de domínios irmãos.
+    location /api/ {
+        proxy_pass http://${API_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 60s;
     }
 
     # Assets versionados pelo Vite (hash no nome) — cache agressivo immutable

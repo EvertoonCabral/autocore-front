@@ -10,10 +10,11 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 
-# Copia código e builda. VITE_API_BASE_URL precisa ser passada em build-time
-# porque Vite resolve variáveis import.meta.env durante o build (não em
-# runtime). Para produção: VITE_API_BASE_URL=https://api.suaempresa.com.br
-ARG VITE_API_BASE_URL=http://localhost:5206
+# Copia código e builda. VITE_API_BASE_URL é resolvida em build-time (Vite
+# congela import.meta.env no bundle). Default VAZIO = topologia same-origin:
+# o app chama /api/... relativo e o nginx faz proxy (ver nginx.conf.template).
+# Para front e API em domínios distintos: VITE_API_BASE_URL=https://api.exemplo.com.
+ARG VITE_API_BASE_URL=""
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 COPY . .
@@ -22,9 +23,14 @@ RUN npm run build
 # ─── Stage 2: runtime nginx ─────────────────────────────────────────────────
 FROM nginx:alpine AS runtime
 
-# Remove config default e copia a nossa (SPA fallback + headers de segurança)
-RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d/autocore.conf
+# O nginx:alpine processa /etc/nginx/templates/*.template via envsubst no boot,
+# substituindo só as env vars definidas (API_UPSTREAM) — variáveis internas do
+# nginx ($uri, $host, ...) ficam intactas. Gera /etc/nginx/conf.d/default.conf.
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
+
+# Destino do proxy /api. Sobrescreva no orquestrador (compose/ECS/k8s) com o
+# endereço real da API (ex.: back:8080, api.internal:8080).
+ENV API_UPSTREAM="back:8080"
 
 # Bundle do Vite vai para /usr/share/nginx/html
 COPY --from=build /app/dist /usr/share/nginx/html

@@ -39,7 +39,10 @@ const unauthorizedMiddleware: Middleware = {
 // `fetch` é resolvido por chamada (não capturado no createClient) para que MSW
 // e outros patchers de globalThis.fetch funcionem em ambiente de teste.
 export const api = createClient<paths>({
-  baseUrl: env.VITE_API_BASE_URL,
+  // Vazio → baseUrl omitido = relativo (mesma origem): as chamadas viram
+  // /api/... e o nginx do front faz proxy para a API. Uma URL absoluta fala
+  // cross-origin. (spread condicional por causa de exactOptionalPropertyTypes)
+  ...(env.VITE_API_BASE_URL ? { baseUrl: env.VITE_API_BASE_URL } : {}),
   credentials: 'include',
   fetch: (...args) => globalThis.fetch(...args),
 })
