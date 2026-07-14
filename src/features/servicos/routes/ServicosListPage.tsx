@@ -48,7 +48,7 @@ export function ServicosListPage() {
   return (
     <div className="space-y-5">
       <PageHeader
-        title="Catálogo de serviços"
+        title="Serviços"
         description="Mão de obra e diagnósticos disponíveis nas Ordens de Serviço."
         actions={
           <Button asChild>
