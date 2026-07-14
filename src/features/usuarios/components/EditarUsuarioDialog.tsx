@@ -21,6 +21,7 @@ import {
   type EditarUsuarioFormValues,
 } from '../helpers/usuarioSchemas'
 import { useAtualizarUsuario } from '../hooks/useAtualizarUsuario'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 
 interface Props {
   usuario: UsuarioDto
@@ -83,23 +84,11 @@ export function EditarUsuarioDialog({
       toast.success('Usuário atualizado.')
       onOpenChange(false)
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; message?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes && apiErr.detalhes.length > 0) {
-        let distributed = false
-        for (const detalhe of apiErr.detalhes) {
-          if (/senha|password/i.test(detalhe)) {
-            setError('novaSenha', { message: detalhe })
-            distributed = true
-          } else if (/nome/i.test(detalhe)) {
-            setError('nomeCompleto', { message: detalhe })
-            distributed = true
-          }
-        }
-        if (!distributed) {
-          toast.error(apiErr.detalhes.join(' '))
-        }
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<EditarUsuarioFormValues>(err, setError)
+        if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
       } else {
-        const msg = apiErr.message ?? 'Não foi possível atualizar o usuário.'
+        const msg = err instanceof Error ? err.message : 'Não foi possível atualizar o usuário.'
         setGenericError(msg)
         toast.error(msg)
       }

@@ -70,7 +70,10 @@ describe('<NovoUsuarioDialog>', () => {
         HttpResponse.json(
           {
             erro: 'Dados inválidos.',
-            detalhes: ['E-mail já cadastrado.', 'Senha deve conter dígito.'],
+            detalhes: [
+              { campo: 'email', mensagem: 'E-mail já cadastrado.' },
+              { campo: 'senha', mensagem: 'Senha deve conter dígito.' },
+            ],
           },
           { status: 422 },
         ),

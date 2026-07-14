@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { notificarNaoAutorizado } from '@/api/client'
 import { toApiError, type ApiError } from '@/api/errors'
 import { env } from '@/lib/env'
 import { empresaKeys } from './useObterConfiguracaoEmpresa'
@@ -31,6 +32,8 @@ export function useAtualizarLogoEmpresa() {
       )
 
       if (!res.ok) {
+        // fetch cru (multipart) não passa pelo middleware — notifica 401 manualmente.
+        if (res.status === 401) notificarNaoAutorizado()
         let body: unknown = null
         try {
           body = await res.json()

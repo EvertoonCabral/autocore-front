@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Image as ImageIcon, Loader2, Trash2, Upload, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { isValidationError } from '@/api/errors'
 import { Button } from '@/components/ui/button'
 import { ConfirmDialog } from '@/shared/components/ConfirmDialog'
 import { env } from '@/lib/env'
@@ -83,11 +84,12 @@ export function SecaoLogo({ configuracao }: Props) {
       setArquivoSelecionado(null)
       setErroValidacao(null)
     } catch (err: unknown) {
-      const apiErr = err as { message?: string; detalhes?: string[] }
+      const detalhes = isValidationError(err)
+        ? err.detalhes.map((d) => d.mensagem).filter(Boolean).join(' ')
+        : ''
       const msg =
-        (apiErr.detalhes && apiErr.detalhes.length > 0
-          ? apiErr.detalhes.join(' ')
-          : apiErr.message) ?? 'Não foi possível enviar a logo.'
+        detalhes ||
+        (err instanceof Error ? err.message : 'Não foi possível enviar a logo.')
       toast.error(msg)
     }
   }

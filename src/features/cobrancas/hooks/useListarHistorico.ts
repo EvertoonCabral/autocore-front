@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { toApiError } from '@/api/errors'
-import type { ApiPaginated, HistoricoCobrancaDto } from '@/api/types'
+import { receberPaginado } from '@/api/envelope'
+import type { HistoricoCobrancaDto } from '@/api/types'
 
 export interface ListarHistoricoParams {
   ordemServicoId?: number
@@ -27,17 +27,8 @@ export function useListarHistoricoCobranca(params: ListarHistoricoParams) {
       if (params.ordemServicoId) query.ordemServicoId = params.ordemServicoId
       if (params.somenteFalhas) query.somenteFalhas = true
 
-      const result = (await api.GET('/api/cobrancas/historico', {
-        params: { query },
-      })) as {
-        data?: ApiPaginated<HistoricoCobrancaDto>
-        error?: unknown
-        response: Response
-      }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
-      }
-      return result.data
+      const result = await api.GET('/api/cobrancas/historico', { params: { query } })
+      return receberPaginado<HistoricoCobrancaDto>(result)
     },
   })
 }

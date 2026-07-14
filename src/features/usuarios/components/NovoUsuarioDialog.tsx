@@ -26,6 +26,7 @@ import {
   type NovoUsuarioFormValues,
 } from '../helpers/usuarioSchemas'
 import { useCriarUsuario } from '../hooks/useCriarUsuario'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 
 interface Props {
   open: boolean
@@ -70,29 +71,11 @@ export function NovoUsuarioDialog({ open, onOpenChange }: Props) {
       toast.success('Usuário criado.')
       onOpenChange(false)
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; message?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes && apiErr.detalhes.length > 0) {
-        let distributed = false
-        for (const detalhe of apiErr.detalhes) {
-          if (/e-?mail/i.test(detalhe)) {
-            setError('email', { message: detalhe })
-            distributed = true
-          } else if (/senha|password/i.test(detalhe)) {
-            setError('senha', { message: detalhe })
-            distributed = true
-          } else if (/nome/i.test(detalhe)) {
-            setError('nomeCompleto', { message: detalhe })
-            distributed = true
-          } else if (/role/i.test(detalhe)) {
-            setError('role', { message: detalhe })
-            distributed = true
-          }
-        }
-        if (!distributed) {
-          toast.error(apiErr.detalhes.join(' '))
-        }
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<NovoUsuarioFormValues>(err, setError)
+        if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
       } else {
-        const msg = apiErr.message ?? 'Não foi possível criar o usuário.'
+        const msg = err instanceof Error ? err.message : 'Não foi possível criar o usuário.'
         setGenericError(msg)
         toast.error(msg)
       }

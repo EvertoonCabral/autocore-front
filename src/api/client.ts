@@ -8,13 +8,24 @@ import { env } from '@/lib/env'
  */
 export const UNAUTHORIZED_EVENT = 'autocore:unauthorized'
 
+/**
+ * Dispara o evento global de não-autorizado (o AuthProvider escuta e força
+ * logout + redirect). Exportado para os poucos hooks que precisam usar `fetch`
+ * cru (download de PDF binário, upload multipart do logo) e por isso não
+ * passam pelo middleware do openapi-fetch — eles chamam isto manualmente ao
+ * receber 401, para não deixar a sessão "zumbi".
+ */
+export function notificarNaoAutorizado() {
+  window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT))
+}
+
 const unauthorizedMiddleware: Middleware = {
   onResponse: ({ response, request }) => {
     if (response.status === 401) {
       // Não dispara para o próprio /login (evita loop em credenciais erradas).
       const isLoginCall = new URL(request.url).pathname.endsWith('/api/auth/login')
       if (!isLoginCall) {
-        window.dispatchEvent(new CustomEvent(UNAUTHORIZED_EVENT))
+        notificarNaoAutorizado()
       }
     }
     return response

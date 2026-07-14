@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { env } from '@/lib/env'
+import { api } from '@/api/client'
+import { toApiError } from '@/api/errors'
 
 // Mesma numeração do enum `TipoEntradaTimelineOrdem` no back.
 export const TIPO_OPERACAO = 1
@@ -30,24 +31,30 @@ export interface TimelineEntradaOrdem {
  * auditoria + pagamentos + itens + cobranças num único array ordenado
  * desc por data. Sem paginação — volume baixo por OS.
  *
- * Usamos `fetch` direto (não openapi-fetch) porque o tipo gerado no schema
- * ainda não foi atualizado nesta branch — quando o `npm run api:types` for
- * rodado, o consumidor pode migrar para `api.GET` sem mudar a forma do dado.
+ * Via cliente tipado `api` (openapi-fetch): um 401 aqui passa a disparar o
+ * UNAUTHORIZED_EVENT (antes o `fetch` cru furava o handler global). O DTO
+ * gerado é todo opcional, então mapeamos para a forma local não-opcional.
  */
 export function useObterTimelineOrdem(ordemId: number | undefined) {
   return useQuery({
     queryKey: ['ordens', 'timeline', ordemId],
     enabled: !!ordemId && ordemId > 0,
-    queryFn: async () => {
-      const resp = await fetch(
-        `${env.VITE_API_BASE_URL}/api/ordens/${ordemId}/timeline`,
-        { credentials: 'include' },
-      )
-      if (!resp.ok) {
-        throw new Error(`Falha ao carregar timeline (HTTP ${resp.status})`)
-      }
-      const body = (await resp.json()) as { dados: TimelineEntradaOrdem[] }
-      return body.dados
+    queryFn: async (): Promise<TimelineEntradaOrdem[]> => {
+      const { data, error, response } = await api.GET('/api/ordens/{id}/timeline', {
+        params: { path: { id: ordemId as number } },
+      })
+      if (error || !data?.dados) throw toApiError(error, response.status)
+      return data.dados.map((e) => ({
+        tipo: (e.tipo ?? TIPO_OPERACAO) as TipoEntradaTimelineOrdem,
+        ocorridoEm: e.ocorridoEm ?? '',
+        titulo: e.titulo ?? '',
+        descricao: e.descricao ?? null,
+        usuarioId: e.usuarioId ?? null,
+        usuarioNome: e.usuarioNome ?? null,
+        valor: e.valor ?? null,
+        formaPagamento: (e.formaPagamento ?? null) as FormaPagamentoCod | null,
+        cobrancaSucesso: e.cobrancaSucesso ?? null,
+      }))
     },
   })
 }

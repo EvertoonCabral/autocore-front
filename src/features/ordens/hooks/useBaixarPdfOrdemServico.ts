@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import { notificarNaoAutorizado } from '@/api/client'
 import { env } from '@/lib/env'
 
 export type TipoPdfOrdem = 'orcamento' | 'recibo'
@@ -27,6 +28,9 @@ export function useBaixarPdfOrdemServico() {
       })
 
       if (!resp.ok) {
+        // fetch cru não passa pelo middleware do openapi-fetch — notifica 401
+        // manualmente para a sessão expirada derrubar o usuário.
+        if (resp.status === 401) notificarNaoAutorizado()
         let mensagem = `Falha ao gerar PDF (HTTP ${resp.status})`
         try {
           const body = (await resp.json()) as { erro?: string }

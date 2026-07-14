@@ -203,8 +203,18 @@ export function useListarClientes(filtro: Filtro) {
 - zod schema em `features/<modulo>/helpers/<acao>Schema.ts`. Nome e mensagens
   espelham os Validators do back.
 - `react-hook-form` + `zodResolver`.
-- 422 do back → distribua `detalhes` por campo via `setError(field, { message })`.
+- 422 do back → use `aplicarErrosValidacao(err, setError)` de `@/api/errors`. O
+  back envia `detalhes: [{ campo, mensagem }]` com `campo` em camelCase igual ao
+  nome do campo no form, então o helper distribui direto (sem regex). Ele
+  retorna as mensagens não atribuídas (campo vazio/desconhecido) para o caller
+  exibir num `toast.error(...)`. Não parsear `detalhes` na mão.
 - 400 (regra de negócio) → `toast.error(message)` via sonner.
+- Chamadas à API sempre via `api` (openapi-fetch, `@/api/client`) — nunca
+  `fetch` cru, senão o 401 não dispara o logout global. Nos poucos casos
+  inevitáveis (download binário, upload multipart), chame
+  `notificarNaoAutorizado()` manualmente no ramo de 401.
+- Listas paginadas: `receberPaginado<T>(result)` de `@/api/envelope`; item
+  único: `receber<T>(result)`. Não repita o cast `as { data?: ... }`.
 
 ---
 

@@ -1112,6 +1112,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/configuracoes/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ConfiguracaoEmailDtoApiResponse"];
+                        "application/json": components["schemas"]["ConfiguracaoEmailDtoApiResponse"];
+                        "text/json": components["schemas"]["ConfiguracaoEmailDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarConfiguracaoEmailDto"];
+                    "text/json": components["schemas"]["AtualizarConfiguracaoEmailDto"];
+                    "application/*+json": components["schemas"]["AtualizarConfiguracaoEmailDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/configuracoes/empresa": {
         parameters: {
             query?: never;
@@ -1376,6 +1447,43 @@ export interface paths {
                         "text/plain": components["schemas"]["ApiErrorResponse"];
                         "application/json": components["schemas"]["ApiErrorResponse"];
                         "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/dashboard/pendencias": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ContagensPendenciasDtoApiResponse"];
+                        "application/json": components["schemas"]["ContagensPendenciasDtoApiResponse"];
+                        "text/json": components["schemas"]["ContagensPendenciasDtoApiResponse"];
                     };
                 };
             };
@@ -1969,6 +2077,111 @@ export interface paths {
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ordens/{id}/timeline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["TimelineEntradaOrdemDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["TimelineEntradaOrdemDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["TimelineEntradaOrdemDtoIReadOnlyListApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/ordens/{id}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    tipo?: components["schemas"]["TipoPdfOrdemServico"];
+                };
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/pdf": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/pdf": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2808,7 +3021,7 @@ export interface components {
         };
         ApiValidationErrorResponse: {
             erro?: string | null;
-            detalhes?: string[] | null;
+            detalhes?: components["schemas"]["DetalheValidacao"][] | null;
         };
         AtualizarCatalogoServicoCommand: {
             /** Format: int64 */
@@ -2837,6 +3050,18 @@ export interface components {
             apiKey?: string | null;
             instancia?: string | null;
             usarStub?: boolean;
+        };
+        AtualizarConfiguracaoEmailDto: {
+            smtpHost?: string | null;
+            /** Format: int32 */
+            smtpPorta?: number;
+            smtpUsuario?: string | null;
+            smtpSenha?: string | null;
+            emailRemetente?: string | null;
+            nomeRemetente?: string | null;
+            usarTls?: boolean;
+            usarStub?: boolean;
+            fallbackHabilitado?: boolean;
         };
         AtualizarConfiguracaoEmpresaDto: {
             nomeEmpresa?: string | null;
@@ -3013,6 +3238,26 @@ export interface components {
         ConfiguracaoDtoListApiResponse: {
             dados?: components["schemas"]["ConfiguracaoDto"][] | null;
         };
+        ConfiguracaoEmailDto: {
+            smtpHost?: string | null;
+            /** Format: int32 */
+            smtpPorta?: number;
+            smtpUsuario?: string | null;
+            smtpSenhaDefinida?: boolean;
+            emailRemetente?: string | null;
+            nomeRemetente?: string | null;
+            usarTls?: boolean;
+            usarStub?: boolean;
+            fallbackHabilitado?: boolean;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
+        };
+        ConfiguracaoEmailDtoApiResponse: {
+            dados?: components["schemas"]["ConfiguracaoEmailDto"];
+        };
         ConfiguracaoEmpresaDto: {
             nomeEmpresa?: string | null;
             logoHash?: string | null;
@@ -3027,6 +3272,15 @@ export interface components {
         };
         ConfiguracaoEmpresaDtoApiResponse: {
             dados?: components["schemas"]["ConfiguracaoEmpresaDto"];
+        };
+        ContagensPendenciasDto: {
+            /** Format: int32 */
+            pendenciasVencidas?: number;
+            /** Format: int32 */
+            ossAguardandoProdutoHa7Dias?: number;
+        };
+        ContagensPendenciasDtoApiResponse: {
+            dados?: components["schemas"]["ContagensPendenciasDto"];
         };
         CriadoDto: {
             /** Format: int64 */
@@ -3105,6 +3359,10 @@ export interface components {
         };
         DashboardResumoDtoApiResponse: {
             dados?: components["schemas"]["DashboardResumoDto"];
+        };
+        DetalheValidacao: {
+            campo?: string | null;
+            mensagem?: string | null;
         };
         DistribuicaoFormaPagamentoDto: {
             /** Format: int32 */
@@ -3416,6 +3674,33 @@ export interface components {
          * @enum {integer}
          */
         StatusOrdem: 1 | 2 | 3 | 4 | 5;
+        TimelineEntradaOrdemDto: {
+            tipo?: components["schemas"]["TipoEntradaTimelineOrdem"];
+            /** Format: date-time */
+            ocorridoEm?: string;
+            titulo?: string | null;
+            descricao?: string | null;
+            /** Format: int64 */
+            usuarioId?: number | null;
+            usuarioNome?: string | null;
+            /** Format: double */
+            valor?: number | null;
+            formaPagamento?: components["schemas"]["FormaPagamento"];
+            cobrancaSucesso?: boolean | null;
+        };
+        TimelineEntradaOrdemDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["TimelineEntradaOrdemDto"][] | null;
+        };
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        TipoEntradaTimelineOrdem: 1 | 2 | 3 | 4 | 5;
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        TipoPdfOrdemServico: 1 | 2;
         UsuarioDto: {
             /** Format: int64 */
             id?: number;

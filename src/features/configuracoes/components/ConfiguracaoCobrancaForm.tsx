@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import {
   configuracaoCobrancaSchema,
   type ConfiguracaoCobrancaFormValues,
@@ -75,26 +76,11 @@ export function ConfiguracaoCobrancaForm({ defaultValues, onSubmit }: Props) {
         usarStub: values.usarStub,
       })
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; message?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes && apiErr.detalhes.length > 0) {
-        let distributed = false
-        for (const detalhe of apiErr.detalhes) {
-          if (/baseurl|url/i.test(detalhe)) {
-            setError('baseUrl', { message: detalhe })
-            distributed = true
-          } else if (/apikey|chave/i.test(detalhe)) {
-            setError('apiKey', { message: detalhe })
-            distributed = true
-          } else if (/inst[âa]ncia/i.test(detalhe)) {
-            setError('instancia', { message: detalhe })
-            distributed = true
-          }
-        }
-        if (!distributed) {
-          toast.error(apiErr.detalhes.join(' '))
-        }
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<ConfiguracaoCobrancaFormValues>(err, setError)
+        if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
       } else {
-        const msg = apiErr.message ?? 'Não foi possível salvar a configuração.'
+        const msg = err instanceof Error ? err.message : 'Não foi possível salvar a configuração.'
         setGenericError(msg)
         toast.error(msg)
       }

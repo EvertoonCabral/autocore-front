@@ -1,4 +1,5 @@
-import type { ApiErrorBody, ApiValidationErrorBody } from './types'
+import type { FieldValues, Path, UseFormSetError } from 'react-hook-form'
+import type { ApiErrorBody, ApiValidationErrorBody, DetalheValidacao } from './types'
 
 export type ApiErrorKind =
   | 'validation' // 422
@@ -13,9 +14,9 @@ export type ApiErrorKind =
 export class ApiError extends Error {
   readonly kind: ApiErrorKind
   readonly status: number
-  readonly detalhes: string[]
+  readonly detalhes: DetalheValidacao[]
 
-  constructor(kind: ApiErrorKind, status: number, message: string, detalhes: string[] = []) {
+  constructor(kind: ApiErrorKind, status: number, message: string, detalhes: DetalheValidacao[] = []) {
     super(message)
     this.name = 'ApiError'
     this.kind = kind
@@ -36,7 +37,8 @@ function kindFromStatus(status: number): ApiErrorKind {
 
 /**
  * Converte o `error` retornado pelo openapi-fetch em ApiError tipado.
- * O body de erro do back segue o envelope `{ erro, detalhes? }`.
+ * O body de erro do back segue o envelope `{ erro, detalhes? }`, onde cada
+ * detalhe é `{ campo, mensagem }` (a partir da Fase 3 do contrato).
  */
 export function toApiError(error: unknown, status: number | undefined): ApiError {
   const code = status ?? 0
@@ -46,7 +48,7 @@ export function toApiError(error: unknown, status: number | undefined): ApiError
 
   const body = error as Partial<ApiErrorBody & ApiValidationErrorBody> | undefined
   const erro = body?.erro ?? defaultMessageFor(code)
-  const detalhes = body?.detalhes ?? []
+  const detalhes = (body?.detalhes ?? []).filter((d): d is DetalheValidacao => d != null)
   return new ApiError(kindFromStatus(code), code, erro, detalhes)
 }
 
@@ -58,14 +60,50 @@ function defaultMessageFor(status: number): string {
   return 'Ocorreu um erro inesperado.'
 }
 
-/**
- * Distribui os `detalhes` de um 422 entre os campos do form (RHF).
- * O back devolve mensagens livres como "Nome é obrigatório.";
- * o callback `setFieldError` decide em qual campo cada detalhe entra.
- *
- * Uso típico: o caller mantém uma tabela `regex → fieldName` e chama
- * `setError(fieldName, { message })`.
- */
 export function isValidationError(err: unknown): err is ApiError {
   return err instanceof ApiError && err.kind === 'validation'
+}
+
+/**
+ * Distribui os `detalhes` de um erro 422 nos campos do formulário (RHF).
+ *
+ * O back envia `campo` em camelCase idêntico ao nome do campo no form, então
+ * o mapeamento é direto — não há mais adivinhação por regex sobre a mensagem.
+ * `aliases` cobre os casos em que o nome do campo no front difere do back.
+ *
+ * Retorna as mensagens que **não** foram atribuídas a nenhum campo (campo
+ * vazio, desconhecido ou fora de `camposValidos`) para o caller exibir num
+ * toast/resumo — nenhuma mensagem é silenciosamente descartada.
+ */
+export function aplicarErrosValidacao<T extends FieldValues>(
+  err: unknown,
+  setError: UseFormSetError<T>,
+  opcoes?: {
+    /** Só atribui a campos desta lista; os demais viram mensagem de resumo. */
+    camposValidos?: readonly Path<T>[]
+    /** Mapeia nome-do-back → nome-do-campo-no-form quando divergem. */
+    aliases?: Record<string, Path<T>>
+  },
+): string[] {
+  if (!isValidationError(err)) return []
+
+  const naoAtribuidos: string[] = []
+  for (const detalhe of err.detalhes) {
+    const campoBack = detalhe.campo?.trim() ?? ''
+    const mensagem = detalhe.mensagem?.trim() ?? ''
+
+    if (!campoBack) {
+      if (mensagem) naoAtribuidos.push(mensagem)
+      continue
+    }
+
+    const campo = (opcoes?.aliases?.[campoBack] ?? campoBack) as Path<T>
+    if (opcoes?.camposValidos && !opcoes.camposValidos.includes(campo)) {
+      if (mensagem) naoAtribuidos.push(mensagem)
+      continue
+    }
+
+    setError(campo, { type: 'server', message: mensagem })
+  }
+  return naoAtribuidos
 }

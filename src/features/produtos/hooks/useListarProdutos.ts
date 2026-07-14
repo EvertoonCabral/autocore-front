@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { toApiError } from '@/api/errors'
-import type { ApiPaginated, ProdutoDto } from '@/api/types'
+import { receberPaginado } from '@/api/envelope'
+import type { ProdutoDto } from '@/api/types'
 
 export interface ListarProdutosParams {
   filtro?: string
@@ -22,7 +22,7 @@ export function useListarProdutos(params: ListarProdutosParams) {
     queryKey: produtosKeys.list(params),
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const result = (await api.GET('/api/produtos', {
+      const result = await api.GET('/api/produtos', {
         params: {
           query: {
             ...(params.filtro ? { filtro: params.filtro } : {}),
@@ -31,15 +31,8 @@ export function useListarProdutos(params: ListarProdutosParams) {
             incluirInativos: params.incluirInativos ?? false,
           },
         },
-      })) as {
-        data?: ApiPaginated<ProdutoDto>
-        error?: unknown
-        response: Response
-      }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
-      }
-      return result.data
+      })
+      return receberPaginado<ProdutoDto>(result)
     },
   })
 }

@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { ClienteSelect } from '@/features/clientes/components/ClienteSelect'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import { abrirOrdemSchema, type AbrirOrdemFormValues } from '../helpers/ordemSchemas'
 import { useAbrirOrdem } from '../hooks/useAbrirOrdem'
 
@@ -32,16 +33,12 @@ export function NovaOrdemPage() {
       toast.success('Ordem de serviço aberta.')
       navigate(`/ordens/${id}`, { replace: true })
     } catch (err) {
-      const apiErr = err as { kind?: string; message?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes) {
-        for (const detalhe of apiErr.detalhes) {
-          if (/cliente/i.test(detalhe)) setError('clienteId', { message: detalhe })
-          else if (/descri/i.test(detalhe)) setError('descricaoProblema', { message: detalhe })
-          else if (/observ/i.test(detalhe)) setError('observacoes', { message: detalhe })
-        }
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<AbrirOrdemFormValues>(err, setError)
+        if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
         return
       }
-      toast.error(apiErr.message ?? 'Não foi possível abrir a OS.')
+      toast.error(err instanceof Error ? err.message : 'Não foi possível abrir a OS.')
     }
   }
 

@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from 'sonner'
+import { aplicarErrosValidacao } from '@/api/errors'
 import { formatCpfCnpj, maskTelefoneInput } from '@/lib/format'
 import { clienteSchema, type ClienteFormValues } from '../helpers/clienteSchema'
 
@@ -64,17 +66,10 @@ export function ClienteForm({
     try {
       await onSubmit(values)
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes) {
-        for (const detalhe of apiErr.detalhes) {
-          if (/nome/i.test(detalhe)) setError('nome', { message: detalhe })
-          else if (/telefone/i.test(detalhe)) setError('telefone', { message: detalhe })
-          else if (/e-?mail/i.test(detalhe)) setError('email', { message: detalhe })
-          else if (/cpf|cnpj/i.test(detalhe)) setError('cpfCnpj', { message: detalhe })
-          else if (/endere/i.test(detalhe)) setError('endereco', { message: detalhe })
-          else if (/observ/i.test(detalhe)) setError('observacoes', { message: detalhe })
-        }
-      }
+      // O back envia `campo` em camelCase igual aos nomes deste form, então
+      // o helper distribui direto; sobras (campo desconhecido) viram toast.
+      const naoAtribuidos = aplicarErrosValidacao<ClienteFormValues>(err, setError)
+      if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
     }
   }
 

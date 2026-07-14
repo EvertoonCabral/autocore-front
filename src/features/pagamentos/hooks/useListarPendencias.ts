@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { toApiError } from '@/api/errors'
-import type { ApiPaginated, OrdemPendenteDto } from '@/api/types'
+import { receberPaginado } from '@/api/envelope'
+import type { OrdemPendenteDto } from '@/api/types'
 
 export interface ListarPendenciasParams {
   somenteVencidas?: boolean
@@ -26,17 +26,8 @@ export function useListarPendencias(params: ListarPendenciasParams) {
       }
       if (params.somenteVencidas) query.somenteVencidas = true
 
-      const result = (await api.GET('/api/pagamentos/pendencias', {
-        params: { query },
-      })) as {
-        data?: ApiPaginated<OrdemPendenteDto>
-        error?: unknown
-        response: Response
-      }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
-      }
-      return result.data
+      const result = await api.GET('/api/pagamentos/pendencias', { params: { query } })
+      return receberPaginado<OrdemPendenteDto>(result)
     },
   })
 }

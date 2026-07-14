@@ -5,6 +5,8 @@ import { Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { toast } from 'sonner'
+import { aplicarErrosValidacao } from '@/api/errors'
 import { produtoSchema, type ProdutoFormValues } from '../helpers/produtoSchema'
 
 interface ProdutoFormProps {
@@ -59,17 +61,8 @@ export function ProdutoForm({
     try {
       await onSubmit(values)
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes) {
-        for (const detalhe of apiErr.detalhes) {
-          if (/nome/i.test(detalhe)) setError('nome', { message: detalhe })
-          else if (/refer/i.test(detalhe)) setError('referencia', { message: detalhe })
-          else if (/custo/i.test(detalhe)) setError('precoCusto', { message: detalhe })
-          else if (/venda/i.test(detalhe)) setError('precoVenda', { message: detalhe })
-          else if (/quantidade/i.test(detalhe)) setError('quantidadeEstoque', { message: detalhe })
-          else if (/m[íi]nimo/i.test(detalhe)) setError('estoqueMinimo', { message: detalhe })
-        }
-      }
+      const naoAtribuidos = aplicarErrosValidacao<ProdutoFormValues>(err, setError)
+      if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
     }
   }
 

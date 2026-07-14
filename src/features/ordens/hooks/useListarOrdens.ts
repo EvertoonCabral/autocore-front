@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { toApiError } from '@/api/errors'
-import type { ApiPaginated, OrdemServicoResumoDto } from '@/api/types'
+import { receberPaginado } from '@/api/envelope'
+import type { OrdemServicoResumoDto } from '@/api/types'
 import type { StatusOrdem } from '@/shared/enums/statusOrdem'
 
 export interface ListarOrdensParams {
@@ -33,15 +33,8 @@ export function useListarOrdens(params: ListarOrdensParams) {
       if (params.abertaDe) query.abertaDe = params.abertaDe
       if (params.abertaAte) query.abertaAte = params.abertaAte
 
-      const result = (await api.GET('/api/ordens', { params: { query } })) as {
-        data?: ApiPaginated<OrdemServicoResumoDto>
-        error?: unknown
-        response: Response
-      }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
-      }
-      return result.data
+      const result = await api.GET('/api/ordens', { params: { query } })
+      return receberPaginado<OrdemServicoResumoDto>(result)
     },
   })
 }

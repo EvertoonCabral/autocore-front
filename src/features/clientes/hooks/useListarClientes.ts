@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { toApiError } from '@/api/errors'
-import type { ApiPaginated, ClienteDto } from '@/api/types'
+import { receberPaginado } from '@/api/envelope'
+import type { ClienteDto } from '@/api/types'
 
 export interface ListarClientesParams {
   filtro?: string
@@ -22,7 +22,7 @@ export function useListarClientes(params: ListarClientesParams) {
     queryKey: clientesKeys.list(params),
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const result = (await api.GET('/api/clientes', {
+      const result = await api.GET('/api/clientes', {
         params: {
           query: {
             ...(params.filtro ? { filtro: params.filtro } : {}),
@@ -31,15 +31,8 @@ export function useListarClientes(params: ListarClientesParams) {
             incluirInativos: params.incluirInativos ?? false,
           },
         },
-      })) as {
-        data?: ApiPaginated<ClienteDto>
-        error?: unknown
-        response: Response
-      }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
-      }
-      return result.data
+      })
+      return receberPaginado<ClienteDto>(result)
     },
   })
 }

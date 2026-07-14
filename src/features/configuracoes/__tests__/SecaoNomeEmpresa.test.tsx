@@ -50,7 +50,10 @@ describe('<SecaoNomeEmpresa>', () => {
     server.use(
       http.put(`${API}/api/configuracoes/empresa`, () =>
         HttpResponse.json(
-          { erro: 'Dados inválidos', detalhes: ['Nome inválido — máximo 150 caracteres.'] },
+          {
+            erro: 'Dados inválidos',
+            detalhes: [{ campo: 'nomeEmpresa', mensagem: 'Nome inválido — máximo 150 caracteres.' }],
+          },
           { status: 422 },
         ),
       ),

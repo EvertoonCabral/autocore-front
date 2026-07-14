@@ -57,6 +57,8 @@ export interface ApiPaginated<T> {
 // ─── Erros ─────────────────────────────────────────────────────────────────
 export type ApiErrorBody           = components['schemas']['ApiErrorResponse']
 export type ApiValidationErrorBody = components['schemas']['ApiValidationErrorResponse']
+/** `{ campo, mensagem }` — um detalhe de erro de validação 422. */
+export type DetalheValidacao       = components['schemas']['DetalheValidacao']
 
 // ─── Tipos derivados (claims) ──────────────────────────────────────────────
 /**

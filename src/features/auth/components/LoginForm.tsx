@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useLogin } from '../hooks/useLogin'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import { loginSchema, type LoginFormValues } from '../helpers/loginSchema'
 
 interface LoginFormProps {
@@ -30,17 +31,12 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       await login.mutateAsync(values)
       onSuccess()
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; message?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation') {
-        // 422 — distribui detalhes por campo de forma simples
-        for (const detalhe of apiErr.detalhes ?? []) {
-          if (/email/i.test(detalhe)) setError('email', { message: detalhe })
-          else if (/senha/i.test(detalhe)) setError('senha', { message: detalhe })
-        }
-        toast.error(apiErr.message ?? 'Dados inválidos.')
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<LoginFormValues>(err, setError)
+        toast.error(naoAtribuidos.length ? naoAtribuidos.join(' ') : err.message)
         return
       }
-      toast.error(apiErr.message ?? 'Não foi possível entrar.')
+      toast.error(err instanceof Error ? err.message : 'Não foi possível entrar.')
     }
   }
 

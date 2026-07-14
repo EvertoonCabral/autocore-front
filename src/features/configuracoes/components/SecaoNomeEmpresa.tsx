@@ -10,6 +10,7 @@ import {
   nomeEmpresaSchema,
   type NomeEmpresaFormValues,
 } from '../helpers/configuracaoEmpresaSchema'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import { useAtualizarNomeEmpresa } from '../hooks/useAtualizarNomeEmpresa'
 import type { ConfiguracaoEmpresaDto } from '@/api/types'
 
@@ -48,18 +49,11 @@ export function SecaoNomeEmpresa({ configuracao }: Props) {
       toast.success('Nome da empresa atualizado.')
       reset({ nomeEmpresa: values.nomeEmpresa })
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; message?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes && apiErr.detalhes.length > 0) {
-        let distributed = false
-        for (const detalhe of apiErr.detalhes) {
-          if (/nome/i.test(detalhe)) {
-            setError('nomeEmpresa', { message: detalhe })
-            distributed = true
-          }
-        }
-        if (!distributed) toast.error(apiErr.detalhes.join(' '))
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<NomeEmpresaFormValues>(err, setError)
+        if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
       } else {
-        const msg = apiErr.message ?? 'Não foi possível salvar o nome.'
+        const msg = err instanceof Error ? err.message : 'Não foi possível salvar o nome.'
         setGenericError(msg)
         toast.error(msg)
       }

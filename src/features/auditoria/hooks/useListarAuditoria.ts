@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { toApiError } from '@/api/errors'
-import type { ApiPaginated, AuditoriaOperacaoDto } from '@/api/types'
+import { receberPaginado } from '@/api/envelope'
+import type { AuditoriaOperacaoDto } from '@/api/types'
 import { auditoriaKeys } from './useListarOperacoesEntidade'
 
 export interface ListarAuditoriaParams {
@@ -39,17 +39,8 @@ export function useListarAuditoria(
       if (params.de) query.de = params.de
       if (params.ate) query.ate = params.ate
 
-      const result = (await api.GET('/api/auditoria', {
-        params: { query },
-      })) as {
-        data?: ApiPaginated<AuditoriaOperacaoDto>
-        error?: unknown
-        response: Response
-      }
-      if (result.error || !result.data) {
-        throw toApiError(result.error, result.response.status)
-      }
-      return result.data
+      const result = await api.GET('/api/auditoria', { params: { query } })
+      return receberPaginado<AuditoriaOperacaoDto>(result)
     },
   })
 }

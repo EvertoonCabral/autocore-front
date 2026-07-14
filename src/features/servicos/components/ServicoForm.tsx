@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { toast } from 'sonner'
+import { aplicarErrosValidacao } from '@/api/errors'
 import { servicoSchema, type ServicoFormValues } from '../helpers/servicoSchema'
 
 interface ServicoFormProps {
@@ -56,14 +58,8 @@ export function ServicoForm({
     try {
       await onSubmit(values)
     } catch (err: unknown) {
-      const apiErr = err as { kind?: string; detalhes?: string[] }
-      if (apiErr.kind === 'validation' && apiErr.detalhes) {
-        for (const detalhe of apiErr.detalhes) {
-          if (/nome/i.test(detalhe)) setError('nome', { message: detalhe })
-          else if (/descri/i.test(detalhe)) setError('descricao', { message: detalhe })
-          else if (/pre[çc]o/i.test(detalhe)) setError('preco', { message: detalhe })
-        }
-      }
+      const naoAtribuidos = aplicarErrosValidacao<ServicoFormValues>(err, setError)
+      if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
     }
   }
 

@@ -11,11 +11,9 @@ import {
   configuracaoEmailSchema,
   type ConfiguracaoEmailFormValues,
 } from '../helpers/configuracaoEmailSchema'
+import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import type { ConfiguracaoEmailDto } from '../hooks/useObterConfiguracaoEmail'
-import type {
-  AtualizarConfiguracaoEmailDto,
-  AtualizarEmailError,
-} from '../hooks/useAtualizarConfiguracaoEmail'
+import type { AtualizarConfiguracaoEmailDto } from '../hooks/useAtualizarConfiguracaoEmail'
 
 interface Props {
   defaultValues: ConfiguracaoEmailDto
@@ -94,27 +92,11 @@ export function ConfiguracaoEmailForm({ defaultValues, onSubmit }: Props) {
       toast.success('Configuração de email atualizada.')
       reset({ ...values, smtpSenha: '' })
     } catch (err: unknown) {
-      const apiErr = err as AtualizarEmailError
-      if (apiErr.kind === 'validation' && apiErr.detalhes && apiErr.detalhes.length > 0) {
-        let distributed = false
-        for (const d of apiErr.detalhes) {
-          if (/host/i.test(d)) {
-            setError('smtpHost', { message: d }); distributed = true
-          } else if (/porta/i.test(d)) {
-            setError('smtpPorta', { message: d }); distributed = true
-          } else if (/usu[áa]rio/i.test(d)) {
-            setError('smtpUsuario', { message: d }); distributed = true
-          } else if (/senha/i.test(d)) {
-            setError('smtpSenha', { message: d }); distributed = true
-          } else if (/remetente.*nome|nome.*remetente/i.test(d)) {
-            setError('nomeRemetente', { message: d }); distributed = true
-          } else if (/e-?mail.*remetente|remetente.*e-?mail/i.test(d)) {
-            setError('emailRemetente', { message: d }); distributed = true
-          }
-        }
-        if (!distributed) toast.error(apiErr.detalhes.join(' '))
+      if (isValidationError(err)) {
+        const naoAtribuidos = aplicarErrosValidacao<ConfiguracaoEmailFormValues>(err, setError)
+        if (naoAtribuidos.length) toast.error(naoAtribuidos.join(' '))
       } else {
-        const msg = apiErr.message ?? 'Não foi possível salvar a configuração.'
+        const msg = err instanceof Error ? err.message : 'Não foi possível salvar a configuração.'
         setGenericError(msg)
         toast.error(msg)
       }
