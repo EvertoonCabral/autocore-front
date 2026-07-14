@@ -25,8 +25,8 @@ export function useAdicionarItemProduto() {
       })
       if (error) throw toApiError(error, response.status)
     },
-    onSuccess: async (_data, { ordemId }) => {
-      await queryClient.invalidateQueries({ queryKey: ordensKeys.detail(ordemId) })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ordensKeys.all })
     },
   })
 }
@@ -45,8 +45,8 @@ export function useRemoverItemProduto() {
       })
       if (error) throw toApiError(error, response.status)
     },
-    onSuccess: async (_data, { ordemId }) => {
-      await queryClient.invalidateQueries({ queryKey: ordensKeys.detail(ordemId) })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ordensKeys.all })
     },
   })
 }

@@ -17,6 +17,7 @@ export const ordensKeys = {
   all: ['ordens'] as const,
   list: (params: ListarOrdensParams) => ['ordens', 'list', params] as const,
   detail: (id: number) => ['ordens', 'detail', id] as const,
+  timeline: (id: number) => ['ordens', 'timeline', id] as const,
 }
 
 export function useListarOrdens(params: ListarOrdensParams) {

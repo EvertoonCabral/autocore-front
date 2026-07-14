@@ -5,6 +5,7 @@ import { toApiError, type ApiError } from '@/api/errors'
 import type { CobrancaIndividualResultado } from '@/api/types'
 import { cobrancasKeys } from './useListarHistorico'
 import { pagamentosKeys } from '@/features/pagamentos/hooks/useListarPendencias'
+import { ordensKeys } from '@/features/ordens/hooks/useListarOrdens'
 
 /**
  * `POST /api/cobrancas/disparar/{ordemServicoId}` — cobrança individual proativa.
@@ -56,9 +57,13 @@ export function useCobrarOrdem() {
       throw toApiError(result.error, result.response.status)
     },
     onSuccess: async () => {
+      // A cobrança gera uma entrada na timeline da OS e pode mudar o estado
+      // exibido no detalhe — invalidar ordensKeys.all cobre detalhe e timeline
+      // (antes só cobranças/pendências eram atualizadas).
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: cobrancasKeys.all }),
         queryClient.invalidateQueries({ queryKey: pagamentosKeys.all }),
+        queryClient.invalidateQueries({ queryKey: ordensKeys.all }),
       ])
     },
   })

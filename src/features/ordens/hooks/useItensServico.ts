@@ -22,8 +22,8 @@ export function useAdicionarItemServico() {
       })
       if (error) throw toApiError(error, response.status)
     },
-    onSuccess: async (_data, { ordemId }) => {
-      await queryClient.invalidateQueries({ queryKey: ordensKeys.detail(ordemId) })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ordensKeys.all })
     },
   })
 }
@@ -42,8 +42,8 @@ export function useRemoverItemServico() {
       })
       if (error) throw toApiError(error, response.status)
     },
-    onSuccess: async (_data, { ordemId }) => {
-      await queryClient.invalidateQueries({ queryKey: ordensKeys.detail(ordemId) })
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ordensKeys.all })
     },
   })
 }

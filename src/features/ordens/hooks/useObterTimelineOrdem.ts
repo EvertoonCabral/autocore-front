@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { toApiError } from '@/api/errors'
+import { ordensKeys } from './useListarOrdens'
 
 // Mesma numeração do enum `TipoEntradaTimelineOrdem` no back.
 export const TIPO_OPERACAO = 1
@@ -37,7 +38,7 @@ export interface TimelineEntradaOrdem {
  */
 export function useObterTimelineOrdem(ordemId: number | undefined) {
   return useQuery({
-    queryKey: ['ordens', 'timeline', ordemId],
+    queryKey: ordensKeys.timeline(ordemId ?? 0),
     enabled: !!ordemId && ordemId > 0,
     queryFn: async (): Promise<TimelineEntradaOrdem[]> => {
       const { data, error, response } = await api.GET('/api/ordens/{id}/timeline', {

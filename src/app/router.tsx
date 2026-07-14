@@ -1,32 +1,38 @@
+import { lazy } from 'react'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import { AuthenticatedLayout } from '@/layouts/AuthenticatedLayout'
 import { PublicLayout } from '@/layouts/PublicLayout'
-import { LoginPage } from '@/features/auth/routes/LoginPage'
-import { DashboardPage } from '@/features/dashboard/routes/DashboardPage'
-import { ClientesListPage } from '@/features/clientes/routes/ClientesListPage'
-import { NovoClientePage } from '@/features/clientes/routes/NovoClientePage'
-import { ClienteDetalhePage } from '@/features/clientes/routes/ClienteDetalhePage'
-import { EditarClientePage } from '@/features/clientes/routes/EditarClientePage'
-import { ServicosListPage } from '@/features/servicos/routes/ServicosListPage'
-import { NovoServicoPage } from '@/features/servicos/routes/NovoServicoPage'
-import { ServicoDetalhePage } from '@/features/servicos/routes/ServicoDetalhePage'
-import { EditarServicoPage } from '@/features/servicos/routes/EditarServicoPage'
-import { ProdutosListPage } from '@/features/produtos/routes/ProdutosListPage'
-import { ProdutosAbaixoMinimoPage } from '@/features/produtos/routes/ProdutosAbaixoMinimoPage'
-import { NovoProdutoPage } from '@/features/produtos/routes/NovoProdutoPage'
-import { ProdutoDetalhePage } from '@/features/produtos/routes/ProdutoDetalhePage'
-import { EditarProdutoPage } from '@/features/produtos/routes/EditarProdutoPage'
-import { OrdensListPage } from '@/features/ordens/routes/OrdensListPage'
-import { NovaOrdemPage } from '@/features/ordens/routes/NovaOrdemPage'
-import { OrdemDetalhePage } from '@/features/ordens/routes/OrdemDetalhePage'
-import { PendenciasPage } from '@/features/pagamentos/routes/PendenciasPage'
-import { HistoricoCobrancaPage } from '@/features/cobrancas/routes/HistoricoCobrancaPage'
-import { ConfiguracoesPage } from '@/features/configuracoes/routes/ConfiguracoesPage'
-import { UsuariosPage } from '@/features/usuarios/routes/UsuariosPage'
-import { AuditoriaRelatorioPage } from '@/features/auditoria/routes/AuditoriaRelatorioPage'
 import { RequireAuth } from '@/shared/guards/RequireAuth'
 import { RequireRole } from '@/shared/guards/RequireRole'
 import { NotFound } from './NotFound'
+
+// Páginas carregadas sob demanda (code splitting): cada rota vira um chunk
+// próprio, tirando páginas pesadas (ex.: Dashboard + recharts) do bundle
+// inicial. As páginas usam named export, daí o wrapper para o default do lazy.
+// Layouts e guards ficam eager (estão no caminho crítico de toda navegação).
+const LoginPage = lazy(() => import('@/features/auth/routes/LoginPage').then((m) => ({ default: m.LoginPage })))
+const DashboardPage = lazy(() => import('@/features/dashboard/routes/DashboardPage').then((m) => ({ default: m.DashboardPage })))
+const ClientesListPage = lazy(() => import('@/features/clientes/routes/ClientesListPage').then((m) => ({ default: m.ClientesListPage })))
+const NovoClientePage = lazy(() => import('@/features/clientes/routes/NovoClientePage').then((m) => ({ default: m.NovoClientePage })))
+const ClienteDetalhePage = lazy(() => import('@/features/clientes/routes/ClienteDetalhePage').then((m) => ({ default: m.ClienteDetalhePage })))
+const EditarClientePage = lazy(() => import('@/features/clientes/routes/EditarClientePage').then((m) => ({ default: m.EditarClientePage })))
+const ServicosListPage = lazy(() => import('@/features/servicos/routes/ServicosListPage').then((m) => ({ default: m.ServicosListPage })))
+const NovoServicoPage = lazy(() => import('@/features/servicos/routes/NovoServicoPage').then((m) => ({ default: m.NovoServicoPage })))
+const ServicoDetalhePage = lazy(() => import('@/features/servicos/routes/ServicoDetalhePage').then((m) => ({ default: m.ServicoDetalhePage })))
+const EditarServicoPage = lazy(() => import('@/features/servicos/routes/EditarServicoPage').then((m) => ({ default: m.EditarServicoPage })))
+const ProdutosListPage = lazy(() => import('@/features/produtos/routes/ProdutosListPage').then((m) => ({ default: m.ProdutosListPage })))
+const ProdutosAbaixoMinimoPage = lazy(() => import('@/features/produtos/routes/ProdutosAbaixoMinimoPage').then((m) => ({ default: m.ProdutosAbaixoMinimoPage })))
+const NovoProdutoPage = lazy(() => import('@/features/produtos/routes/NovoProdutoPage').then((m) => ({ default: m.NovoProdutoPage })))
+const ProdutoDetalhePage = lazy(() => import('@/features/produtos/routes/ProdutoDetalhePage').then((m) => ({ default: m.ProdutoDetalhePage })))
+const EditarProdutoPage = lazy(() => import('@/features/produtos/routes/EditarProdutoPage').then((m) => ({ default: m.EditarProdutoPage })))
+const OrdensListPage = lazy(() => import('@/features/ordens/routes/OrdensListPage').then((m) => ({ default: m.OrdensListPage })))
+const NovaOrdemPage = lazy(() => import('@/features/ordens/routes/NovaOrdemPage').then((m) => ({ default: m.NovaOrdemPage })))
+const OrdemDetalhePage = lazy(() => import('@/features/ordens/routes/OrdemDetalhePage').then((m) => ({ default: m.OrdemDetalhePage })))
+const PendenciasPage = lazy(() => import('@/features/pagamentos/routes/PendenciasPage').then((m) => ({ default: m.PendenciasPage })))
+const HistoricoCobrancaPage = lazy(() => import('@/features/cobrancas/routes/HistoricoCobrancaPage').then((m) => ({ default: m.HistoricoCobrancaPage })))
+const ConfiguracoesPage = lazy(() => import('@/features/configuracoes/routes/ConfiguracoesPage').then((m) => ({ default: m.ConfiguracoesPage })))
+const UsuariosPage = lazy(() => import('@/features/usuarios/routes/UsuariosPage').then((m) => ({ default: m.UsuariosPage })))
+const AuditoriaRelatorioPage = lazy(() => import('@/features/auditoria/routes/AuditoriaRelatorioPage').then((m) => ({ default: m.AuditoriaRelatorioPage })))
 
 const router = createBrowserRouter([
   {
