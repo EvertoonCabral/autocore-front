@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { VeiculoSelect } from '@/features/veiculos/components/VeiculoSelect'
 import {
   Select,
   SelectContent,
@@ -27,6 +28,9 @@ import { useAtualizarOrdem } from '../hooks/useAtualizarOrdem'
 interface Props {
   ordemId: number
   status: StatusOrdem
+  /** Dono da OS — usado para listar os veículos elegíveis. */
+  clienteId?: number | null | undefined
+  veiculoId?: number | null | undefined
   descricaoProblema?: string | null | undefined
   observacoes?: string | null | undefined
 }
@@ -43,6 +47,8 @@ const asStatusEditavel = (s: StatusOrdem): StatusEditavel =>
 export function EditarOrdemPanel({
   ordemId,
   status,
+  clienteId,
+  veiculoId,
   descricaoProblema,
   observacoes,
 }: Props) {
@@ -50,6 +56,7 @@ export function EditarOrdemPanel({
   const editavel = podeEditarItens(status)
 
   const {
+    control,
     register,
     handleSubmit,
     setValue,
@@ -59,6 +66,7 @@ export function EditarOrdemPanel({
   } = useForm<AtualizarOrdemFormValues>({
     resolver: zodResolver(atualizarOrdemSchema),
     defaultValues: {
+      veiculoId: veiculoId ?? undefined,
       descricaoProblema: descricaoProblema ?? '',
       observacoes: observacoes ?? '',
       status: asStatusEditavel(status),
@@ -68,11 +76,12 @@ export function EditarOrdemPanel({
   // Re-sincroniza o form quando o detalhe da OS mudar (após mutations).
   useEffect(() => {
     reset({
+      veiculoId: veiculoId ?? undefined,
       descricaoProblema: descricaoProblema ?? '',
       observacoes: observacoes ?? '',
       status: asStatusEditavel(status),
     })
-  }, [descricaoProblema, observacoes, status, reset])
+  }, [veiculoId, descricaoProblema, observacoes, status, reset])
 
   const statusValue = watch('status')
 
@@ -122,6 +131,27 @@ export function EditarOrdemPanel({
               ))}
             </SelectContent>
           </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="veiculo">Veículo</Label>
+          <Controller
+            control={control}
+            name="veiculoId"
+            render={({ field }) => (
+              <VeiculoSelect
+                clienteId={clienteId ?? undefined}
+                value={field.value}
+                onChange={field.onChange}
+                disabled={!editavel}
+              />
+            )}
+          />
+          {errors.veiculoId && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.veiculoId.message}
+            </p>
+          )}
         </div>
       </div>
 

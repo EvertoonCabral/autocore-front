@@ -17,6 +17,7 @@ export function useAtualizarOrdem() {
         params: { path: { id } },
         body: {
           id,
+          veiculoId: values.veiculoId ?? null,
           descricaoProblema: values.descricaoProblema ?? null,
           observacoes: values.observacoes ?? null,
           status: values.status,

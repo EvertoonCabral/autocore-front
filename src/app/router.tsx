@@ -25,6 +25,10 @@ const ProdutosAbaixoMinimoPage = lazy(() => import('@/features/produtos/routes/P
 const NovoProdutoPage = lazy(() => import('@/features/produtos/routes/NovoProdutoPage').then((m) => ({ default: m.NovoProdutoPage })))
 const ProdutoDetalhePage = lazy(() => import('@/features/produtos/routes/ProdutoDetalhePage').then((m) => ({ default: m.ProdutoDetalhePage })))
 const EditarProdutoPage = lazy(() => import('@/features/produtos/routes/EditarProdutoPage').then((m) => ({ default: m.EditarProdutoPage })))
+const VeiculosListPage = lazy(() => import('@/features/veiculos/routes/VeiculosListPage').then((m) => ({ default: m.VeiculosListPage })))
+const NovoVeiculoPage = lazy(() => import('@/features/veiculos/routes/NovoVeiculoPage').then((m) => ({ default: m.NovoVeiculoPage })))
+const VeiculoDetalhePage = lazy(() => import('@/features/veiculos/routes/VeiculoDetalhePage').then((m) => ({ default: m.VeiculoDetalhePage })))
+const EditarVeiculoPage = lazy(() => import('@/features/veiculos/routes/EditarVeiculoPage').then((m) => ({ default: m.EditarVeiculoPage })))
 const OrdensListPage = lazy(() => import('@/features/ordens/routes/OrdensListPage').then((m) => ({ default: m.OrdensListPage })))
 const NovaOrdemPage = lazy(() => import('@/features/ordens/routes/NovaOrdemPage').then((m) => ({ default: m.NovaOrdemPage })))
 const OrdemDetalhePage = lazy(() => import('@/features/ordens/routes/OrdemDetalhePage').then((m) => ({ default: m.OrdemDetalhePage })))
@@ -60,6 +64,10 @@ const router = createBrowserRouter([
       { path: '/produtos/novo', element: <NovoProdutoPage /> },
       { path: '/produtos/:id', element: <ProdutoDetalhePage /> },
       { path: '/produtos/:id/editar', element: <EditarProdutoPage /> },
+      { path: '/veiculos', element: <VeiculosListPage /> },
+      { path: '/veiculos/novo', element: <NovoVeiculoPage /> },
+      { path: '/veiculos/:id', element: <VeiculoDetalhePage /> },
+      { path: '/veiculos/:id/editar', element: <EditarVeiculoPage /> },
       { path: '/ordens', element: <OrdensListPage /> },
       { path: '/ordens/nova', element: <NovaOrdemPage /> },
       { path: '/ordens/:id', element: <OrdemDetalhePage /> },

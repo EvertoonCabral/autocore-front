@@ -83,6 +83,12 @@ export function OrdemDetalhePage() {
             </Link>
             <span>·</span>
             <span>Aberta em {formatDataHora(ordem.abertaEm)}</span>
+            {ordem.veiculoDescricao && (
+              <>
+                <span>·</span>
+                <span className="font-medium">{ordem.veiculoDescricao}</span>
+              </>
+            )}
           </span>
         }
         actions={
@@ -208,6 +214,8 @@ export function OrdemDetalhePage() {
         <EditarOrdemPanel
           ordemId={numericId}
           status={status}
+          clienteId={ordem.clienteId}
+          veiculoId={ordem.veiculoId}
           descricaoProblema={ordem.descricaoProblema}
           observacoes={ordem.observacoes}
         />

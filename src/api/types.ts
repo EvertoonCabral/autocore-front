@@ -17,6 +17,20 @@ export type ProdutoDto     = components['schemas']['ProdutoDto']
 export type CatalogoServicoDto      = components['schemas']['CatalogoServicoDto']
 export type OrdemServicoResumoDto   = components['schemas']['OrdemServicoResumoDto']
 export type OrdemServicoDetalheDto  = components['schemas']['OrdemServicoDetalheDto']
+export type VeiculoResumoDto        = components['schemas']['VeiculoResumoDto']
+export type VeiculoDetalheDto       = components['schemas']['VeiculoDetalheDto']
+/**
+ * Payload do conflito de placa (corpo do HTTP 409 ao criar veículo). O back
+ * não emite este DTO como schema nomeado no OpenAPI (o campo `conflito` sai
+ * tipado como objeto livre), então o shape é declarado aqui manualmente,
+ * espelhando `ConflitoPlacaDto` no back.
+ */
+export interface ConflitoPlacaDto {
+  veiculoId: number
+  placa: string
+  clienteId: number
+  clienteNome: string
+}
 export type ItemServicoDto          = components['schemas']['ItemServicoDto']
 export type ItemProdutoDto          = components['schemas']['ItemProdutoDto']
 export type PagamentoDto            = components['schemas']['PagamentoDto']

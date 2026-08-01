@@ -15,11 +15,19 @@ const optionalText = (max: number, label: string) =>
  *  - ClienteId > 0
  *  - DescricaoProblema, Observacoes: opcionais, <= 1000 cada
  */
+/** Veículo opcional na OS: número > 0 ou ausente (sem veículo vinculado). */
+const optionalVeiculoId = z.coerce
+  .number()
+  .int()
+  .positive()
+  .optional()
+
 export const abrirOrdemSchema = z.object({
   clienteId: z.coerce
     .number({ invalid_type_error: 'Selecione um cliente.' })
     .int('Cliente inválido.')
     .positive('Selecione um cliente.'),
+  veiculoId: optionalVeiculoId,
   descricaoProblema: optionalText(1000, 'Descrição'),
   observacoes: optionalText(1000, 'Observações'),
 })
@@ -28,6 +36,7 @@ export type AbrirOrdemFormValues = z.infer<typeof abrirOrdemSchema>
 
 /** Schema do PUT /api/ordens/{id} — descricao, observacoes, status (não-final). */
 export const atualizarOrdemSchema = z.object({
+  veiculoId: optionalVeiculoId,
   descricaoProblema: optionalText(1000, 'Descrição'),
   observacoes: optionalText(1000, 'Observações'),
   status: z.coerce

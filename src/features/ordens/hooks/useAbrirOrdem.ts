@@ -12,6 +12,7 @@ export function useAbrirOrdem() {
       const { data, error, response } = await api.POST('/api/ordens', {
         body: {
           clienteId: form.clienteId,
+          veiculoId: form.veiculoId ?? null,
           descricaoProblema: form.descricaoProblema ?? null,
           observacoes: form.observacoes ?? null,
         },

@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import {
+  Car,
   ClipboardList,
   CreditCard,
   FileSearch,
@@ -26,6 +27,7 @@ interface NavItem {
 const items: NavItem[] = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/clientes', label: 'Clientes', icon: Users, end: false },
+  { to: '/veiculos', label: 'Veículos', icon: Car, end: false },
   { to: '/servicos', label: 'Serviços', icon: Settings2, end: false },
   { to: '/produtos', label: 'Produtos', icon: Package, end: false },
   { to: '/ordens', label: 'Ordens de Serviço', icon: ClipboardList, end: false },

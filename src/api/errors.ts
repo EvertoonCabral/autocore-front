@@ -4,6 +4,7 @@ import type { ApiErrorBody, ApiValidationErrorBody, DetalheValidacao } from './t
 export type ApiErrorKind =
   | 'validation' // 422
   | 'business' // 400
+  | 'conflict' // 409
   | 'unauthorized' // 401
   | 'forbidden' // 403
   | 'notFound' // 404
@@ -15,18 +16,33 @@ export class ApiError extends Error {
   readonly kind: ApiErrorKind
   readonly status: number
   readonly detalhes: DetalheValidacao[]
+  /**
+   * Payload extra do corpo de conflito (HTTP 409). Ex.: `conflito` do
+   * `ApiConflitoResponse` — quem já usa a placa ao cadastrar um veículo.
+   * `unknown` porque o back não tipa o campo no OpenAPI; o caller faz o
+   * narrowing (ver `isConflitoPlacaError` no módulo de veículos).
+   */
+  readonly conflito?: unknown
 
-  constructor(kind: ApiErrorKind, status: number, message: string, detalhes: DetalheValidacao[] = []) {
+  constructor(
+    kind: ApiErrorKind,
+    status: number,
+    message: string,
+    detalhes: DetalheValidacao[] = [],
+    conflito?: unknown,
+  ) {
     super(message)
     this.name = 'ApiError'
     this.kind = kind
     this.status = status
     this.detalhes = detalhes
+    this.conflito = conflito
   }
 }
 
 function kindFromStatus(status: number): ApiErrorKind {
   if (status === 422) return 'validation'
+  if (status === 409) return 'conflict'
   if (status === 401) return 'unauthorized'
   if (status === 403) return 'forbidden'
   if (status === 404) return 'notFound'
@@ -46,10 +62,12 @@ export function toApiError(error: unknown, status: number | undefined): ApiError
     return new ApiError('network', 0, 'Falha de comunicação com o servidor.')
   }
 
-  const body = error as Partial<ApiErrorBody & ApiValidationErrorBody> | undefined
+  const body = error as
+    | Partial<ApiErrorBody & ApiValidationErrorBody & { conflito?: unknown }>
+    | undefined
   const erro = body?.erro ?? defaultMessageFor(code)
   const detalhes = (body?.detalhes ?? []).filter((d): d is DetalheValidacao => d != null)
-  return new ApiError(kindFromStatus(code), code, erro, detalhes)
+  return new ApiError(kindFromStatus(code), code, erro, detalhes, body?.conflito)
 }
 
 function defaultMessageFor(status: number): string {

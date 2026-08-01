@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { PageHeader } from '@/shared/components/PageHeader'
 import { ClienteSelect } from '@/features/clientes/components/ClienteSelect'
+import { VeiculoSelect } from '@/features/veiculos/components/VeiculoSelect'
 import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import { abrirOrdemSchema, type AbrirOrdemFormValues } from '../helpers/ordemSchemas'
 import { useAbrirOrdem } from '../hooks/useAbrirOrdem'
@@ -21,11 +22,15 @@ export function NovaOrdemPage() {
     register,
     handleSubmit,
     setError,
+    setValue,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<AbrirOrdemFormValues>({
     resolver: zodResolver(abrirOrdemSchema),
     defaultValues: { descricaoProblema: '', observacoes: '' } as Partial<AbrirOrdemFormValues>,
   })
+
+  const clienteSelecionado = watch('clienteId')
 
   const onSubmit: SubmitHandler<AbrirOrdemFormValues> = async (values) => {
     try {
@@ -64,7 +69,14 @@ export function NovaOrdemPage() {
             control={control}
             name="clienteId"
             render={({ field }) => (
-              <ClienteSelect value={field.value} onChange={field.onChange} />
+              <ClienteSelect
+                value={field.value}
+                onChange={(clienteId) => {
+                  field.onChange(clienteId)
+                  // Trocar de cliente invalida o veículo escolhido.
+                  setValue('veiculoId', undefined)
+                }}
+              />
             )}
           />
           <p className="text-xs text-muted-foreground">
@@ -73,6 +85,29 @@ export function NovaOrdemPage() {
           {errors.clienteId && (
             <p role="alert" className="text-sm text-destructive">
               {errors.clienteId.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="veiculo">Veículo</Label>
+          <Controller
+            control={control}
+            name="veiculoId"
+            render={({ field }) => (
+              <VeiculoSelect
+                clienteId={clienteSelecionado}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <p className="text-xs text-muted-foreground">
+            Opcional. Selecione o cliente primeiro para listar os veículos dele.
+          </p>
+          {errors.veiculoId && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.veiculoId.message}
             </p>
           )}
         </div>
