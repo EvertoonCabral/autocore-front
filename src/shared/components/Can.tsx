@@ -20,5 +20,6 @@ export function useCan(permission: Permission): boolean {
   const { user } = useAuth()
   return canPerform(user?.role as Role | undefined, permission, {
     podeVerAuditoria: user?.podeVerAuditoria,
+    podeVerRelatorios: user?.podeVerRelatorios,
   })
 }

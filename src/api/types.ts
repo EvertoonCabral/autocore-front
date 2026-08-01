@@ -54,6 +54,15 @@ export type DistribuicaoFormaPagamentoDto   = components['schemas']['Distribuica
 export type DistribuicaoStatusOsDto         = components['schemas']['DistribuicaoStatusOsDto']
 export type MesFaturamentoDto               = components['schemas']['MesFaturamentoDto']
 
+// ─── Relatórios financeiros ────────────────────────────────────────────────
+export type FaturamentoRecebidoDto  = components['schemas']['FaturamentoRecebidoDto']
+export type FaturamentoDiaDto       = components['schemas']['FaturamentoDiaDto']
+export type FaturamentoPorFormaDto  = components['schemas']['FaturamentoPorFormaDto']
+export type ResumoFinanceiroDto     = components['schemas']['ResumoFinanceiroDto']
+export type AgingFaixaDto           = components['schemas']['AgingFaixaDto']
+export type RankingClientesDto      = components['schemas']['RankingClientesDto']
+export type RankingClienteDto       = components['schemas']['RankingClienteDto']
+
 // ─── Envelopes ─────────────────────────────────────────────────────────────
 /** `{ dados: T }` — envelope padrão de item único. */
 export interface ApiEnvelope<T> {

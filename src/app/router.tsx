@@ -37,6 +37,10 @@ const HistoricoCobrancaPage = lazy(() => import('@/features/cobrancas/routes/His
 const ConfiguracoesPage = lazy(() => import('@/features/configuracoes/routes/ConfiguracoesPage').then((m) => ({ default: m.ConfiguracoesPage })))
 const UsuariosPage = lazy(() => import('@/features/usuarios/routes/UsuariosPage').then((m) => ({ default: m.UsuariosPage })))
 const AuditoriaRelatorioPage = lazy(() => import('@/features/auditoria/routes/AuditoriaRelatorioPage').then((m) => ({ default: m.AuditoriaRelatorioPage })))
+const RelatoriosPage = lazy(() => import('@/features/relatorios/routes/RelatoriosPage').then((m) => ({ default: m.RelatoriosPage })))
+const FaturamentoRecebidoPage = lazy(() => import('@/features/relatorios/routes/FaturamentoRecebidoPage').then((m) => ({ default: m.FaturamentoRecebidoPage })))
+const ResumoFinanceiroPage = lazy(() => import('@/features/relatorios/routes/ResumoFinanceiroPage').then((m) => ({ default: m.ResumoFinanceiroPage })))
+const RankingClientesPage = lazy(() => import('@/features/relatorios/routes/RankingClientesPage').then((m) => ({ default: m.RankingClientesPage })))
 
 const router = createBrowserRouter([
   {
@@ -73,6 +77,10 @@ const router = createBrowserRouter([
       { path: '/ordens/:id', element: <OrdemDetalhePage /> },
       { path: '/pendencias', element: <PendenciasPage /> },
       { path: '/cobrancas', element: <HistoricoCobrancaPage /> },
+      { path: '/relatorios', element: <RelatoriosPage /> },
+      { path: '/relatorios/faturamento', element: <FaturamentoRecebidoPage /> },
+      { path: '/relatorios/financeiro', element: <ResumoFinanceiroPage /> },
+      { path: '/relatorios/clientes', element: <RankingClientesPage /> },
       { path: '/relatorios/auditoria', element: <AuditoriaRelatorioPage /> },
       { path: '/usuarios', element: <UsuariosPage /> },
       {

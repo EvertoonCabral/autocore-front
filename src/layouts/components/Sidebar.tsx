@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import {
+  BarChart3,
   Car,
   ClipboardList,
   CreditCard,
@@ -33,6 +34,13 @@ const items: NavItem[] = [
   { to: '/ordens', label: 'Ordens de Serviço', icon: ClipboardList, end: false },
   { to: '/pendencias', label: 'Pendências', icon: CreditCard, end: false },
   { to: '/cobrancas', label: 'Cobranças', icon: MessageCircle, end: false },
+  {
+    to: '/relatorios',
+    label: 'Relatórios',
+    icon: BarChart3,
+    end: false,
+    permission: 'relatorios.ver',
+  },
   {
     to: '/relatorios/auditoria',
     label: 'Auditoria',

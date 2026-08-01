@@ -436,6 +436,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/usuarios/{id}/permissao-relatorios": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarPermissaoRelatoriosDto"];
+                    "text/json": components["schemas"]["AtualizarPermissaoRelatoriosDto"];
+                    "application/*+json": components["schemas"]["AtualizarPermissaoRelatoriosDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/clientes": {
         parameters: {
             query?: never;
@@ -2758,6 +2810,298 @@ export interface paths {
         };
         trace?: never;
     };
+    "/api/relatorios/faturamento-recebido": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                    forma?: components["schemas"]["FormaPagamento"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["FaturamentoRecebidoDtoApiResponse"];
+                        "application/json": components["schemas"]["FaturamentoRecebidoDtoApiResponse"];
+                        "text/json": components["schemas"]["FaturamentoRecebidoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/relatorios/faturamento-recebido/csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                    forma?: components["schemas"]["FormaPagamento"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/csv": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/relatorios/resumo-financeiro": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ResumoFinanceiroDtoApiResponse"];
+                        "application/json": components["schemas"]["ResumoFinanceiroDtoApiResponse"];
+                        "text/json": components["schemas"]["ResumoFinanceiroDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/relatorios/resumo-financeiro/csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/csv": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/relatorios/clientes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                    pagina?: number;
+                    porPagina?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["RankingClientesDtoApiResponse"];
+                        "application/json": components["schemas"]["RankingClientesDtoApiResponse"];
+                        "text/json": components["schemas"]["RankingClientesDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/relatorios/clientes/csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/csv": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/servicos": {
         parameters: {
             query?: never;
@@ -3349,6 +3693,13 @@ export interface components {
             /** Format: int32 */
             quantidade?: number;
         };
+        AgingFaixaDto: {
+            faixa?: string | null;
+            /** Format: double */
+            total?: number;
+            /** Format: int32 */
+            quantidade?: number;
+        };
         AjustarEstoqueBody: {
             /** Format: int32 */
             quantidade?: number;
@@ -3418,6 +3769,9 @@ export interface components {
         };
         AtualizarPermissaoAuditoriaDto: {
             podeVerAuditoria?: boolean;
+        };
+        AtualizarPermissaoRelatoriosDto: {
+            podeVerRelatorios?: boolean;
         };
         AtualizarPrecoBody: {
             /** Format: double */
@@ -3762,6 +4116,34 @@ export interface components {
             pagamentosMes?: components["schemas"]["DistribuicaoFormaPagamentoDto"][] | null;
             statusOsAbertas?: components["schemas"]["DistribuicaoStatusOsDto"][] | null;
         };
+        FaturamentoDiaDto: {
+            /** Format: date */
+            dia?: string;
+            /** Format: double */
+            total?: number;
+        };
+        FaturamentoPorFormaDto: {
+            /** Format: int32 */
+            forma?: number;
+            formaLabel?: string | null;
+            /** Format: double */
+            total?: number;
+            /** Format: int32 */
+            quantidade?: number;
+        };
+        FaturamentoRecebidoDto: {
+            /** Format: date */
+            de?: string;
+            /** Format: date */
+            ate?: string;
+            /** Format: double */
+            total?: number;
+            porDia?: components["schemas"]["FaturamentoDiaDto"][] | null;
+            porForma?: components["schemas"]["FaturamentoPorFormaDto"][] | null;
+        };
+        FaturamentoRecebidoDtoApiResponse: {
+            dados?: components["schemas"]["FaturamentoRecebidoDto"];
+        };
         /**
          * Format: int32
          * @enum {integer}
@@ -4034,6 +4416,33 @@ export interface components {
         QrCodeCobrancaDtoApiResponse: {
             dados?: components["schemas"]["QrCodeCobrancaDto"];
         };
+        RankingClienteDto: {
+            /** Format: int64 */
+            clienteId?: number;
+            clienteNome?: string | null;
+            /** Format: int32 */
+            qtdOs?: number;
+            /** Format: double */
+            totalFaturado?: number;
+        };
+        RankingClientesDto: {
+            dados?: components["schemas"]["RankingClienteDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
+            /** Format: double */
+            totalFaturadoGeral?: number;
+            /** Format: int32 */
+            totalOs?: number;
+            /** Format: double */
+            ticketMedio?: number;
+        };
+        RankingClientesDtoApiResponse: {
+            dados?: components["schemas"]["RankingClientesDto"];
+        };
         RegistrarPagamentoCommand: {
             /** Format: int64 */
             ordemServicoId?: number;
@@ -4041,6 +4450,22 @@ export interface components {
             valor?: number;
             forma?: components["schemas"]["FormaPagamento"];
             observacao?: string | null;
+        };
+        ResumoFinanceiroDto: {
+            /** Format: date */
+            de?: string;
+            /** Format: date */
+            ate?: string;
+            /** Format: double */
+            recebido?: number;
+            /** Format: double */
+            faturado?: number;
+            /** Format: double */
+            aReceber?: number;
+            aging?: components["schemas"]["AgingFaixaDto"][] | null;
+        };
+        ResumoFinanceiroDtoApiResponse: {
+            dados?: components["schemas"]["ResumoFinanceiroDto"];
         };
         StatusConexaoCobrancaDto: {
             conectado?: boolean;
@@ -4093,6 +4518,7 @@ export interface components {
             role?: string | null;
             ativo?: boolean;
             podeVerAuditoria?: boolean;
+            podeVerRelatorios?: boolean;
         };
         UsuarioDtoApiResponse: {
             dados?: components["schemas"]["UsuarioDto"];

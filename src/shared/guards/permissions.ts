@@ -26,7 +26,7 @@ export type AdminOnlyPermission = (typeof ADMIN_ONLY_PERMISSIONS)[number]
  * role. Operadores podem receber a flag via Admin nas configurações.
  * Admin sempre passa.
  */
-export const FLAG_PERMISSIONS = ['auditoria.ver'] as const
+export const FLAG_PERMISSIONS = ['auditoria.ver', 'relatorios.ver'] as const
 export type FlagPermission = (typeof FLAG_PERMISSIONS)[number]
 
 export type Permission = AdminOnlyPermission | FlagPermission
@@ -36,6 +36,7 @@ export type Role = 'Admin' | 'Operador'
 /** Flags por usuário que afetam permissões. Espelha campos de `UsuarioDto`. */
 export interface UserFlags {
   podeVerAuditoria?: boolean | null | undefined
+  podeVerRelatorios?: boolean | null | undefined
 }
 
 function isFlagPermission(p: Permission): p is FlagPermission {
@@ -51,6 +52,7 @@ export function canPerform(
   if (role === 'Admin') return true
   if (isFlagPermission(permission)) {
     if (permission === 'auditoria.ver') return flags.podeVerAuditoria === true
+    if (permission === 'relatorios.ver') return flags.podeVerRelatorios === true
     return false
   }
   return !(ADMIN_ONLY_PERMISSIONS as readonly string[]).includes(permission)

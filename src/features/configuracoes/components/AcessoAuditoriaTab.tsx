@@ -8,11 +8,13 @@ import type { UsuarioDto } from '@/api/types'
 import { useAuth } from '@/features/auth/auth-context'
 import { useListarUsuarios } from '@/shared/hooks/useListarUsuarios'
 import { useAtualizarPermissaoAuditoria } from '@/features/auditoria/hooks/useAtualizarPermissaoAuditoria'
+import { useAtualizarPermissaoRelatorios } from '@/features/relatorios/hooks/useAtualizarPermissaoRelatorios'
 
 export function AcessoAuditoriaTab() {
   const { user } = useAuth()
   const { data: usuarios, isLoading, isError } = useListarUsuarios()
   const atualizar = useAtualizarPermissaoAuditoria()
+  const atualizarRelatorios = useAtualizarPermissaoRelatorios()
 
   if (isLoading) {
     return (
@@ -97,14 +99,44 @@ export function AcessoAuditoriaTab() {
         )
       },
     },
+    {
+      id: 'permissao-relatorios',
+      header: 'Pode ver relatórios',
+      className: 'w-44 text-right',
+      cell: (u) => {
+        const checked = u.podeVerRelatorios === true
+        return (
+          <div className="flex justify-end">
+            <Switch
+              aria-label={`Permitir relatórios para ${u.nomeCompleto ?? u.email ?? `#${u.id}`}`}
+              checked={checked}
+              disabled={atualizarRelatorios.isPending}
+              onCheckedChange={async (next) => {
+                if (u.id == null) return
+                try {
+                  await atualizarRelatorios.mutateAsync({
+                    usuarioId: u.id,
+                    podeVerRelatorios: next,
+                  })
+                  toast.success('Permissão atualizada.')
+                } catch (err) {
+                  const apiErr = err as { message?: string }
+                  toast.error(apiErr.message ?? 'Não foi possível atualizar a permissão.')
+                }
+              }}
+            />
+          </div>
+        )
+      },
+    },
   ]
 
   return (
     <div className="space-y-3">
       <p className="text-sm text-muted-foreground">
-        Operadores marcados aqui podem visualizar o histórico de auditoria — útil para
-        encarregados ou supervisores. Administradores sempre têm acesso e não aparecem nesta
-        lista.
+        Operadores marcados aqui podem visualizar o histórico de auditoria e/ou os relatórios
+        financeiros — útil para encarregados ou supervisores. Administradores sempre têm acesso
+        e não aparecem nesta lista.
       </p>
       <DataTable<UsuarioDto>
         columns={columns}
