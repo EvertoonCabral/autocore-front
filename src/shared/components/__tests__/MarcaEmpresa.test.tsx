@@ -46,7 +46,7 @@ describe('<MarcaEmpresa>', () => {
     expect(screen.queryByRole('img')).not.toBeInTheDocument()
   })
 
-  it('fallback "icon-square": Wrench em quadrado + nome ao lado (Sidebar)', async () => {
+  it('fallback "icon-square": ícone de raio em quadrado + nome ao lado (Sidebar)', async () => {
     server.use(
       http.get(`${API}/api/configuracoes/empresa`, () =>
         HttpResponse.json({
@@ -68,7 +68,7 @@ describe('<MarcaEmpresa>', () => {
     expect(screen.queryByRole('img')).not.toBeInTheDocument()
   })
 
-  it('fallback "icon-circle": Wrench em círculo + nome embaixo (LoginPage)', async () => {
+  it('fallback "icon-circle": ícone de raio em círculo + nome embaixo (LoginPage)', async () => {
     server.use(
       http.get(`${API}/api/configuracoes/empresa`, () =>
         HttpResponse.json({

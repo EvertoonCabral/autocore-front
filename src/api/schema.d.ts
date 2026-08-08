@@ -1345,6 +1345,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/configuracoes/empresa/aparencia": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarAparenciaDto"];
+                    "text/json": components["schemas"]["AtualizarAparenciaDto"];
+                    "application/*+json": components["schemas"]["AtualizarAparenciaDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/configuracoes/empresa/logo": {
         parameters: {
             query?: never;
@@ -3715,6 +3765,10 @@ export interface components {
             erro?: string | null;
             detalhes?: components["schemas"]["DetalheValidacao"][] | null;
         };
+        AtualizarAparenciaDto: {
+            accentLight?: string | null;
+            accentDark?: string | null;
+        };
         AtualizarCatalogoServicoCommand: {
             /** Format: int64 */
             id?: number;
@@ -3976,6 +4030,8 @@ export interface components {
             logoMimeType?: string | null;
             /** Format: date-time */
             logoAtualizadoEm?: string | null;
+            accentLight?: string | null;
+            accentDark?: string | null;
             /** Format: date-time */
             atualizadoEm?: string | null;
             /** Format: int64 */

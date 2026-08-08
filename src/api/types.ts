@@ -40,6 +40,7 @@ export type ConfiguracaoDto         = components['schemas']['ConfiguracaoDto']
 export type ConfiguracaoEmpresaDto  = components['schemas']['ConfiguracaoEmpresaDto']
 export type AtualizarConfiguracaoEmpresaDto =
   components['schemas']['AtualizarConfiguracaoEmpresaDto']
+export type AtualizarAparenciaDto   = components['schemas']['AtualizarAparenciaDto']
 export type LogoAtualizadoDto       = components['schemas']['LogoAtualizadoDto']
 export type CobrancaJobResultado    = components['schemas']['CobrancaJobResultado']
 export type CobrancaIndividualResultado = components['schemas']['CobrancaIndividualResultado']

@@ -5,6 +5,7 @@ import { AcessoAuditoriaTab } from '../components/AcessoAuditoriaTab'
 import { ConfiguracaoCobrancaTab } from '../components/ConfiguracaoCobrancaTab'
 import { ConfiguracaoEmailTab } from '../components/ConfiguracaoEmailTab'
 import { ConfiguracaoEmpresaTab } from '../components/ConfiguracaoEmpresaTab'
+import { AparenciaTab } from '../components/AparenciaTab'
 
 export function ConfiguracoesPage() {
   return (
@@ -20,6 +21,7 @@ export function ConfiguracoesPage() {
           <TabsTrigger value="cobranca">Cobrança WhatsApp</TabsTrigger>
           <TabsTrigger value="email">Email (fallback)</TabsTrigger>
           <TabsTrigger value="empresa">Empresa</TabsTrigger>
+          <TabsTrigger value="aparencia">Aparência</TabsTrigger>
           <TabsTrigger value="acesso-auditoria">Acesso à Auditoria</TabsTrigger>
         </TabsList>
         <TabsContent value="geral">
@@ -33,6 +35,9 @@ export function ConfiguracoesPage() {
         </TabsContent>
         <TabsContent value="empresa">
           <ConfiguracaoEmpresaTab />
+        </TabsContent>
+        <TabsContent value="aparencia">
+          <AparenciaTab />
         </TabsContent>
         <TabsContent value="acesso-auditoria">
           <AcessoAuditoriaTab />

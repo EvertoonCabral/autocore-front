@@ -1,4 +1,4 @@
-import { Wrench } from 'lucide-react'
+import { Zap } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import { env } from '@/lib/env'
 import { useObterConfiguracaoEmpresa } from '@/features/configuracoes/hooks/useObterConfiguracaoEmpresa'
@@ -12,10 +12,16 @@ interface Props {
   /**
    * O que mostrar quando a empresa não tem logo definida:
    *  - `text-only`: apenas o nome da empresa em texto (default — Header global)
-   *  - `icon-square`: ícone Wrench em quadrado laranja + nome ao lado (Sidebar)
-   *  - `icon-circle`: ícone Wrench em círculo laranja (LoginPage com layout vertical)
+   *  - `icon-square`: ícone de raio (Zap) em quadrado da cor de destaque + nome ao lado (Sidebar)
+   *  - `icon-circle`: ícone de raio (Zap) em círculo da cor de destaque (LoginPage com layout vertical)
    */
   fallback?: Fallback
+  /**
+   * Texto de marca exibido ao lado do logo/ícone. Quando informado, aparece
+   * mesmo quando há logo (ex.: nome do produto "AutoCore" ao lado da logo da
+   * empresa na sidebar). Quando ausente, usa o nome da empresa nos fallbacks.
+   */
+  label?: string
   className?: string
 }
 
@@ -32,10 +38,13 @@ interface Props {
 export function MarcaEmpresa({
   size = 'md',
   fallback = 'text-only',
+  label,
   className,
 }: Props) {
   const { data } = useObterConfiguracaoEmpresa()
   const nomeEmpresa = data?.nomeEmpresa?.trim() || 'AutoCore'
+  // Texto da marca: `label` explícito (ex.: "AutoCore") tem prioridade.
+  const marca = label ?? nomeEmpresa
 
   // Tamanhos por escala
   const imgHeight = {
@@ -62,17 +71,26 @@ export function MarcaEmpresa({
     lg: 'text-2xl',
   }[size]
 
-  // Com logo: img direto (browser cacheia)
+  // Com logo: img direto (browser cacheia). Se houver `label`, mostra o texto
+  // da marca (ex.: "AutoCore") ao lado da logo da empresa.
   if (data?.logoHash) {
     const src = `${env.VITE_API_BASE_URL}/api/configuracoes/empresa/logo?v=${encodeURIComponent(
       data.logoHash,
     )}`
+    if (!label) {
+      return (
+        <img
+          src={src}
+          alt={nomeEmpresa}
+          className={cn(imgHeight, 'w-auto object-contain', className)}
+        />
+      )
+    }
     return (
-      <img
-        src={src}
-        alt={nomeEmpresa}
-        className={cn(imgHeight, 'w-auto object-contain', className)}
-      />
+      <div className={cn('flex items-center gap-2', className)}>
+        <img src={src} alt={nomeEmpresa} className={cn(imgHeight, 'w-auto object-contain')} />
+        <span className={cn(textSize, 'font-semibold')}>{label}</span>
+      </div>
     )
   }
 
@@ -86,9 +104,9 @@ export function MarcaEmpresa({
             iconBox,
           )}
         >
-          <Wrench className={iconSize} />
+          <Zap className={iconSize} />
         </div>
-        <span className={cn(textSize, 'font-semibold')}>{nomeEmpresa}</span>
+        <span className={cn(textSize, 'font-semibold')}>{marca}</span>
       </div>
     )
   }
@@ -102,13 +120,13 @@ export function MarcaEmpresa({
             iconBox,
           )}
         >
-          <Wrench className={iconSize} />
+          <Zap className={iconSize} />
         </div>
-        <span className={cn(textSize, 'font-semibold')}>{nomeEmpresa}</span>
+        <span className={cn(textSize, 'font-semibold')}>{marca}</span>
       </div>
     )
   }
 
   // text-only (default)
-  return <span className={cn(textSize, 'font-semibold', className)}>{nomeEmpresa}</span>
+  return <span className={cn(textSize, 'font-semibold', className)}>{marca}</span>
 }

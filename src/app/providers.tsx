@@ -5,6 +5,7 @@ import { AuthProvider } from '@/features/auth/auth-context'
 import { Toaster } from '@/components/ui/sonner'
 import { UNAUTHORIZED_EVENT } from '@/api/client'
 import { ThemeProvider } from '@/shared/theme/ThemeProvider'
+import { AccentProvider } from '@/shared/theme/AccentProvider'
 import { useEffect } from 'react'
 
 function GlobalUnauthorizedToast() {
@@ -32,11 +33,13 @@ export function AppProviders({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <GlobalUnauthorizedToast />
-          {children}
-          <Toaster />
-        </AuthProvider>
+        <AccentProvider>
+          <AuthProvider>
+            <GlobalUnauthorizedToast />
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </AccentProvider>
       </QueryClientProvider>
     </ThemeProvider>
   )

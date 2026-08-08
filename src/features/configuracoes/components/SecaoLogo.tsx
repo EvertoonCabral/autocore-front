@@ -124,7 +124,6 @@ export function SecaoLogo({ configuracao }: Props) {
               src={fonteImagem}
               alt={exibindoPreviewArquivo ? 'Pré-visualização da nova logo' : 'Logo atual'}
               className="max-h-full max-w-full object-contain"
-              {...(exibindoPreviewArquivo ? {} : { crossOrigin: 'use-credentials' as const })}
             />
           ) : (
             <div className="flex flex-col items-center gap-1 text-muted-foreground">
