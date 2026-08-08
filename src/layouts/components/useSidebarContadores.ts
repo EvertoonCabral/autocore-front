@@ -18,15 +18,18 @@ export interface SidebarContadores {
  * Mapeamento das fontes:
  *  - `pendencias` → `pendenciasVencidas` (OSs concluídas com saldo vencido);
  *  - `cobrancas`  → mesmo `pendenciasVencidas` (são as elegíveis a cobrança);
- *  - `ordens`     → soma de `contagensOs` (abertas + andamento + aguardando).
+ *  - `ordens`     → soma do `fluxo` (abertas + andamento + aguardando).
  */
 export function useSidebarContadores(): SidebarContadores {
   const { data: pend } = usePendencias()
   const { data: resumo } = useDashboardResumo()
 
   const vencidas = pend?.pendenciasVencidas ?? 0
-  const c = resumo?.contagensOs
-  const ordens = (c?.abertas ?? 0) + (c?.emAndamento ?? 0) + (c?.aguardandoProduto ?? 0)
+  const f = resumo?.fluxo
+  const ordens =
+    (f?.aberta?.quantidade ?? 0) +
+    (f?.emAndamento?.quantidade ?? 0) +
+    (f?.aguardandoProduto?.quantidade ?? 0)
 
   return { pendencias: vencidas, cobrancas: vencidas, ordens }
 }

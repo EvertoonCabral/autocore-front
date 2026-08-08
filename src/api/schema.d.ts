@@ -4107,40 +4107,49 @@ export interface components {
             confirmarSubstituicao?: boolean;
             motivoDesativacaoAnterior?: string | null;
         };
-        DashboardContagensOsDto: {
-            /** Format: int32 */
-            abertas?: number;
-            /** Format: int32 */
-            emAndamento?: number;
-            /** Format: int32 */
-            aguardandoProduto?: number;
-        };
-        DashboardEstoqueDto: {
-            /** Format: int32 */
-            produtosAbaixoMinimo?: number;
-        };
-        DashboardFaturamentoDto: {
+        DashboardCaixaDto: {
             /** Format: int32 */
             mes?: number;
             /** Format: int32 */
             ano?: number;
             /** Format: double */
-            total?: number;
-        };
-        DashboardPendenciasDto: {
-            /** Format: int32 */
-            vencidasCount?: number;
+            recebidoMes?: number;
             /** Format: double */
-            vencidasValorTotal?: number;
+            recebidoMesAnterior?: number;
+            /** Format: double */
+            aReceberVencido?: number;
+            /** Format: double */
+            aReceberAVencer?: number;
+            /** Format: double */
+            ticketMedio6m?: number;
+            /** Format: int32 */
+            estoqueAbaixoMinimo?: number;
+        };
+        DashboardFluxoConcluidaDto: {
+            /** Format: int32 */
+            quantidade?: number;
+            /** Format: int32 */
+            naoPagas?: number;
+        };
+        DashboardFluxoDto: {
+            aberta?: components["schemas"]["DashboardFluxoEtapaDto"];
+            emAndamento?: components["schemas"]["DashboardFluxoEtapaDto"];
+            aguardandoProduto?: components["schemas"]["DashboardFluxoEtapaDto"];
+            concluida?: components["schemas"]["DashboardFluxoConcluidaDto"];
+        };
+        DashboardFluxoEtapaDto: {
+            /** Format: int32 */
+            status?: number;
+            statusLabel?: string | null;
+            /** Format: int32 */
+            quantidade?: number;
+            /** Format: int32 */
+            maisAntigaDias?: number | null;
         };
         DashboardResumoDto: {
-            contagensOs?: components["schemas"]["DashboardContagensOsDto"];
-            pendencias?: components["schemas"]["DashboardPendenciasDto"];
-            estoque?: components["schemas"]["DashboardEstoqueDto"];
-            faturamento?: components["schemas"]["DashboardFaturamentoDto"];
-            distribuicoes?: components["schemas"]["DistribuicoesDashboardDto"];
-            ultimasOrdens?: components["schemas"]["OrdemServicoResumoDto"][] | null;
-            pendenciasMaisAntigas?: components["schemas"]["OrdemPendenteDto"][] | null;
+            fluxo?: components["schemas"]["DashboardFluxoDto"];
+            caixa?: components["schemas"]["DashboardCaixaDto"];
+            precisaAtencao?: components["schemas"]["OrdemPendenteDto"][] | null;
         };
         DashboardResumoDtoApiResponse: {
             dados?: components["schemas"]["DashboardResumoDto"];
@@ -4151,26 +4160,6 @@ export interface components {
         DetalheValidacao: {
             campo?: string | null;
             mensagem?: string | null;
-        };
-        DistribuicaoFormaPagamentoDto: {
-            /** Format: int32 */
-            forma?: number;
-            formaLabel?: string | null;
-            /** Format: double */
-            valor?: number;
-            /** Format: int32 */
-            quantidade?: number;
-        };
-        DistribuicaoStatusOsDto: {
-            /** Format: int32 */
-            status?: number;
-            statusLabel?: string | null;
-            /** Format: int32 */
-            quantidade?: number;
-        };
-        DistribuicoesDashboardDto: {
-            pagamentosMes?: components["schemas"]["DistribuicaoFormaPagamentoDto"][] | null;
-            statusOsAbertas?: components["schemas"]["DistribuicaoStatusOsDto"][] | null;
         };
         FaturamentoDiaDto: {
             /** Format: date */

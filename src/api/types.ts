@@ -46,13 +46,10 @@ export type CobrancaJobResultado    = components['schemas']['CobrancaJobResultad
 export type CobrancaIndividualResultado = components['schemas']['CobrancaIndividualResultado']
 export type AuditoriaOperacaoDto    = components['schemas']['AuditoriaOperacaoDto']
 export type DashboardResumoDto      = components['schemas']['DashboardResumoDto']
-export type DashboardContagensOsDto = components['schemas']['DashboardContagensOsDto']
-export type DashboardPendenciasDto  = components['schemas']['DashboardPendenciasDto']
-export type DashboardEstoqueDto     = components['schemas']['DashboardEstoqueDto']
-export type DashboardFaturamentoDto = components['schemas']['DashboardFaturamentoDto']
-export type DistribuicoesDashboardDto       = components['schemas']['DistribuicoesDashboardDto']
-export type DistribuicaoFormaPagamentoDto   = components['schemas']['DistribuicaoFormaPagamentoDto']
-export type DistribuicaoStatusOsDto         = components['schemas']['DistribuicaoStatusOsDto']
+export type DashboardFluxoDto           = components['schemas']['DashboardFluxoDto']
+export type DashboardFluxoEtapaDto      = components['schemas']['DashboardFluxoEtapaDto']
+export type DashboardFluxoConcluidaDto  = components['schemas']['DashboardFluxoConcluidaDto']
+export type DashboardCaixaDto           = components['schemas']['DashboardCaixaDto']
 export type MesFaturamentoDto               = components['schemas']['MesFaturamentoDto']
 
 // ─── Relatórios financeiros ────────────────────────────────────────────────

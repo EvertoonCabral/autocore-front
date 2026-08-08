@@ -34,7 +34,7 @@ const OPCOES = [
 const config: ChartConfig = {
   total: {
     label: 'Faturamento',
-    color: '#F97316', // Tailwind orange-500 (paleta do projeto)
+    color: 'hsl(var(--chart-1))', // accent do tema (Fase A)
   },
 }
 

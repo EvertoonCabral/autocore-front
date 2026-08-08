@@ -9,7 +9,14 @@ export const dashboardKeys = {
   resumo: () => [...dashboardKeys.all, 'resumo'] as const,
 }
 
-/** `GET /api/dashboard/resumo` — panorama agregado da oficina. */
+/**
+ * `GET /api/dashboard/resumo` — panorama "Fila + Caixa" da oficina.
+ *
+ * Novo shape `DashboardResumoDto`:
+ *   - `fluxo`  — contagens por etapa da OS (aberta/emAndamento/aguardandoProduto/concluida)
+ *   - `caixa`  — recebido no mês, a receber, ticket médio, estoque abaixo do mínimo
+ *   - `precisaAtencao` — top-5 cobranças vencidas (asc por vencimento)
+ */
 export function useDashboardResumo() {
   return useQuery({
     queryKey: dashboardKeys.resumo(),

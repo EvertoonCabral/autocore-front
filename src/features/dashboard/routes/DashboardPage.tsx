@@ -1,104 +1,57 @@
-import {
-  AlertTriangle,
-  ClipboardList,
-  PackageOpen,
-  PackageX,
-  TrendingUp,
-  Wrench,
-} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
+import { Plus } from 'lucide-react'
 import { useAuth } from '@/features/auth/auth-context'
-import { PageHeader } from '@/shared/components/PageHeader'
-import { formatBRL } from '@/lib/format'
-import { DistribuicaoPagamentosChart } from '../components/DistribuicaoPagamentosChart'
-import { DistribuicaoStatusChart } from '../components/DistribuicaoStatusChart'
+import { Button } from '@/components/ui/button'
+import { CaixaCard } from '../components/CaixaCard'
+import { FaixaFluxo } from '../components/FaixaFluxo'
 import { FaturamentoChart } from '../components/FaturamentoChart'
-import { KpiCard } from '../components/KpiCard'
-import { PendenciasAntigasCard } from '../components/PendenciasAntigasCard'
-import { UltimasOrdensCard } from '../components/UltimasOrdensCard'
-import { nomeMesPtBr } from '../helpers/nomeMes'
+import { PrecisaAtencaoCard } from '../components/PrecisaAtencaoCard'
 import { useDashboardResumo } from '../hooks/useDashboardResumo'
 
 export function DashboardPage() {
   const { user } = useAuth()
   const { data, isLoading, isError } = useDashboardResumo()
 
-  const tituloMes = data?.faturamento
-    ? `Faturamento de ${nomeMesPtBr(data.faturamento.mes)}`
-    : 'Faturamento do mês'
+  const hoje = format(new Date(), "EEEE, d 'de' MMMM", { locale: ptBR })
 
   return (
-    <div className="space-y-6">
-      <PageHeader
-        title={`Bem-vindo${user?.nomeCompleto ? ', ' + user.nomeCompleto : ''}`}
-        description="Panorama da empresa em tempo real."
-      />
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-        <KpiCard
-          title="OS abertas"
-          value={data?.contagensOs?.abertas}
-          variant="info"
-          loading={isLoading}
-          icon={<ClipboardList className="h-5 w-5" />}
-        />
-        <KpiCard
-          title="Em andamento"
-          value={data?.contagensOs?.emAndamento}
-          variant="warning"
-          loading={isLoading}
-          icon={<Wrench className="h-5 w-5" />}
-        />
-        <KpiCard
-          title="Aguardando produto"
-          value={data?.contagensOs?.aguardandoProduto}
-          variant="warning"
-          loading={isLoading}
-          icon={<PackageOpen className="h-5 w-5" />}
-        />
-        <KpiCard
-          title="Pendências vencidas"
-          value={data?.pendencias?.vencidasCount}
-          sub={data?.pendencias ? formatBRL(data.pendencias.vencidasValorTotal) : undefined}
-          variant="destructive"
-          loading={isLoading}
-          icon={<AlertTriangle className="h-5 w-5" />}
-        />
-        <KpiCard
-          title="Estoque crítico"
-          sub="Produtos abaixo do mínimo"
-          value={data?.estoque?.produtosAbaixoMinimo}
-          variant={
-            data && (data.estoque?.produtosAbaixoMinimo ?? 0) > 0 ? 'destructive' : 'success'
-          }
-          loading={isLoading}
-          icon={<PackageX className="h-5 w-5" />}
-        />
-        <KpiCard
-          title={tituloMes}
-          value={data?.faturamento ? formatBRL(data.faturamento.total) : undefined}
-          variant="success"
-          loading={isLoading}
-          icon={<TrendingUp className="h-5 w-5" />}
-        />
+    <div className="flex flex-col gap-5">
+      {/* 1. Cabeçalho */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-1">
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            {hoje}
+          </p>
+          <h1 className="text-2xl font-semibold leading-tight">
+            {`Bem-vindo${user?.nomeCompleto ? ', ' + user.nomeCompleto : ''}`}
+          </h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" asChild>
+            <Link to="/clientes/novo">Novo cliente</Link>
+          </Button>
+          <Button asChild>
+            <Link to="/ordens/nova">
+              <Plus className="h-4 w-4" />
+              Nova OS
+            </Link>
+          </Button>
+        </div>
       </div>
 
+      {/* 2. Faixa de fluxo */}
+      <FaixaFluxo fluxo={data?.fluxo} loading={isLoading} />
+
+      {/* 3. Precisa de você hoje + Caixa */}
+      <div className="flex flex-col gap-5 xl:flex-row">
+        <PrecisaAtencaoCard itens={data?.precisaAtencao ?? []} loading={isLoading} />
+        <CaixaCard caixa={data?.caixa} loading={isLoading} />
+      </div>
+
+      {/* 4. Faturamento */}
       <FaturamentoChart />
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <DistribuicaoPagamentosChart
-          pagamentos={data?.distribuicoes?.pagamentosMes ?? []}
-          loading={isLoading}
-        />
-        <DistribuicaoStatusChart
-          statusOsAbertas={data?.distribuicoes?.statusOsAbertas ?? []}
-          loading={isLoading}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <UltimasOrdensCard ordens={data?.ultimasOrdens ?? []} loading={isLoading} />
-        <PendenciasAntigasCard pendencias={data?.pendenciasMaisAntigas ?? []} loading={isLoading} />
-      </div>
 
       {isError ? (
         <p className="text-sm text-destructive" role="alert">
