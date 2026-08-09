@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import { aplicarErrosValidacao } from '@/api/errors'
 import { formatCpfCnpj, maskTelefoneInput } from '@/lib/format'
 import { clienteSchema, type ClienteFormValues } from '../helpers/clienteSchema'
+import { useBuscaCep } from '../hooks/useBuscaCep'
 
 interface ClienteFormProps {
   /** Valores iniciais (em modo edição). */
@@ -34,6 +35,8 @@ export function ClienteForm({
     handleSubmit,
     control,
     setError,
+    clearErrors,
+    setValue,
     reset,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ClienteFormValues>({
@@ -50,7 +53,6 @@ export function ClienteForm({
       bairro: '',
       cidade: '',
       uf: '',
-      endereco: '',
       observacoes: '',
       ...defaultValues,
     },
@@ -71,7 +73,6 @@ export function ClienteForm({
         bairro: defaultValues.bairro ?? '',
         cidade: defaultValues.cidade ?? '',
         uf: defaultValues.uf ?? '',
-        endereco: defaultValues.endereco ?? '',
         observacoes: defaultValues.observacoes ?? '',
       })
     }
@@ -81,6 +82,33 @@ export function ClienteForm({
   useEffect(() => {
     onDirtyChange?.(isDirty)
   }, [isDirty, onDirtyChange])
+
+  const { buscar: buscarCep, carregando: buscandoCep } = useBuscaCep()
+
+  // Ao sair do campo CEP (ou ao completar 8 dígitos), consulta o ViaCEP e
+  // preenche logradouro/bairro/cidade/uf. O `numero` nunca é sobrescrito e
+  // todos os campos seguem editáveis. Falha de rede é silenciosa; CEP
+  // inexistente mostra uma mensagem gentil no próprio campo.
+  const cepReg = register('cep')
+  async function preencherPorCep(valor: string) {
+    if (valor.replace(/\D/g, '').length !== 8) return
+    const resultado = await buscarCep(valor)
+    if (resultado.status === 'ok') {
+      clearErrors('cep')
+      const { logradouro, bairro, cidade, uf } = resultado.endereco
+      const opts = { shouldDirty: true, shouldValidate: true }
+      if (logradouro) setValue('logradouro', logradouro, opts)
+      if (bairro) setValue('bairro', bairro, opts)
+      if (cidade) setValue('cidade', cidade, opts)
+      if (uf) setValue('uf', uf, opts)
+    } else if (resultado.status === 'nao-encontrado') {
+      setError('cep', {
+        type: 'manual',
+        message: 'CEP não encontrado. Preencha o endereço manualmente.',
+      })
+    }
+    // 'erro-rede': silencioso — o usuário preenche manualmente.
+  }
 
   async function submit(values: ClienteFormValues) {
     // Schema (clienteSchema) já remove a máscara via .transform — values
@@ -210,14 +238,33 @@ export function ClienteForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="cep">CEP</Label>
+              <Label htmlFor="cep" className="flex items-center gap-2">
+                CEP
+                {buscandoCep && (
+                  <Loader2
+                    className="size-3.5 animate-spin text-muted-foreground"
+                    aria-label="Buscando CEP"
+                  />
+                )}
+              </Label>
               <Input
                 id="cep"
                 inputMode="numeric"
                 autoComplete="postal-code"
                 placeholder="00000-000"
                 aria-invalid={!!errors.cep}
-                {...register('cep')}
+                {...cepReg}
+                onChange={(e) => {
+                  void cepReg.onChange(e)
+                  // Dispara automaticamente assim que o CEP fica completo.
+                  if (e.target.value.replace(/\D/g, '').length === 8) {
+                    void preencherPorCep(e.target.value)
+                  }
+                }}
+                onBlur={(e) => {
+                  void cepReg.onBlur(e)
+                  void preencherPorCep(e.target.value)
+                }}
               />
               {errors.cep && (
                 <p role="alert" className="text-sm text-destructive">
@@ -304,24 +351,6 @@ export function ClienteForm({
                 </p>
               )}
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="endereco" className="text-muted-foreground">
-              Endereço (texto livre — legado)
-            </Label>
-            <Textarea
-              id="endereco"
-              rows={2}
-              placeholder="Campo antigo, mantido por compatibilidade. Prefira os campos acima."
-              aria-invalid={!!errors.endereco}
-              {...register('endereco')}
-            />
-            {errors.endereco && (
-              <p role="alert" className="text-sm text-destructive">
-                {errors.endereco.message}
-              </p>
-            )}
           </div>
         </fieldset>
 

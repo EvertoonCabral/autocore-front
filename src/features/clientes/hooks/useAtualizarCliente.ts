@@ -28,7 +28,6 @@ export function useAtualizarCliente() {
           bairro: values.bairro ?? null,
           cidade: values.cidade ?? null,
           uf: values.uf ?? null,
-          endereco: values.endereco ?? null,
           observacoes: values.observacoes ?? null,
         },
       })

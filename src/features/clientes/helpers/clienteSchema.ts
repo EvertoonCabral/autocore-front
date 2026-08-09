@@ -6,7 +6,6 @@ import { z } from 'zod'
  *  - Telefone: somente dígitos, 10..13 (DDD + número, com ou sem DDI 55)
  *  - Email: formato válido se preenchido
  *  - CpfCnpj: 11 (CPF) ou 14 (CNPJ) dígitos se preenchido
- *  - Endereco: livre, opcional
  *  - Observacoes: até 1000 caracteres
  *
  * Os campos texto opcionais são transformados em `null` quando vazios para
@@ -18,8 +17,8 @@ import { z } from 'zod'
  * de duplicá-lo na hora do submit.
  *
  * Endereço estruturado (cep, logradouro, numero, bairro, cidade, uf) e
- * `segundoTelefone` são todos opcionais e acompanham o campo legado
- * `endereco` (texto livre), preservado por compatibilidade.
+ * `segundoTelefone` são todos opcionais. Ao informar um CEP válido, o form
+ * preenche logradouro/bairro/cidade/uf automaticamente via ViaCEP.
  */
 const stripNonDigits = (v: string) => v.replace(/\D/g, '')
 
@@ -122,7 +121,6 @@ export const clienteSchema = z.object({
     .transform((v) => (v === '' ? null : v))
     .nullable()
     .optional(),
-  endereco: optionalText(500, 'Endereço'),
   observacoes: z
     .string()
     .trim()

@@ -26,7 +26,6 @@ export function useCriarCliente() {
           bairro: form.bairro ?? null,
           cidade: form.cidade ?? null,
           uf: form.uf ?? null,
-          endereco: form.endereco ?? null,
           observacoes: form.observacoes ?? null,
         },
       })

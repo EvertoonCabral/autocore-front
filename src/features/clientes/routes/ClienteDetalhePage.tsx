@@ -14,6 +14,30 @@ import { formatCpfCnpj, formatDataHora, formatTelefone } from '@/lib/format'
 import { useObterCliente } from '../hooks/useObterCliente'
 import { useDesativarCliente } from '../hooks/useDesativarCliente'
 
+/**
+ * Monta o endereço em uma linha a partir dos campos estruturados do cliente
+ * (ex.: "Rua das Flores, 123 - Centro - Maringá/PR"). Retorna `null` quando
+ * nenhum campo está preenchido.
+ */
+function formatEndereco(c: {
+  logradouro?: string | null
+  numero?: string | null
+  bairro?: string | null
+  cidade?: string | null
+  uf?: string | null
+}): string | null {
+  const partes: string[] = []
+
+  const rua = [c.logradouro, c.numero].filter(Boolean).join(', ')
+  if (rua) partes.push(rua)
+  if (c.bairro) partes.push(c.bairro)
+
+  const cidadeUf = c.uf ? [c.cidade, c.uf].filter(Boolean).join('/') : (c.cidade ?? '')
+  if (cidadeUf) partes.push(cidadeUf)
+
+  return partes.length ? partes.join(' - ') : null
+}
+
 export function ClienteDetalhePage() {
   const { id } = useParams<{ id: string }>()
   const numericId = Number(id)
@@ -132,7 +156,7 @@ export function ClienteDetalhePage() {
         </div>
         <div className="sm:col-span-2">
           <dt className="text-sm text-muted-foreground">Endereço</dt>
-          <dd className="text-base whitespace-pre-line">{cliente.endereco ?? '—'}</dd>
+          <dd className="text-base">{formatEndereco(cliente) ?? '—'}</dd>
         </div>
         <div className="sm:col-span-2">
           <dt className="text-sm text-muted-foreground">Observações</dt>

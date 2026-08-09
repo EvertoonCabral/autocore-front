@@ -4153,7 +4153,6 @@ export interface components {
             telefone?: string | null;
             email?: string | null;
             cpfCnpj?: string | null;
-            endereco?: string | null;
             observacoes?: string | null;
             cep?: string | null;
             logradouro?: string | null;
@@ -4304,7 +4303,6 @@ export interface components {
             telefone?: string | null;
             email?: string | null;
             cpfCnpj?: string | null;
-            endereco?: string | null;
             cep?: string | null;
             logradouro?: string | null;
             numero?: string | null;
@@ -4463,7 +4461,6 @@ export interface components {
             telefone?: string | null;
             email?: string | null;
             cpfCnpj?: string | null;
-            endereco?: string | null;
             observacoes?: string | null;
             cep?: string | null;
             logradouro?: string | null;

@@ -83,8 +83,18 @@ describe('ClienteFormDrawer', () => {
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
   })
 
-  it('envia endereço estruturado e segundo telefone ao criar', async () => {
+  it('preenche o endereço via ViaCEP ao completar o CEP e envia ao criar', async () => {
     const tracker = setup()
+    server.use(
+      http.get('https://viacep.com.br/ws/:cep/json/', () =>
+        HttpResponse.json({
+          logradouro: 'Rua das Flores',
+          bairro: 'Centro',
+          localidade: 'Maringá',
+          uf: 'PR',
+        }),
+      ),
+    )
     const user = userEvent.setup()
     renderNovo()
 
@@ -94,11 +104,17 @@ describe('ClienteFormDrawer', () => {
     await user.type(screen.getByLabelText(/^Telefone \*/), '44999990000')
     await user.type(screen.getByLabelText(/Telefone secundário/), '4433330000')
     await user.type(screen.getByLabelText(/^CEP/), '87010-000')
-    await user.type(screen.getByLabelText(/Logradouro/), 'Rua das Flores')
+
+    // O ViaCEP preenche logradouro/bairro/cidade/uf automaticamente.
+    await waitFor(() =>
+      expect(screen.getByLabelText(/Logradouro/)).toHaveValue('Rua das Flores'),
+    )
+    expect(screen.getByLabelText(/Bairro/)).toHaveValue('Centro')
+    expect(screen.getByLabelText(/Cidade/)).toHaveValue('Maringá')
+    expect(screen.getByLabelText(/^UF/)).toHaveValue('PR')
+
+    // Número não é sobrescrito pela busca — usuário digita.
     await user.type(screen.getByLabelText(/^Número/), '123')
-    await user.type(screen.getByLabelText(/Bairro/), 'Centro')
-    await user.type(screen.getByLabelText(/Cidade/), 'Maringá')
-    await user.type(screen.getByLabelText(/^UF/), 'pr')
     await user.click(screen.getByRole('button', { name: /cadastrar/i }))
 
     await waitFor(() => expect(tracker.foiCriado()).toBe(true))
@@ -113,6 +129,27 @@ describe('ClienteFormDrawer', () => {
       cidade: 'Maringá',
       uf: 'PR',
     })
+  })
+
+  it('CEP inexistente mostra mensagem e não preenche o endereço', async () => {
+    setup()
+    server.use(
+      http.get('https://viacep.com.br/ws/:cep/json/', () =>
+        HttpResponse.json({ erro: true }),
+      ),
+    )
+    const user = userEvent.setup()
+    renderNovo()
+
+    await waitFor(() => expect(screen.getByLabelText(/^Nome/)).toBeInTheDocument())
+
+    await user.type(screen.getByLabelText(/^CEP/), '99999-999')
+
+    await waitFor(() =>
+      expect(screen.getByText(/CEP não encontrado/i)).toBeInTheDocument(),
+    )
+    expect(screen.getByLabelText(/Logradouro/)).toHaveValue('')
+    expect(screen.getByLabelText(/Cidade/)).toHaveValue('')
   })
 })
 
@@ -130,7 +167,6 @@ describe('ClienteFormDrawer — editar', () => {
     bairro: 'Centro',
     cidade: 'Maringá',
     uf: 'PR',
-    endereco: null,
     observacoes: null,
     ativo: true,
     criadoEm: '2026-05-01T10:00:00Z',

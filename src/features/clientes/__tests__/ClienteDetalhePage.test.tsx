@@ -13,7 +13,6 @@ const cliente = {
   telefone: '44999990000',
   email: 'joao@example.com',
   cpf: '12345678901',
-  endereco: 'Rua A, 123',
   criadoEm: '2026-05-01T10:00:00Z',
   ativo: true,
 }

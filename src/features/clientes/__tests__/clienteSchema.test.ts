@@ -14,7 +14,6 @@ describe('clienteSchema', () => {
     bairro: '',
     cidade: '',
     uf: '',
-    endereco: '',
     observacoes: '',
   }
 
@@ -71,11 +70,10 @@ describe('clienteSchema', () => {
     expect(r.success).toBe(true)
   })
 
-  it('transforma email/cpfCnpj/endereco/observacoes vazios em null (compatível com back)', () => {
+  it('transforma email/cpfCnpj/observacoes vazios em null (compatível com back)', () => {
     const r = clienteSchema.parse(valido)
     expect(r.email).toBeNull()
     expect(r.cpfCnpj).toBeNull()
-    expect(r.endereco).toBeNull()
     expect(r.observacoes).toBeNull()
   })
 

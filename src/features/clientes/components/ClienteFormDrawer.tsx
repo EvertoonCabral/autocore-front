@@ -65,7 +65,6 @@ export function ClienteFormDrawer({ mode }: Props) {
                   bairro: cliente.bairro ?? '',
                   cidade: cliente.cidade ?? '',
                   uf: cliente.uf ?? '',
-                  endereco: cliente.endereco ?? '',
                   observacoes: cliente.observacoes ?? '',
                 },
               }
