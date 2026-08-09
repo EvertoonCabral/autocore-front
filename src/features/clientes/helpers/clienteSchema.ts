@@ -16,8 +16,23 @@ import { z } from 'zod'
  * validação regex — o usuário digita "(45) 99992-5801" no input, mas o
  * schema valida e exporta "45999925801". Centraliza o stripping aqui em vez
  * de duplicá-lo na hora do submit.
+ *
+ * Endereço estruturado (cep, logradouro, numero, bairro, cidade, uf) e
+ * `segundoTelefone` são todos opcionais e acompanham o campo legado
+ * `endereco` (texto livre), preservado por compatibilidade.
  */
 const stripNonDigits = (v: string) => v.replace(/\D/g, '')
+
+/** Texto livre opcional que vira `null` quando vazio (convenção do back). */
+const optionalText = (max: number, label: string) =>
+  z
+    .string()
+    .trim()
+    .max(max, `${label} deve ter no máximo ${max} caracteres.`)
+    .or(z.literal(''))
+    .transform((v) => (v === '' ? null : v))
+    .nullable()
+    .optional()
 
 export const clienteSchema = z.object({
   nome: z
@@ -61,14 +76,53 @@ export const clienteSchema = z.object({
     .transform((v) => (v === '' ? null : v))
     .nullable()
     .optional(),
-  endereco: z
+  segundoTelefone: z
     .string()
     .trim()
-    .max(500, 'Endereço deve ter no máximo 500 caracteres.')
-    .or(z.literal(''))
+    .transform(stripNonDigits)
+    .pipe(
+      z
+        .string()
+        .regex(
+          /^\d{10,13}$/,
+          'Telefone deve conter apenas dígitos (10 a 13 caracteres, com DDD).',
+        )
+        .or(z.literal('')),
+    )
     .transform((v) => (v === '' ? null : v))
     .nullable()
     .optional(),
+  cep: z
+    .string()
+    .trim()
+    .transform(stripNonDigits)
+    .pipe(
+      z
+        .string()
+        .regex(/^\d{8}$/, 'CEP deve conter 8 dígitos.')
+        .or(z.literal('')),
+    )
+    .transform((v) => (v === '' ? null : v))
+    .nullable()
+    .optional(),
+  logradouro: optionalText(150, 'Logradouro'),
+  numero: optionalText(20, 'Número'),
+  bairro: optionalText(80, 'Bairro'),
+  cidade: optionalText(80, 'Cidade'),
+  uf: z
+    .string()
+    .trim()
+    .transform((v) => v.toUpperCase())
+    .pipe(
+      z
+        .string()
+        .regex(/^[A-Z]{2}$/, 'UF deve ter exatamente 2 letras.')
+        .or(z.literal('')),
+    )
+    .transform((v) => (v === '' ? null : v))
+    .nullable()
+    .optional(),
+  endereco: optionalText(500, 'Endereço'),
   observacoes: z
     .string()
     .trim()

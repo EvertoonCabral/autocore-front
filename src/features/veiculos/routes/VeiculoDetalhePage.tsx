@@ -182,6 +182,14 @@ export function VeiculoDetalhePage() {
           <dd className="text-base">{veiculo.cor ?? '—'}</dd>
         </div>
         <div>
+          <dt className="text-sm text-muted-foreground">Quilometragem atual</dt>
+          <dd className="text-base tabular-nums">
+            {veiculo.quilometragemAtual != null
+              ? `${veiculo.quilometragemAtual.toLocaleString('pt-BR')} km`
+              : '—'}
+          </dd>
+        </div>
+        <div>
           <dt className="text-sm text-muted-foreground">Chassi</dt>
           <dd className="text-base tabular-nums">{veiculo.chassi ?? '—'}</dd>
         </div>

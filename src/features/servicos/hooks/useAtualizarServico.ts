@@ -21,6 +21,9 @@ export function useAtualizarServico() {
           descricao: values.descricao ?? null,
           preco: values.preco,
           ehMaoDeObraPadrao: values.ehMaoDeObraPadrao,
+          garantiaDias: values.garantiaDias ?? null,
+          tempoEstimadoMinutos: values.tempoEstimadoMinutos ?? null,
+          categoria: values.categoria ?? null,
         },
       })
       if (error) throw toApiError(error, response.status)

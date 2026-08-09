@@ -22,12 +22,29 @@ const optionalVeiculoId = z.coerce
   .positive()
   .optional()
 
+/**
+ * Quilometragem de entrada opcional: input vazio ('' ou null) → null; caso
+ * contrário coage para inteiro >= 0. A ordem do union importa — '' precisa
+ * casar com o literal ANTES de `z.coerce.number()` (que transformaria '' em 0).
+ * Mesmo padrão de `optionalAno` em veiculoSchema.
+ */
+const optionalQuilometragem = z
+  .union([z.literal(''), z.coerce.number()])
+  .nullable()
+  .optional()
+  .transform((v) => (v === '' || v == null ? null : v))
+  .refine(
+    (v) => v == null || (Number.isInteger(v) && v >= 0),
+    'Quilometragem deve ser um número inteiro maior ou igual a zero.',
+  )
+
 export const abrirOrdemSchema = z.object({
   clienteId: z.coerce
     .number({ invalid_type_error: 'Selecione um cliente.' })
     .int('Cliente inválido.')
     .positive('Selecione um cliente.'),
   veiculoId: optionalVeiculoId,
+  quilometragemEntrada: optionalQuilometragem,
   descricaoProblema: optionalText(1000, 'Descrição'),
   observacoes: optionalText(1000, 'Observações'),
 })
@@ -37,6 +54,7 @@ export type AbrirOrdemFormValues = z.infer<typeof abrirOrdemSchema>
 /** Schema do PUT /api/ordens/{id} — descricao, observacoes, status (não-final). */
 export const atualizarOrdemSchema = z.object({
   veiculoId: optionalVeiculoId,
+  quilometragemEntrada: optionalQuilometragem,
   descricaoProblema: optionalText(1000, 'Descrição'),
   observacoes: optionalText(1000, 'Observações'),
   status: z.coerce

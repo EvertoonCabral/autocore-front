@@ -4087,6 +4087,8 @@ export interface components {
             observacoes?: string | null;
             /** Format: int64 */
             veiculoId?: number | null;
+            /** Format: int32 */
+            quilometragemEntrada?: number | null;
         };
         AdicionarItemProdutoBody: {
             /** Format: int64 */
@@ -4138,6 +4140,11 @@ export interface components {
             /** Format: double */
             preco?: number;
             ehMaoDeObraPadrao?: boolean;
+            /** Format: int32 */
+            garantiaDias?: number | null;
+            /** Format: int32 */
+            tempoEstimadoMinutos?: number | null;
+            categoria?: string | null;
         };
         AtualizarClienteCommand: {
             /** Format: int64 */
@@ -4148,6 +4155,13 @@ export interface components {
             cpfCnpj?: string | null;
             endereco?: string | null;
             observacoes?: string | null;
+            cep?: string | null;
+            logradouro?: string | null;
+            numero?: string | null;
+            bairro?: string | null;
+            cidade?: string | null;
+            uf?: string | null;
+            segundoTelefone?: string | null;
         };
         AtualizarConfiguracaoBody: {
             valor?: string | null;
@@ -4181,6 +4195,8 @@ export interface components {
             status?: components["schemas"]["StatusOrdem"];
             /** Format: int64 */
             veiculoId?: number | null;
+            /** Format: int32 */
+            quilometragemEntrada?: number | null;
         };
         AtualizarPermissaoAuditoriaDto: {
             podeVerAuditoria?: boolean;
@@ -4258,6 +4274,11 @@ export interface components {
             /** Format: double */
             preco?: number;
             ehMaoDeObraPadrao?: boolean;
+            /** Format: int32 */
+            garantiaDias?: number | null;
+            /** Format: int32 */
+            tempoEstimadoMinutos?: number | null;
+            categoria?: string | null;
             ativo?: boolean;
             /** Format: date-time */
             criadoEm?: string;
@@ -4284,6 +4305,13 @@ export interface components {
             email?: string | null;
             cpfCnpj?: string | null;
             endereco?: string | null;
+            cep?: string | null;
+            logradouro?: string | null;
+            numero?: string | null;
+            bairro?: string | null;
+            cidade?: string | null;
+            uf?: string | null;
+            segundoTelefone?: string | null;
             observacoes?: string | null;
             /** Format: date-time */
             criadoEm?: string;
@@ -4424,6 +4452,11 @@ export interface components {
             /** Format: double */
             preco?: number;
             ehMaoDeObraPadrao?: boolean;
+            /** Format: int32 */
+            garantiaDias?: number | null;
+            /** Format: int32 */
+            tempoEstimadoMinutos?: number | null;
+            categoria?: string | null;
         };
         CriarClienteCommand: {
             nome?: string | null;
@@ -4432,6 +4465,13 @@ export interface components {
             cpfCnpj?: string | null;
             endereco?: string | null;
             observacoes?: string | null;
+            cep?: string | null;
+            logradouro?: string | null;
+            numero?: string | null;
+            bairro?: string | null;
+            cidade?: string | null;
+            uf?: string | null;
+            segundoTelefone?: string | null;
         };
         CriarProdutoCommand: {
             nome?: string | null;
@@ -4706,6 +4746,8 @@ export interface components {
             veiculoDescricao?: string | null;
             descricaoProblema?: string | null;
             observacoes?: string | null;
+            /** Format: int32 */
+            quilometragemEntrada?: number | null;
             status?: components["schemas"]["StatusOrdem"];
             /** Format: date-time */
             abertaEm?: string;
@@ -4993,6 +5035,8 @@ export interface components {
             chassi?: string | null;
             renavam?: string | null;
             observacoes?: string | null;
+            /** Format: int32 */
+            quilometragemAtual?: number | null;
             ativo?: boolean;
             motivoDesativacao?: string | null;
             ordens?: components["schemas"]["OrdemServicoResumoDto"][] | null;

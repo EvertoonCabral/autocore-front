@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -125,6 +126,28 @@ export function NovaOrdemModal() {
                 {errors.veiculoId && (
                   <p role="alert" className="text-sm text-destructive">
                     {errors.veiculoId.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="quilometragemEntrada">Quilometragem de entrada</Label>
+                <Input
+                  id="quilometragemEntrada"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputMode="numeric"
+                  placeholder="Ex.: 45000"
+                  aria-invalid={!!errors.quilometragemEntrada}
+                  {...register('quilometragemEntrada')}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Opcional. KM do odômetro na entrada do veículo.
+                </p>
+                {errors.quilometragemEntrada && (
+                  <p role="alert" className="text-sm text-destructive">
+                    {errors.quilometragemEntrada.message}
                   </p>
                 )}
               </div>

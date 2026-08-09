@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { VeiculoSelect } from '@/features/veiculos/components/VeiculoSelect'
@@ -31,6 +32,7 @@ interface Props {
   /** Dono da OS — usado para listar os veículos elegíveis. */
   clienteId?: number | null | undefined
   veiculoId?: number | null | undefined
+  quilometragemEntrada?: number | null | undefined
   descricaoProblema?: string | null | undefined
   observacoes?: string | null | undefined
 }
@@ -49,6 +51,7 @@ export function EditarOrdemPanel({
   status,
   clienteId,
   veiculoId,
+  quilometragemEntrada,
   descricaoProblema,
   observacoes,
 }: Props) {
@@ -67,6 +70,7 @@ export function EditarOrdemPanel({
     resolver: zodResolver(atualizarOrdemSchema),
     defaultValues: {
       veiculoId: veiculoId ?? undefined,
+      quilometragemEntrada: quilometragemEntrada ?? null,
       descricaoProblema: descricaoProblema ?? '',
       observacoes: observacoes ?? '',
       status: asStatusEditavel(status),
@@ -77,11 +81,12 @@ export function EditarOrdemPanel({
   useEffect(() => {
     reset({
       veiculoId: veiculoId ?? undefined,
+      quilometragemEntrada: quilometragemEntrada ?? null,
       descricaoProblema: descricaoProblema ?? '',
       observacoes: observacoes ?? '',
       status: asStatusEditavel(status),
     })
-  }, [veiculoId, descricaoProblema, observacoes, status, reset])
+  }, [veiculoId, quilometragemEntrada, descricaoProblema, observacoes, status, reset])
 
   const statusValue = watch('status')
 
@@ -150,6 +155,26 @@ export function EditarOrdemPanel({
           {errors.veiculoId && (
             <p role="alert" className="text-sm text-destructive">
               {errors.veiculoId.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="quilometragemEntrada">Quilometragem de entrada</Label>
+          <Input
+            id="quilometragemEntrada"
+            type="number"
+            min="0"
+            step="1"
+            inputMode="numeric"
+            placeholder="Ex.: 45000"
+            disabled={!editavel}
+            aria-invalid={!!errors.quilometragemEntrada}
+            {...register('quilometragemEntrada')}
+          />
+          {errors.quilometragemEntrada && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.quilometragemEntrada.message}
             </p>
           )}
         </div>

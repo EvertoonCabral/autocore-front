@@ -41,8 +41,15 @@ export function ClienteForm({
     defaultValues: {
       nome: '',
       telefone: '',
+      segundoTelefone: '',
       email: '',
       cpfCnpj: '',
+      cep: '',
+      logradouro: '',
+      numero: '',
+      bairro: '',
+      cidade: '',
+      uf: '',
       endereco: '',
       observacoes: '',
       ...defaultValues,
@@ -55,8 +62,15 @@ export function ClienteForm({
       reset({
         nome: defaultValues.nome ?? '',
         telefone: maskTelefoneInput(defaultValues.telefone ?? ''),
+        segundoTelefone: maskTelefoneInput(defaultValues.segundoTelefone ?? ''),
         email: defaultValues.email ?? '',
         cpfCnpj: formatCpfCnpj(defaultValues.cpfCnpj ?? ''),
+        cep: defaultValues.cep ?? '',
+        logradouro: defaultValues.logradouro ?? '',
+        numero: defaultValues.numero ?? '',
+        bairro: defaultValues.bairro ?? '',
+        cidade: defaultValues.cidade ?? '',
+        uf: defaultValues.uf ?? '',
         endereco: defaultValues.endereco ?? '',
         observacoes: defaultValues.observacoes ?? '',
       })
@@ -124,6 +138,35 @@ export function ClienteForm({
         </div>
 
         <div className="space-y-2">
+          <Label htmlFor="segundoTelefone">Telefone secundário</Label>
+          <Controller
+            control={control}
+            name="segundoTelefone"
+            render={({ field }) => (
+              <Input
+                id="segundoTelefone"
+                inputMode="tel"
+                autoComplete="tel"
+                placeholder="(44) 3333-0000"
+                aria-invalid={!!errors.segundoTelefone}
+                value={maskTelefoneInput(field.value ?? '')}
+                onChange={(e) => field.onChange(maskTelefoneInput(e.target.value))}
+                onBlur={field.onBlur}
+                ref={field.ref}
+              />
+            )}
+          />
+          <p className="text-xs text-muted-foreground">
+            Opcional. Ex.: WhatsApp alternativo ou telefone comercial.
+          </p>
+          {errors.segundoTelefone && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.segundoTelefone.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
           <Label htmlFor="email">E-mail</Label>
           <Input id="email" type="email" autoComplete="email" aria-invalid={!!errors.email} {...register('email')} />
           {errors.email && (
@@ -161,15 +204,126 @@ export function ClienteForm({
           )}
         </div>
 
-        <div className="space-y-2 md:col-span-2">
-          <Label htmlFor="endereco">Endereço</Label>
-          <Textarea id="endereco" rows={2} aria-invalid={!!errors.endereco} {...register('endereco')} />
-          {errors.endereco && (
-            <p role="alert" className="text-sm text-destructive">
-              {errors.endereco.message}
-            </p>
-          )}
-        </div>
+        {/* ── Endereço estruturado ────────────────────────────────── */}
+        <fieldset className="space-y-4 md:col-span-2">
+          <legend className="text-sm font-semibold text-foreground">Endereço</legend>
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="cep">CEP</Label>
+              <Input
+                id="cep"
+                inputMode="numeric"
+                autoComplete="postal-code"
+                placeholder="00000-000"
+                aria-invalid={!!errors.cep}
+                {...register('cep')}
+              />
+              {errors.cep && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.cep.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 sm:col-span-4">
+              <Label htmlFor="logradouro">Logradouro</Label>
+              <Input
+                id="logradouro"
+                autoComplete="address-line1"
+                placeholder="Rua, avenida…"
+                aria-invalid={!!errors.logradouro}
+                {...register('logradouro')}
+              />
+              {errors.logradouro && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.logradouro.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="numero">Número</Label>
+              <Input
+                id="numero"
+                autoComplete="address-line2"
+                placeholder="123 / S/N"
+                aria-invalid={!!errors.numero}
+                {...register('numero')}
+              />
+              {errors.numero && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.numero.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 sm:col-span-4">
+              <Label htmlFor="bairro">Bairro</Label>
+              <Input
+                id="bairro"
+                aria-invalid={!!errors.bairro}
+                {...register('bairro')}
+              />
+              {errors.bairro && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.bairro.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 sm:col-span-4">
+              <Label htmlFor="cidade">Cidade</Label>
+              <Input
+                id="cidade"
+                autoComplete="address-level2"
+                aria-invalid={!!errors.cidade}
+                {...register('cidade')}
+              />
+              {errors.cidade && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.cidade.message}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="uf">UF</Label>
+              <Input
+                id="uf"
+                maxLength={2}
+                autoComplete="address-level1"
+                placeholder="PR"
+                className="uppercase"
+                aria-invalid={!!errors.uf}
+                {...register('uf')}
+              />
+              {errors.uf && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.uf.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="endereco" className="text-muted-foreground">
+              Endereço (texto livre — legado)
+            </Label>
+            <Textarea
+              id="endereco"
+              rows={2}
+              placeholder="Campo antigo, mantido por compatibilidade. Prefira os campos acima."
+              aria-invalid={!!errors.endereco}
+              {...register('endereco')}
+            />
+            {errors.endereco && (
+              <p role="alert" className="text-sm text-destructive">
+                {errors.endereco.message}
+              </p>
+            )}
+          </div>
+        </fieldset>
 
         <div className="space-y-2 md:col-span-2">
           <Label htmlFor="observacoes">Observações</Label>

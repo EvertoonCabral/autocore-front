@@ -38,15 +38,17 @@ beforeEach(() => server.resetHandlers())
 describe('ServicoFormDrawer — criar', () => {
   function setup() {
     let criou = false
+    let corpo: Record<string, unknown> | null = null
     server.use(
       meHandler('Admin'),
       http.get(`${API}/api/servicos`, () => HttpResponse.json({ dados: [] })),
-      http.post(`${API}/api/servicos`, async () => {
+      http.post(`${API}/api/servicos`, async ({ request }) => {
         criou = true
+        corpo = (await request.json()) as Record<string, unknown>
         return HttpResponse.json({ dados: { id: 42 } }, { status: 201 })
       }),
     )
-    return { foiCriado: () => criou }
+    return { foiCriado: () => criou, corpo: () => corpo }
   }
 
   function renderCriar() {
@@ -80,6 +82,30 @@ describe('ServicoFormDrawer — criar', () => {
     await user.click(screen.getByRole('button', { name: /cadastrar/i }))
 
     await waitFor(() => expect(tracker.foiCriado()).toBe(true))
+  })
+
+  it('envia garantia, tempo estimado e categoria ao criar', async () => {
+    const tracker = setup()
+    const user = userEvent.setup()
+    renderCriar()
+    await waitFor(() => expect(screen.getByLabelText(/^Nome/)).toBeInTheDocument())
+
+    await user.type(screen.getByLabelText(/^Nome/), 'Diagnóstico elétrico')
+    await user.clear(screen.getByLabelText(/Preço/))
+    await user.type(screen.getByLabelText(/Preço/), '150')
+    await user.type(screen.getByLabelText(/Garantia/), '90')
+    await user.type(screen.getByLabelText(/Tempo estimado/), '60')
+    await user.type(screen.getByLabelText(/Categoria/), 'Elétrica')
+    await user.click(screen.getByRole('button', { name: /cadastrar/i }))
+
+    await waitFor(() => expect(tracker.foiCriado()).toBe(true))
+    expect(tracker.corpo()).toMatchObject({
+      nome: 'Diagnóstico elétrico',
+      preco: 150,
+      garantiaDias: 90,
+      tempoEstimadoMinutos: 60,
+      categoria: 'Elétrica',
+    })
   })
 })
 

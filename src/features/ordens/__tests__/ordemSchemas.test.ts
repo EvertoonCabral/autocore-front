@@ -27,6 +27,20 @@ describe('abrirOrdemSchema', () => {
       abrirOrdemSchema.safeParse({ clienteId: 1, descricaoProblema: 'a'.repeat(1001) }).success,
     ).toBe(false)
   })
+
+  it('aceita quilometragem de entrada e coage o número', () => {
+    const r = abrirOrdemSchema.parse({ clienteId: 1, quilometragemEntrada: '45000' })
+    expect(r.quilometragemEntrada).toBe(45000)
+  })
+
+  it('normaliza quilometragem vazia/ausente para null', () => {
+    expect(abrirOrdemSchema.parse({ clienteId: 1, quilometragemEntrada: '' }).quilometragemEntrada).toBeNull()
+    expect(abrirOrdemSchema.parse({ clienteId: 1 }).quilometragemEntrada).toBeNull()
+  })
+
+  it.each([-1, 1.5])('rejeita quilometragem inválida (%s)', (quilometragemEntrada) => {
+    expect(abrirOrdemSchema.safeParse({ clienteId: 1, quilometragemEntrada }).success).toBe(false)
+  })
 })
 
 describe('atualizarOrdemSchema', () => {
@@ -40,6 +54,26 @@ describe('atualizarOrdemSchema', () => {
     expect(
       atualizarOrdemSchema.safeParse({ descricaoProblema: '', observacoes: '', status }).success,
     ).toBe(false)
+  })
+
+  it('aceita e coage quilometragem de entrada', () => {
+    const r = atualizarOrdemSchema.parse({
+      descricaoProblema: '',
+      observacoes: '',
+      status: 2,
+      quilometragemEntrada: '52000',
+    })
+    expect(r.quilometragemEntrada).toBe(52000)
+  })
+
+  it('normaliza quilometragem vazia para null', () => {
+    const r = atualizarOrdemSchema.parse({
+      descricaoProblema: '',
+      observacoes: '',
+      status: 1,
+      quilometragemEntrada: '',
+    })
+    expect(r.quilometragemEntrada).toBeNull()
   })
 })
 

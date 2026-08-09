@@ -5,8 +5,15 @@ describe('clienteSchema', () => {
   const valido = {
     nome: 'João Silva',
     telefone: '44999990000',
+    segundoTelefone: '',
     email: '',
     cpfCnpj: '',
+    cep: '',
+    logradouro: '',
+    numero: '',
+    bairro: '',
+    cidade: '',
+    uf: '',
     endereco: '',
     observacoes: '',
   }
@@ -112,5 +119,58 @@ describe('clienteSchema', () => {
     // se o user apaga tudo e sobra só pontuação, normaliza para null
     const r = clienteSchema.parse({ ...valido, cpfCnpj: '...---' })
     expect(r.cpfCnpj).toBeNull()
+  })
+
+  // ─── Endereço estruturado + segundo telefone (Fase F) ────────────────
+
+  it('aceita endereço estruturado completo e exporta os campos', () => {
+    const r = clienteSchema.parse({
+      ...valido,
+      cep: '87010-000',
+      logradouro: 'Rua das Flores',
+      numero: '123',
+      bairro: 'Centro',
+      cidade: 'Maringá',
+      uf: 'pr',
+    })
+    expect(r.cep).toBe('87010000')
+    expect(r.logradouro).toBe('Rua das Flores')
+    expect(r.numero).toBe('123')
+    expect(r.bairro).toBe('Centro')
+    expect(r.cidade).toBe('Maringá')
+    expect(r.uf).toBe('PR')
+  })
+
+  it('normaliza endereço estruturado vazio para null', () => {
+    const r = clienteSchema.parse(valido)
+    expect(r.cep).toBeNull()
+    expect(r.logradouro).toBeNull()
+    expect(r.numero).toBeNull()
+    expect(r.bairro).toBeNull()
+    expect(r.cidade).toBeNull()
+    expect(r.uf).toBeNull()
+    expect(r.segundoTelefone).toBeNull()
+  })
+
+  it('aceita CEP com ou sem hífen (8 dígitos)', () => {
+    expect(clienteSchema.parse({ ...valido, cep: '87010000' }).cep).toBe('87010000')
+    expect(clienteSchema.parse({ ...valido, cep: '87010-000' }).cep).toBe('87010000')
+  })
+
+  it.each(['1234567', '123456789', '8701000a'])('rejeita CEP inválido (%s)', (cep) => {
+    expect(clienteSchema.safeParse({ ...valido, cep }).success).toBe(false)
+  })
+
+  it.each(['P', 'PRR', '12'])('rejeita UF que não seja 2 letras (%s)', (uf) => {
+    expect(clienteSchema.safeParse({ ...valido, uf }).success).toBe(false)
+  })
+
+  it('aceita segundo telefone com máscara e exporta só dígitos', () => {
+    const r = clienteSchema.parse({ ...valido, segundoTelefone: '(44) 3333-0000' })
+    expect(r.segundoTelefone).toBe('4433330000')
+  })
+
+  it('rejeita segundo telefone com dígitos insuficientes', () => {
+    expect(clienteSchema.safeParse({ ...valido, segundoTelefone: '4433' }).success).toBe(false)
   })
 })

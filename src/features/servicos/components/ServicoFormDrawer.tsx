@@ -122,6 +122,9 @@ export function ServicoFormDrawer({ mode }: Props) {
                     descricao: servico.descricao ?? '',
                     preco: servico.preco ?? 0,
                     ehMaoDeObraPadrao: servico.ehMaoDeObraPadrao ?? false,
+                    garantiaDias: servico.garantiaDias ?? null,
+                    tempoEstimadoMinutos: servico.tempoEstimadoMinutos ?? null,
+                    categoria: servico.categoria ?? '',
                   },
                 }
               : {})}

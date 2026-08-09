@@ -18,6 +18,7 @@ export function useAtualizarOrdem() {
         body: {
           id,
           veiculoId: values.veiculoId ?? null,
+          quilometragemEntrada: values.quilometragemEntrada ?? null,
           descricaoProblema: values.descricaoProblema ?? null,
           observacoes: values.observacoes ?? null,
           status: values.status,

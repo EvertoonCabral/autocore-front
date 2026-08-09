@@ -15,6 +15,9 @@ export function useCriarServico() {
           descricao: form.descricao ?? null,
           preco: form.preco,
           ehMaoDeObraPadrao: form.ehMaoDeObraPadrao,
+          garantiaDias: form.garantiaDias ?? null,
+          tempoEstimadoMinutos: form.tempoEstimadoMinutos ?? null,
+          categoria: form.categoria ?? null,
         },
       })
       if (error || !data) throw toApiError(error, response.status)

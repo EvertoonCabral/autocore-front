@@ -37,13 +37,18 @@ export function ServicoForm({
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ServicoFormValues>({
     resolver: zodResolver(servicoSchema),
+    // Campos numéricos opcionais começam como null (input vazio); a coerção do
+    // schema resolve no submit. Mesmo padrão de VeiculoForm.
     defaultValues: {
       nome: '',
       descricao: '',
       preco: 0,
       ehMaoDeObraPadrao: false,
+      garantiaDias: null,
+      tempoEstimadoMinutos: null,
+      categoria: '',
       ...defaultValues,
-    },
+    } as Partial<ServicoFormValues>,
   })
 
   useEffect(() => {
@@ -53,7 +58,10 @@ export function ServicoForm({
         descricao: defaultValues.descricao ?? '',
         preco: defaultValues.preco ?? 0,
         ehMaoDeObraPadrao: defaultValues.ehMaoDeObraPadrao ?? false,
-      })
+        garantiaDias: defaultValues.garantiaDias ?? null,
+        tempoEstimadoMinutos: defaultValues.tempoEstimadoMinutos ?? null,
+        categoria: defaultValues.categoria ?? '',
+      } as Partial<ServicoFormValues> as ServicoFormValues)
     }
   }, [defaultValues, reset])
 
@@ -131,6 +139,61 @@ export function ServicoForm({
         Apenas um serviço pode ser <strong>mão de obra padrão</strong> por vez. Ao marcar este,
         o serviço anterior perde a flag automaticamente.
       </p>
+
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="space-y-2">
+          <Label htmlFor="garantiaDias">Garantia (dias)</Label>
+          <Input
+            id="garantiaDias"
+            type="number"
+            min="0"
+            step="1"
+            inputMode="numeric"
+            placeholder="Ex.: 90"
+            aria-invalid={!!errors.garantiaDias}
+            {...register('garantiaDias')}
+          />
+          {errors.garantiaDias && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.garantiaDias.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="tempoEstimadoMinutos">Tempo estimado (min)</Label>
+          <Input
+            id="tempoEstimadoMinutos"
+            type="number"
+            min="0"
+            step="1"
+            inputMode="numeric"
+            placeholder="Ex.: 60"
+            aria-invalid={!!errors.tempoEstimadoMinutos}
+            {...register('tempoEstimadoMinutos')}
+          />
+          {errors.tempoEstimadoMinutos && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.tempoEstimadoMinutos.message}
+            </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="categoria">Categoria</Label>
+          <Input
+            id="categoria"
+            placeholder="Ex.: Elétrica, Suspensão…"
+            aria-invalid={!!errors.categoria}
+            {...register('categoria')}
+          />
+          {errors.categoria && (
+            <p role="alert" className="text-sm text-destructive">
+              {errors.categoria.message}
+            </p>
+          )}
+        </div>
+      </div>
 
       <div className="flex justify-end gap-2">
         {onCancel && (

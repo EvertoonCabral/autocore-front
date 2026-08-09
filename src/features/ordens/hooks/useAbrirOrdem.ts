@@ -13,6 +13,7 @@ export function useAbrirOrdem() {
         body: {
           clienteId: form.clienteId,
           veiculoId: form.veiculoId ?? null,
+          quilometragemEntrada: form.quilometragemEntrada ?? null,
           descricaoProblema: form.descricaoProblema ?? null,
           observacoes: form.observacoes ?? null,
         },

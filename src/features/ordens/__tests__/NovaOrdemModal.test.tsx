@@ -63,6 +63,7 @@ function renderModal() {
     <Routes>
       <Route path="/ordens" element={<div>Lista de ordens</div>} />
       <Route path="/ordens/nova" element={<NovaOrdemModal />} />
+      <Route path="/ordens/:id" element={<div>Detalhe da OS</div>} />
     </Routes>,
     { routerProps: { initialEntries: ['/ordens/nova'] } },
   )
@@ -88,5 +89,29 @@ describe('NovaOrdemModal', () => {
     expect(screen.getByText(/R\$\s*350,50/)).toBeInTheDocument()
     expect(screen.getByText(/2 OS aberta/i)).toBeInTheDocument()
     expect(screen.getByText('OS-2026-0001')).toBeInTheDocument()
+  })
+
+  it('envia a quilometragem de entrada ao abrir a OS', async () => {
+    setup()
+    let corpo: Record<string, unknown> | null = null
+    server.use(
+      http.post(`${API}/api/ordens`, async ({ request }) => {
+        corpo = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ dados: { id: 99 } }, { status: 201 })
+      }),
+    )
+    const user = userEvent.setup()
+    renderModal()
+
+    const clienteTrigger = screen.getAllByRole('combobox')[0]!
+    await user.click(clienteTrigger)
+    const opcao = await screen.findByRole('option', { name: /João Silva/i })
+    await user.click(opcao)
+
+    await user.type(screen.getByLabelText(/Quilometragem de entrada/i), '45000')
+    await user.click(screen.getByRole('button', { name: /abrir os/i }))
+
+    await waitFor(() => expect(corpo).not.toBeNull())
+    expect(corpo).toMatchObject({ clienteId: 10, quilometragemEntrada: 45000 })
   })
 })

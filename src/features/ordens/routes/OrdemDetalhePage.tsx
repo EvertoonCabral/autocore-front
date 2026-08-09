@@ -216,6 +216,7 @@ export function OrdemDetalhePage() {
           status={status}
           clienteId={ordem.clienteId}
           veiculoId={ordem.veiculoId}
+          quilometragemEntrada={ordem.quilometragemEntrada}
           descricaoProblema={ordem.descricaoProblema}
           observacoes={ordem.observacoes}
         />
