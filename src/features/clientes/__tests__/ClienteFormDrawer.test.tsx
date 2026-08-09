@@ -232,4 +232,23 @@ describe('ClienteFormDrawer — editar', () => {
       segundoTelefone: '4433330000',
     })
   })
+
+  it('permite substituir um campo já preenchido (digitar um CEP novo) em edição', async () => {
+    const tracker = setupEditar()
+    const user = userEvent.setup()
+    renderEditar()
+
+    const cep = await screen.findByLabelText(/^CEP/)
+    await waitFor(() => expect(cep).toHaveValue('87010000'))
+
+    // Substitui o CEP existente por um novo — o valor digitado deve PERMANECER
+    // no campo (não pode ser revertido por um reset a cada render).
+    await user.clear(cep)
+    await user.type(cep, '80010000')
+    expect(cep).toHaveValue('80010000')
+
+    await user.click(screen.getByRole('button', { name: /salvar/i }))
+    await waitFor(() => expect(tracker.corpo()).not.toBeNull())
+    expect(tracker.corpo()).toMatchObject({ cep: '80010000' })
+  })
 })

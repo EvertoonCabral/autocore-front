@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -31,6 +31,32 @@ export function ClienteFormDrawer({ mode }: Props) {
 
   const fechar = () => navigate('/clientes')
 
+  // Identidade **estável** dos valores iniciais (só muda quando o cliente
+  // carregado muda). O `ClienteForm` faz `reset(defaultValues)` num efeito
+  // dependente da referência; se recriássemos o objeto a cada render (o drawer
+  // re-renderiza ao digitar, via onDirtyChange), o reset dispararia a cada
+  // tecla e reverteria o que o usuário digita em modo edição.
+  const defaultValues = useMemo(
+    () =>
+      cliente
+        ? {
+            nome: cliente.nome ?? '',
+            telefone: cliente.telefone ?? '',
+            segundoTelefone: cliente.segundoTelefone ?? '',
+            email: cliente.email ?? '',
+            cpfCnpj: cliente.cpfCnpj ?? '',
+            cep: cliente.cep ?? '',
+            logradouro: cliente.logradouro ?? '',
+            numero: cliente.numero ?? '',
+            bairro: cliente.bairro ?? '',
+            cidade: cliente.cidade ?? '',
+            uf: cliente.uf ?? '',
+            observacoes: cliente.observacoes ?? '',
+          }
+        : undefined,
+    [cliente],
+  )
+
   return (
     <FormDrawerShell
       title={mode === 'criar' ? 'Novo cliente' : 'Editar cliente'}
@@ -51,24 +77,7 @@ export function ClienteFormDrawer({ mode }: Props) {
           submitLabel={mode === 'criar' ? 'Cadastrar' : 'Salvar alterações'}
           onCancel={fechar}
           onDirtyChange={setDirty}
-          {...(mode === 'editar' && cliente
-            ? {
-                defaultValues: {
-                  nome: cliente.nome ?? '',
-                  telefone: cliente.telefone ?? '',
-                  segundoTelefone: cliente.segundoTelefone ?? '',
-                  email: cliente.email ?? '',
-                  cpfCnpj: cliente.cpfCnpj ?? '',
-                  cep: cliente.cep ?? '',
-                  logradouro: cliente.logradouro ?? '',
-                  numero: cliente.numero ?? '',
-                  bairro: cliente.bairro ?? '',
-                  cidade: cliente.cidade ?? '',
-                  uf: cliente.uf ?? '',
-                  observacoes: cliente.observacoes ?? '',
-                },
-              }
-            : {})}
+          {...(mode === 'editar' && defaultValues ? { defaultValues } : {})}
           onSubmit={async (values) => {
             try {
               if (mode === 'criar') {

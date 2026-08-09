@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -51,6 +51,26 @@ export function ServicoFormDrawer({ mode }: Props) {
   } | null>(null)
 
   const fechar = () => navigate('/servicos')
+
+  // Identidade estável dos valores iniciais (só muda quando o serviço carregado
+  // muda). Evita que o `reset(defaultValues)` do form dispare a cada render do
+  // drawer (que re-renderiza ao digitar, via onDirtyChange) e reverta o valor
+  // digitado em modo edição.
+  const defaultValues = useMemo(
+    () =>
+      servico
+        ? {
+            nome: servico.nome ?? '',
+            descricao: servico.descricao ?? '',
+            preco: servico.preco ?? 0,
+            ehMaoDeObraPadrao: servico.ehMaoDeObraPadrao ?? false,
+            garantiaDias: servico.garantiaDias ?? null,
+            tempoEstimadoMinutos: servico.tempoEstimadoMinutos ?? null,
+            categoria: servico.categoria ?? '',
+          }
+        : undefined,
+    [servico],
+  )
 
   async function persistir(values: ServicoFormValues) {
     try {
@@ -115,19 +135,7 @@ export function ServicoFormDrawer({ mode }: Props) {
             precoReadonly={mode === 'editar' && !podeAtualizarPreco}
             onCancel={fechar}
             onDirtyChange={setDirty}
-            {...(mode === 'editar' && servico
-              ? {
-                  defaultValues: {
-                    nome: servico.nome ?? '',
-                    descricao: servico.descricao ?? '',
-                    preco: servico.preco ?? 0,
-                    ehMaoDeObraPadrao: servico.ehMaoDeObraPadrao ?? false,
-                    garantiaDias: servico.garantiaDias ?? null,
-                    tempoEstimadoMinutos: servico.tempoEstimadoMinutos ?? null,
-                    categoria: servico.categoria ?? '',
-                  },
-                }
-              : {})}
+            {...(mode === 'editar' && defaultValues ? { defaultValues } : {})}
             onSubmit={async (values) => {
               const conflito = detectarConflito(values)
               if (conflito) {

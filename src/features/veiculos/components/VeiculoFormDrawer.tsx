@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -37,6 +37,29 @@ export function VeiculoFormDrawer({ mode }: Props) {
 
   const fechar = () => navigate('/veiculos')
 
+  // Identidade estável dos valores iniciais (só muda quando o veículo carregado
+  // muda). Evita que o `reset(defaultValues)` do form dispare a cada render do
+  // drawer (que re-renderiza ao digitar, via onDirtyChange) e reverta o valor
+  // digitado em modo edição.
+  const defaultValues = useMemo(
+    () =>
+      veiculo
+        ? {
+            clienteId: veiculo.clienteId!,
+            placa: veiculo.placa ?? '',
+            marca: veiculo.marca ?? '',
+            modelo: veiculo.modelo ?? '',
+            anoFabricacao: veiculo.anoFabricacao ?? null,
+            anoModelo: veiculo.anoModelo ?? null,
+            cor: veiculo.cor ?? '',
+            chassi: veiculo.chassi ?? '',
+            renavam: veiculo.renavam ?? '',
+            observacoes: veiculo.observacoes ?? '',
+          }
+        : undefined,
+    [veiculo],
+  )
+
   async function criarComToast(
     values: VeiculoFormValues,
     extra?: { confirmarSubstituicao: boolean; motivoDesativacaoAnterior: string },
@@ -65,25 +88,14 @@ export function VeiculoFormDrawer({ mode }: Props) {
         </div>
       ) : erroEdicao ? (
         <p className="text-sm text-destructive">Veículo não encontrado.</p>
-      ) : mode === 'editar' && veiculo ? (
+      ) : mode === 'editar' && veiculo && defaultValues ? (
         <VeiculoForm
           modoEdicao
           clienteNome={veiculo.clienteNome}
           submitLabel="Salvar alterações"
           onCancel={fechar}
           onDirtyChange={setDirty}
-          defaultValues={{
-            clienteId: veiculo.clienteId!,
-            placa: veiculo.placa ?? '',
-            marca: veiculo.marca ?? '',
-            modelo: veiculo.modelo ?? '',
-            anoFabricacao: veiculo.anoFabricacao ?? null,
-            anoModelo: veiculo.anoModelo ?? null,
-            cor: veiculo.cor ?? '',
-            chassi: veiculo.chassi ?? '',
-            renavam: veiculo.renavam ?? '',
-            observacoes: veiculo.observacoes ?? '',
-          }}
+          defaultValues={defaultValues}
           onSubmit={async (values) => {
             try {
               await atualizar.mutateAsync({ id: numericId, values })

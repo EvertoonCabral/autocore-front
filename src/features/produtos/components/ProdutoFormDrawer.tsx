@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -27,6 +27,25 @@ export function ProdutoFormDrawer({ mode }: Props) {
 
   const fechar = () => navigate('/produtos')
 
+  // Identidade estável dos valores iniciais (só muda quando o produto carregado
+  // muda). Evita que o `reset(defaultValues)` do form dispare a cada render do
+  // drawer (que re-renderiza ao digitar, via onDirtyChange) e reverta o valor
+  // digitado em modo edição.
+  const defaultValues = useMemo(
+    () =>
+      produto
+        ? {
+            nome: produto.nome ?? '',
+            referencia: produto.referencia ?? '',
+            precoCusto: produto.precoCusto ?? 0,
+            precoVenda: produto.precoVenda ?? 0,
+            quantidadeEstoque: produto.quantidadeEstoque ?? 0,
+            estoqueMinimo: produto.estoqueMinimo ?? 0,
+          }
+        : undefined,
+    [produto],
+  )
+
   return (
     <FormDrawerShell
       title={mode === 'criar' ? 'Novo produto' : 'Editar produto'}
@@ -49,18 +68,7 @@ export function ProdutoFormDrawer({ mode }: Props) {
             esconderEstoqueInicial={mode === 'editar'}
             onCancel={fechar}
             onDirtyChange={setDirty}
-            {...(mode === 'editar' && produto
-              ? {
-                  defaultValues: {
-                    nome: produto.nome ?? '',
-                    referencia: produto.referencia ?? '',
-                    precoCusto: produto.precoCusto ?? 0,
-                    precoVenda: produto.precoVenda ?? 0,
-                    quantidadeEstoque: produto.quantidadeEstoque ?? 0,
-                    estoqueMinimo: produto.estoqueMinimo ?? 0,
-                  },
-                }
-              : {})}
+            {...(mode === 'editar' && defaultValues ? { defaultValues } : {})}
             onSubmit={async (values) => {
               try {
                 if (mode === 'criar') {
