@@ -104,8 +104,10 @@ describe('ClienteFormDrawer', () => {
     await user.type(screen.getByLabelText(/^Telefone \*/), '44999990000')
     await user.type(screen.getByLabelText(/Telefone secundário/), '4433330000')
     await user.type(screen.getByLabelText(/^CEP/), '87010-000')
+    // Busca é explícita: clicar na lupa dispara o ViaCEP.
+    await user.click(screen.getByRole('button', { name: /buscar endereço pelo cep/i }))
 
-    // O ViaCEP preenche logradouro/bairro/cidade/uf automaticamente.
+    // O ViaCEP preenche logradouro/bairro/cidade/uf.
     await waitFor(() =>
       expect(screen.getByLabelText(/Logradouro/)).toHaveValue('Rua das Flores'),
     )
@@ -144,6 +146,7 @@ describe('ClienteFormDrawer', () => {
     await waitFor(() => expect(screen.getByLabelText(/^Nome/)).toBeInTheDocument())
 
     await user.type(screen.getByLabelText(/^CEP/), '99999-999')
+    await user.click(screen.getByRole('button', { name: /buscar endereço pelo cep/i }))
 
     await waitFor(() =>
       expect(screen.getByText(/CEP não encontrado/i)).toBeInTheDocument(),

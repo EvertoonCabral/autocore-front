@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -37,6 +37,7 @@ export function ClienteForm({
     setError,
     clearErrors,
     setValue,
+    getValues,
     reset,
     formState: { errors, isSubmitting, isDirty },
   } = useForm<ClienteFormValues>({
@@ -85,13 +86,18 @@ export function ClienteForm({
 
   const { buscar: buscarCep, carregando: buscandoCep } = useBuscaCep()
 
-  // Ao sair do campo CEP (ou ao completar 8 dígitos), consulta o ViaCEP e
-  // preenche logradouro/bairro/cidade/uf. O `numero` nunca é sobrescrito e
-  // todos os campos seguem editáveis. Falha de rede é silenciosa; CEP
-  // inexistente mostra uma mensagem gentil no próprio campo.
+  // A busca de CEP é **explícita**: só dispara pelo botão de busca ou ao
+  // pressionar Enter no campo CEP (não automaticamente ao digitar/sair). Ao
+  // encontrar, preenche logradouro/bairro/cidade/uf — o `numero` nunca é
+  // sobrescrito e todos os campos seguem editáveis. Falha de rede é silenciosa;
+  // CEP inexistente (ou incompleto) mostra uma mensagem gentil no próprio campo.
   const cepReg = register('cep')
-  async function preencherPorCep(valor: string) {
-    if (valor.replace(/\D/g, '').length !== 8) return
+  async function buscarCepAtual() {
+    const valor = getValues('cep') ?? ''
+    if (valor.replace(/\D/g, '').length !== 8) {
+      setError('cep', { type: 'manual', message: 'Informe um CEP com 8 dígitos para buscar.' })
+      return
+    }
     const resultado = await buscarCep(valor)
     if (resultado.status === 'ok') {
       clearErrors('cep')
@@ -238,34 +244,39 @@ export function ClienteForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-6">
             <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="cep" className="flex items-center gap-2">
-                CEP
-                {buscandoCep && (
-                  <Loader2
-                    className="size-3.5 animate-spin text-muted-foreground"
-                    aria-label="Buscando CEP"
-                  />
-                )}
-              </Label>
-              <Input
-                id="cep"
-                inputMode="numeric"
-                autoComplete="postal-code"
-                placeholder="00000-000"
-                aria-invalid={!!errors.cep}
-                {...cepReg}
-                onChange={(e) => {
-                  void cepReg.onChange(e)
-                  // Dispara automaticamente assim que o CEP fica completo.
-                  if (e.target.value.replace(/\D/g, '').length === 8) {
-                    void preencherPorCep(e.target.value)
-                  }
-                }}
-                onBlur={(e) => {
-                  void cepReg.onBlur(e)
-                  void preencherPorCep(e.target.value)
-                }}
-              />
+              <Label htmlFor="cep">CEP</Label>
+              <div className="flex gap-2">
+                <Input
+                  id="cep"
+                  inputMode="numeric"
+                  autoComplete="postal-code"
+                  placeholder="00000-000"
+                  aria-invalid={!!errors.cep}
+                  {...cepReg}
+                  onKeyDown={(e) => {
+                    // Enter no CEP busca o endereço em vez de enviar o formulário.
+                    if (e.key === 'Enter') {
+                      e.preventDefault()
+                      void buscarCepAtual()
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="shrink-0"
+                  onClick={() => void buscarCepAtual()}
+                  disabled={buscandoCep}
+                  aria-label="Buscar endereço pelo CEP"
+                  title="Buscar endereço pelo CEP"
+                >
+                  {buscandoCep ? <Loader2 className="animate-spin" /> : <Search />}
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Digite o CEP e clique na lupa (ou Enter) para preencher o endereço.
+              </p>
               {errors.cep && (
                 <p role="alert" className="text-sm text-destructive">
                   {errors.cep.message}
