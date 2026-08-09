@@ -134,7 +134,7 @@ export function OrdemDetalhePage() {
                 pending={fechar.isPending}
                 onConfirm={async () => {
                   try {
-                    await fechar.mutateAsync(numericId)
+                    await fechar.mutateAsync({ id: numericId })
                     toast.success('OS concluída.')
                   } catch (err) {
                     const apiErr = err as { message?: string }

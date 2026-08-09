@@ -1,5 +1,5 @@
-import { Link, useNavigate } from 'react-router-dom'
-import { Plus } from 'lucide-react'
+import { Link, Outlet } from 'react-router-dom'
+import { LayoutGrid, List, Plus, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Select,
@@ -11,78 +11,82 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PageHeader } from '@/shared/components/PageHeader'
-import { Pagination } from '@/shared/components/Pagination'
-import { DataTable, type ColumnDef } from '@/shared/components/DataTable'
-import { EmptyState } from '@/shared/components/EmptyState'
-import { StatusOrdemBadge } from '@/shared/components/StatusOrdemBadge'
+import { SearchInput } from '@/shared/components/SearchInput'
 import { usePagedQuery } from '@/shared/hooks/usePagedQuery'
-import { formatBRL, formatData } from '@/lib/format'
-import { STATUS_ORDEM_OPTIONS, type StatusOrdem } from '@/shared/enums/statusOrdem'
-import type { OrdemServicoResumoDto } from '@/api/types'
-import { useListarOrdens } from '../hooks/useListarOrdens'
+import { cn } from '@/lib/cn'
+import { formatData } from '@/lib/format'
+import { STATUS_ORDEM_META, STATUS_ORDEM_OPTIONS, type StatusOrdem } from '@/shared/enums/statusOrdem'
+import { useOsViewMode, type OsViewMode } from '../hooks/useOsViewMode'
+import { ListaOrdens } from '../components/ListaOrdens'
+import { QuadroOrdens } from '../components/QuadroOrdens'
+import type { ListarOrdensParams } from '../hooks/useListarOrdens'
+
+interface Chip {
+  key: string
+  label: string
+  onRemove: () => void
+}
 
 export function OrdensListPage() {
-  const navigate = useNavigate()
-  const { pagina, porPagina, filters, setPagina, setPorPagina, setFilter } = usePagedQuery({
+  const [viewMode, setViewMode] = useOsViewMode()
+  const { pagina, porPagina, q, filters, setPagina, setPorPagina, setQ, setFilter } = usePagedQuery({
     porPagina: 20,
   })
 
   const status = filters.status ? (Number(filters.status) as StatusOrdem) : undefined
   const abertaDe = filters.de ?? undefined
   const abertaAte = filters.ate ?? undefined
+  const filtro = q.trim() || undefined
 
-  const { data, isLoading } = useListarOrdens({
+  const params: ListarOrdensParams = {
     pagina,
     porPagina,
     ...(status ? { status } : {}),
     ...(abertaDe ? { abertaDe } : {}),
     ...(abertaAte ? { abertaAte } : {}),
-  })
+    ...(filtro ? { filtro } : {}),
+  }
 
-  const columns: ColumnDef<OrdemServicoResumoDto>[] = [
-    {
-      id: 'numero',
-      header: 'Número',
-      className: 'w-36 font-mono text-xs',
-      cell: (o) => o.numero,
-    },
-    {
-      id: 'cliente',
-      header: 'Cliente',
-      cell: (o) => o.clienteNome,
-    },
-    {
-      id: 'status',
-      header: 'Status',
-      className: 'w-44',
-      cell: (o) => <StatusOrdemBadge status={o.status as StatusOrdem | undefined} />,
-    },
-    {
-      id: 'aberta',
-      header: 'Aberta em',
-      className: 'w-28',
-      cell: (o) => formatData(o.abertaEm),
-    },
-    {
-      id: 'totalGeral',
-      header: <span className="text-right">Total</span>,
-      className: 'w-32 text-right',
-      cell: (o) => <span className="tabular-nums">{formatBRL(o.totalGeral ?? 0)}</span>,
-    },
-    {
-      id: 'saldo',
-      header: <span className="text-right">Saldo</span>,
-      className: 'w-32 text-right',
-      cell: (o) => {
-        const saldo = o.saldoDevedor ?? 0
-        return (
-          <span className={`tabular-nums ${saldo > 0 ? 'text-destructive font-medium' : ''}`}>
-            {formatBRL(saldo)}
-          </span>
-        )
+  const chips: Chip[] = []
+  if (status) {
+    chips.push({
+      key: 'status',
+      label: `Status: ${STATUS_ORDEM_META[status].label}`,
+      onRemove: () => setFilter('status', null),
+    })
+  }
+  if (abertaDe || abertaAte) {
+    const periodo =
+      abertaDe && abertaAte
+        ? `${formatData(abertaDe)} – ${formatData(abertaAte)}`
+        : abertaDe
+          ? `A partir de ${formatData(abertaDe)}`
+          : `Até ${formatData(abertaAte)}`
+    chips.push({
+      key: 'periodo',
+      label: `Período: ${periodo}`,
+      onRemove: () => {
+        setFilter('de', null)
+        setFilter('ate', null)
       },
-    },
-  ]
+    })
+  }
+  if (filtro) {
+    chips.push({ key: 'busca', label: `Busca: "${filtro}"`, onRemove: () => setQ('') })
+  }
+
+  function limparTudo() {
+    setFilter('status', null)
+    setFilter('de', null)
+    setFilter('ate', null)
+    setQ('')
+  }
+
+  const filtrosQuadro = {
+    ...(filtro ? { filtro } : {}),
+    ...(abertaDe ? { abertaDe } : {}),
+    ...(abertaAte ? { abertaAte } : {}),
+  }
 
   return (
     <div className="space-y-5">
@@ -90,16 +94,28 @@ export function OrdensListPage() {
         title="Ordens de Serviço"
         description="Trabalhos abertos, em andamento e finalizados."
         actions={
-          <Button asChild>
-            <Link to="/ordens/nova">
-              <Plus className="h-4 w-4" />
-              Nova OS
-            </Link>
-          </Button>
+          <div className="flex items-center gap-2">
+            <ViewToggle value={viewMode} onChange={setViewMode} />
+            <Button asChild>
+              <Link to="/ordens/nova">
+                <Plus className="h-4 w-4" />
+                Nova OS
+              </Link>
+            </Button>
+          </div>
         }
       />
 
       <div className="flex flex-wrap items-end gap-3">
+        <div className="space-y-1">
+          <Label>Buscar</Label>
+          <SearchInput
+            value={q}
+            onDebouncedChange={setQ}
+            placeholder="Número, cliente ou placa…"
+            className="w-64"
+          />
+        </div>
         <div className="space-y-1">
           <Label htmlFor="filter-status">Status</Label>
           <Select
@@ -139,51 +155,85 @@ export function OrdensListPage() {
             onChange={(e) => setFilter('ate', e.target.value)}
           />
         </div>
-        {(status || abertaDe || abertaAte) && (
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setFilter('status', null)
-              setFilter('de', null)
-              setFilter('ate', null)
-            }}
-          >
-            Limpar
-          </Button>
-        )}
       </div>
 
-      <DataTable
-        columns={columns}
-        data={data?.dados}
-        loading={isLoading}
-        rowKey={(o) => o.id ?? `os-${o.numero}`}
-        onRowClick={(o) => navigate(`/ordens/${o.id}`)}
-        empty={
-          <EmptyState
-            title="Nenhuma OS encontrada"
-            description="Abra a primeira ordem de serviço para começar."
-            action={
-              <Button asChild>
-                <Link to="/ordens/nova">
-                  <Plus className="h-4 w-4" />
-                  Nova OS
-                </Link>
-              </Button>
-            }
-          />
-        }
-      />
+      {chips.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          {chips.map((chip) => (
+            <button
+              key={chip.key}
+              type="button"
+              onClick={chip.onRemove}
+              className="inline-flex items-center gap-1 rounded-full border border-border-faint bg-subtle px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {chip.label}
+              <X className="h-3 w-3" aria-hidden />
+              <span className="sr-only">Remover filtro</span>
+            </button>
+          ))}
+          <Button variant="ghost" size="sm" className="h-7 text-xs" onClick={limparTudo}>
+            Limpar
+          </Button>
+        </div>
+      )}
 
-      {data && data.dados.length > 0 && (
-        <Pagination
-          pagina={pagina}
-          porPagina={porPagina}
-          total={data.total}
+      {viewMode === 'quadro' ? (
+        <QuadroOrdens filtros={filtrosQuadro} />
+      ) : (
+        <ListaOrdens
+          params={params}
           onPaginaChange={setPagina}
           onPorPaginaChange={setPorPagina}
+          buscando={Boolean(filtro)}
         />
       )}
+
+      {/* Modal de Nova OS (rota aninhada) */}
+      <Outlet />
+    </div>
+  )
+}
+
+interface ViewToggleProps {
+  value: OsViewMode
+  onChange: (mode: OsViewMode) => void
+}
+
+function ViewToggle({ value, onChange }: ViewToggleProps) {
+  return (
+    <div
+      role="group"
+      aria-label="Modo de visualização"
+      className="inline-flex rounded-md border border-border-faint p-0.5"
+    >
+      <button
+        type="button"
+        aria-pressed={value === 'lista'}
+        onClick={() => onChange('lista')}
+        className={cn(
+          'inline-flex items-center gap-1.5 rounded-[5px] px-2.5 py-1 text-sm transition-colors',
+          value === 'lista'
+            ? 'bg-subtle font-medium text-foreground'
+            : 'text-muted-foreground hover:text-foreground',
+        )}
+      >
+        <List className="h-4 w-4" aria-hidden />
+        Lista
+      </button>
+      <button
+        type="button"
+        aria-pressed={value === 'quadro'}
+        onClick={() => onChange('quadro')}
+        className={cn(
+          'inline-flex items-center gap-1.5 rounded-[5px] px-2.5 py-1 text-sm transition-colors',
+          value === 'quadro'
+            ? 'bg-subtle font-medium text-foreground'
+            : 'text-muted-foreground hover:text-foreground',
+        )}
+      >
+        <LayoutGrid className="h-4 w-4" aria-hidden />
+        Quadro
+      </button>
     </div>
   )
 }

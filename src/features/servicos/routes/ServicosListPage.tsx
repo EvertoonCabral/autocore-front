@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Outlet } from 'react-router-dom'
 import { Plus, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -91,6 +91,9 @@ export function ServicosListPage() {
           />
         }
       />
+
+      {/* Drawer de novo/editar serviço (rotas aninhadas) */}
+      <Outlet />
     </div>
   )
 }

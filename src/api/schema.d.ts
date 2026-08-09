@@ -745,6 +745,56 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/clientes/{id}/resumo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ResumoClienteDtoApiResponse"];
+                        "application/json": components["schemas"]["ResumoClienteDtoApiResponse"];
+                        "text/json": components["schemas"]["ResumoClienteDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/clientes/{id}/veiculos": {
         parameters: {
             query?: never;
@@ -1651,6 +1701,7 @@ export interface paths {
                     clienteId?: number;
                     abertaDe?: string;
                     abertaAte?: string;
+                    filtro?: string;
                     pagina?: number;
                     porPagina?: number;
                 };
@@ -1666,9 +1717,9 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "text/plain": components["schemas"]["OrdemServicoResumoDtoResultadoPaginadoDto"];
-                        "application/json": components["schemas"]["OrdemServicoResumoDtoResultadoPaginadoDto"];
-                        "text/json": components["schemas"]["OrdemServicoResumoDtoResultadoPaginadoDto"];
+                        "text/plain": components["schemas"]["ListaOrdensServicoDto"];
+                        "application/json": components["schemas"]["ListaOrdensServicoDto"];
+                        "text/json": components["schemas"]["ListaOrdensServicoDto"];
                     };
                 };
             };
@@ -1836,6 +1887,80 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/ordens/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["MudarStatusBody"];
+                    "text/json": components["schemas"]["MudarStatusBody"];
+                    "application/*+json": components["schemas"]["MudarStatusBody"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
         trace?: never;
     };
     "/api/ordens/{id}/servicos": {
@@ -2128,7 +2253,13 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["FecharBody"];
+                    "text/json": components["schemas"]["FecharBody"];
+                    "application/*+json": components["schemas"]["FecharBody"];
+                };
+            };
             responses: {
                 /** @description No Content */
                 204: {
@@ -4189,6 +4320,10 @@ export interface components {
         FaturamentoRecebidoDtoApiResponse: {
             dados?: components["schemas"]["FaturamentoRecebidoDto"];
         };
+        FecharBody: {
+            /** Format: int32 */
+            diasParaVencimento?: number | null;
+        };
         /**
          * Format: int32
          * @enum {integer}
@@ -4245,6 +4380,19 @@ export interface components {
             /** Format: double */
             subtotal?: number;
         };
+        ListaOrdensServicoDto: {
+            dados?: components["schemas"]["OrdemServicoResumoDto"][] | null;
+            /** Format: int32 */
+            total?: number;
+            /** Format: int32 */
+            pagina?: number;
+            /** Format: int32 */
+            porPagina?: number;
+            /** Format: double */
+            somaTotalGeral?: number;
+            /** Format: double */
+            somaSaldoDevedor?: number;
+        };
         LoginDto: {
             email?: string | null;
             senha?: string | null;
@@ -4277,6 +4425,9 @@ export interface components {
         };
         MesFaturamentoDtoIReadOnlyListApiResponse: {
             dados?: components["schemas"]["MesFaturamentoDto"][] | null;
+        };
+        MudarStatusBody: {
+            status?: components["schemas"]["StatusOrdem"];
         };
         OrdemPendenteDto: {
             /** Format: int64 */
@@ -4374,15 +4525,6 @@ export interface components {
         };
         OrdemServicoResumoDtoIReadOnlyListApiResponse: {
             dados?: components["schemas"]["OrdemServicoResumoDto"][] | null;
-        };
-        OrdemServicoResumoDtoResultadoPaginadoDto: {
-            dados?: components["schemas"]["OrdemServicoResumoDto"][] | null;
-            /** Format: int32 */
-            total?: number;
-            /** Format: int32 */
-            pagina?: number;
-            /** Format: int32 */
-            porPagina?: number;
         };
         PagamentoDto: {
             /** Format: int64 */
@@ -4495,6 +4637,21 @@ export interface components {
             valor?: number;
             forma?: components["schemas"]["FormaPagamento"];
             observacao?: string | null;
+        };
+        ResumoClienteDto: {
+            /** Format: int64 */
+            clienteId?: number;
+            clienteNome?: string | null;
+            /** Format: double */
+            saldoEmAberto?: number;
+            /** Format: int32 */
+            osAbertas?: number;
+            /** Format: int32 */
+            osConcluidasNaoPagas?: number;
+            ultimas?: components["schemas"]["OrdemServicoResumoDto"][] | null;
+        };
+        ResumoClienteDtoApiResponse: {
+            dados?: components["schemas"]["ResumoClienteDto"];
         };
         ResumoFinanceiroDto: {
             /** Format: date */

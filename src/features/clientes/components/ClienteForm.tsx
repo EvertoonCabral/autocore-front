@@ -18,6 +18,8 @@ interface ClienteFormProps {
   onSubmit: (values: ClienteFormValues) => Promise<void>
   /** Disparado pelo botão Cancelar. */
   onCancel?: () => void
+  /** Notifica quando o form fica "sujo" (usado pelo drawer para confirmar descarte). */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 export function ClienteForm({
@@ -25,6 +27,7 @@ export function ClienteForm({
   submitLabel = 'Salvar',
   onSubmit,
   onCancel,
+  onDirtyChange,
 }: ClienteFormProps) {
   const {
     register,
@@ -32,7 +35,7 @@ export function ClienteForm({
     control,
     setError,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<ClienteFormValues>({
     resolver: zodResolver(clienteSchema),
     defaultValues: {
@@ -59,6 +62,11 @@ export function ClienteForm({
       })
     }
   }, [defaultValues, reset])
+
+  // Espelha o estado "sujo" pro caller (drawer usa pra confirmar descarte).
+  useEffect(() => {
+    onDirtyChange?.(isDirty)
+  }, [isDirty, onDirtyChange])
 
   async function submit(values: ClienteFormValues) {
     // Schema (clienteSchema) já remove a máscara via .transform — values

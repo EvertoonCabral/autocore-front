@@ -13,24 +13,20 @@ import { NotFound } from './NotFound'
 const LoginPage = lazy(() => import('@/features/auth/routes/LoginPage').then((m) => ({ default: m.LoginPage })))
 const DashboardPage = lazy(() => import('@/features/dashboard/routes/DashboardPage').then((m) => ({ default: m.DashboardPage })))
 const ClientesListPage = lazy(() => import('@/features/clientes/routes/ClientesListPage').then((m) => ({ default: m.ClientesListPage })))
-const NovoClientePage = lazy(() => import('@/features/clientes/routes/NovoClientePage').then((m) => ({ default: m.NovoClientePage })))
+const ClienteFormDrawer = lazy(() => import('@/features/clientes/components/ClienteFormDrawer').then((m) => ({ default: m.ClienteFormDrawer })))
 const ClienteDetalhePage = lazy(() => import('@/features/clientes/routes/ClienteDetalhePage').then((m) => ({ default: m.ClienteDetalhePage })))
-const EditarClientePage = lazy(() => import('@/features/clientes/routes/EditarClientePage').then((m) => ({ default: m.EditarClientePage })))
 const ServicosListPage = lazy(() => import('@/features/servicos/routes/ServicosListPage').then((m) => ({ default: m.ServicosListPage })))
-const NovoServicoPage = lazy(() => import('@/features/servicos/routes/NovoServicoPage').then((m) => ({ default: m.NovoServicoPage })))
+const ServicoFormDrawer = lazy(() => import('@/features/servicos/components/ServicoFormDrawer').then((m) => ({ default: m.ServicoFormDrawer })))
 const ServicoDetalhePage = lazy(() => import('@/features/servicos/routes/ServicoDetalhePage').then((m) => ({ default: m.ServicoDetalhePage })))
-const EditarServicoPage = lazy(() => import('@/features/servicos/routes/EditarServicoPage').then((m) => ({ default: m.EditarServicoPage })))
 const ProdutosListPage = lazy(() => import('@/features/produtos/routes/ProdutosListPage').then((m) => ({ default: m.ProdutosListPage })))
 const ProdutosAbaixoMinimoPage = lazy(() => import('@/features/produtos/routes/ProdutosAbaixoMinimoPage').then((m) => ({ default: m.ProdutosAbaixoMinimoPage })))
-const NovoProdutoPage = lazy(() => import('@/features/produtos/routes/NovoProdutoPage').then((m) => ({ default: m.NovoProdutoPage })))
+const ProdutoFormDrawer = lazy(() => import('@/features/produtos/components/ProdutoFormDrawer').then((m) => ({ default: m.ProdutoFormDrawer })))
 const ProdutoDetalhePage = lazy(() => import('@/features/produtos/routes/ProdutoDetalhePage').then((m) => ({ default: m.ProdutoDetalhePage })))
-const EditarProdutoPage = lazy(() => import('@/features/produtos/routes/EditarProdutoPage').then((m) => ({ default: m.EditarProdutoPage })))
 const VeiculosListPage = lazy(() => import('@/features/veiculos/routes/VeiculosListPage').then((m) => ({ default: m.VeiculosListPage })))
-const NovoVeiculoPage = lazy(() => import('@/features/veiculos/routes/NovoVeiculoPage').then((m) => ({ default: m.NovoVeiculoPage })))
+const VeiculoFormDrawer = lazy(() => import('@/features/veiculos/components/VeiculoFormDrawer').then((m) => ({ default: m.VeiculoFormDrawer })))
 const VeiculoDetalhePage = lazy(() => import('@/features/veiculos/routes/VeiculoDetalhePage').then((m) => ({ default: m.VeiculoDetalhePage })))
-const EditarVeiculoPage = lazy(() => import('@/features/veiculos/routes/EditarVeiculoPage').then((m) => ({ default: m.EditarVeiculoPage })))
 const OrdensListPage = lazy(() => import('@/features/ordens/routes/OrdensListPage').then((m) => ({ default: m.OrdensListPage })))
-const NovaOrdemPage = lazy(() => import('@/features/ordens/routes/NovaOrdemPage').then((m) => ({ default: m.NovaOrdemPage })))
+const NovaOrdemModal = lazy(() => import('@/features/ordens/routes/NovaOrdemModal').then((m) => ({ default: m.NovaOrdemModal })))
 const OrdemDetalhePage = lazy(() => import('@/features/ordens/routes/OrdemDetalhePage').then((m) => ({ default: m.OrdemDetalhePage })))
 const PendenciasPage = lazy(() => import('@/features/pagamentos/routes/PendenciasPage').then((m) => ({ default: m.PendenciasPage })))
 const HistoricoCobrancaPage = lazy(() => import('@/features/cobrancas/routes/HistoricoCobrancaPage').then((m) => ({ default: m.HistoricoCobrancaPage })))
@@ -55,25 +51,48 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: '/', element: <DashboardPage /> },
-      { path: '/clientes', element: <ClientesListPage /> },
-      { path: '/clientes/novo', element: <NovoClientePage /> },
+      {
+        path: '/clientes',
+        element: <ClientesListPage />,
+        children: [
+          { path: 'novo', element: <ClienteFormDrawer mode="criar" /> },
+          { path: ':id/editar', element: <ClienteFormDrawer mode="editar" /> },
+        ],
+      },
       { path: '/clientes/:id', element: <ClienteDetalhePage /> },
-      { path: '/clientes/:id/editar', element: <EditarClientePage /> },
-      { path: '/servicos', element: <ServicosListPage /> },
-      { path: '/servicos/novo', element: <NovoServicoPage /> },
+      {
+        path: '/servicos',
+        element: <ServicosListPage />,
+        children: [
+          { path: 'novo', element: <ServicoFormDrawer mode="criar" /> },
+          { path: ':id/editar', element: <ServicoFormDrawer mode="editar" /> },
+        ],
+      },
       { path: '/servicos/:id', element: <ServicoDetalhePage /> },
-      { path: '/servicos/:id/editar', element: <EditarServicoPage /> },
-      { path: '/produtos', element: <ProdutosListPage /> },
+      {
+        path: '/produtos',
+        element: <ProdutosListPage />,
+        children: [
+          { path: 'novo', element: <ProdutoFormDrawer mode="criar" /> },
+          { path: ':id/editar', element: <ProdutoFormDrawer mode="editar" /> },
+        ],
+      },
       { path: '/produtos/abaixo-minimo', element: <ProdutosAbaixoMinimoPage /> },
-      { path: '/produtos/novo', element: <NovoProdutoPage /> },
       { path: '/produtos/:id', element: <ProdutoDetalhePage /> },
-      { path: '/produtos/:id/editar', element: <EditarProdutoPage /> },
-      { path: '/veiculos', element: <VeiculosListPage /> },
-      { path: '/veiculos/novo', element: <NovoVeiculoPage /> },
+      {
+        path: '/veiculos',
+        element: <VeiculosListPage />,
+        children: [
+          { path: 'novo', element: <VeiculoFormDrawer mode="criar" /> },
+          { path: ':id/editar', element: <VeiculoFormDrawer mode="editar" /> },
+        ],
+      },
       { path: '/veiculos/:id', element: <VeiculoDetalhePage /> },
-      { path: '/veiculos/:id/editar', element: <EditarVeiculoPage /> },
-      { path: '/ordens', element: <OrdensListPage /> },
-      { path: '/ordens/nova', element: <NovaOrdemPage /> },
+      {
+        path: '/ordens',
+        element: <OrdensListPage />,
+        children: [{ path: 'nova', element: <NovaOrdemModal /> }],
+      },
       { path: '/ordens/:id', element: <OrdemDetalhePage /> },
       { path: '/pendencias', element: <PendenciasPage /> },
       { path: '/cobrancas', element: <HistoricoCobrancaPage /> },

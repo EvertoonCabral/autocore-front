@@ -13,10 +13,12 @@ import type { components } from './schema'
 export type LoginResultDto = components['schemas']['LoginResultDto']
 export type UsuarioDto     = components['schemas']['UsuarioDto']
 export type ClienteDto     = components['schemas']['ClienteDto']
+export type ResumoClienteDto = components['schemas']['ResumoClienteDto']
 export type ProdutoDto     = components['schemas']['ProdutoDto']
 export type CatalogoServicoDto      = components['schemas']['CatalogoServicoDto']
 export type OrdemServicoResumoDto   = components['schemas']['OrdemServicoResumoDto']
 export type OrdemServicoDetalheDto  = components['schemas']['OrdemServicoDetalheDto']
+export type ListaOrdensServicoDto   = components['schemas']['ListaOrdensServicoDto']
 export type VeiculoResumoDto        = components['schemas']['VeiculoResumoDto']
 export type VeiculoDetalheDto       = components['schemas']['VeiculoDetalheDto']
 /**

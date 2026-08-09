@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, Outlet } from 'react-router-dom'
 import { AlertTriangle, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -143,6 +143,9 @@ export function ProdutosListPage() {
           onPorPaginaChange={setPorPagina}
         />
       )}
+
+      {/* Drawer de novo/editar produto (rotas aninhadas) */}
+      <Outlet />
     </div>
   )
 }

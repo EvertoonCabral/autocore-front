@@ -28,10 +28,9 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
 
-    /* Path alias */
-    "baseUrl": ".",
+    /* Path alias (resolvido relativo a este tsconfig; sem baseUrl — deprecado) */
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"]

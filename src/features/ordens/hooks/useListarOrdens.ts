@@ -1,7 +1,7 @@
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { api } from '@/api/client'
-import { receberPaginado } from '@/api/envelope'
-import type { OrdemServicoResumoDto } from '@/api/types'
+import { toApiError } from '@/api/errors'
+import type { ListaOrdensServicoDto } from '@/api/types'
 import type { StatusOrdem } from '@/shared/enums/statusOrdem'
 
 export interface ListarOrdensParams {
@@ -9,6 +9,8 @@ export interface ListarOrdensParams {
   clienteId?: number
   abertaDe?: string
   abertaAte?: string
+  /** Busca por número da OS, nome do cliente ou placa do veículo. */
+  filtro?: string
   pagina: number
   porPagina: number
 }
@@ -20,22 +22,35 @@ export const ordensKeys = {
   timeline: (id: number) => ['ordens', 'timeline', id] as const,
 }
 
+/**
+ * Listagem de OS. A resposta é o `ListaOrdensServicoDto`: o envelope paginado
+ * conhecido (`dados/total/pagina/porPagina`) + a soma do conjunto filtrado
+ * inteiro (`somaTotalGeral`/`somaSaldoDevedor`), usada no rodapé da lista.
+ */
 export function useListarOrdens(params: ListarOrdensParams) {
   return useQuery({
     queryKey: ordensKeys.list(params),
     placeholderData: keepPreviousData,
     queryFn: async () => {
-      const query: Record<string, string | number | boolean> = {
-        pagina: params.pagina,
-        porPagina: params.porPagina,
+      const result = (await api.GET('/api/ordens', {
+        params: {
+          query: {
+            pagina: params.pagina,
+            porPagina: params.porPagina,
+            ...(params.status ? { status: params.status } : {}),
+            ...(params.clienteId ? { clienteId: params.clienteId } : {}),
+            ...(params.abertaDe ? { abertaDe: params.abertaDe } : {}),
+            ...(params.abertaAte ? { abertaAte: params.abertaAte } : {}),
+            ...(params.filtro?.trim() ? { filtro: params.filtro.trim() } : {}),
+          },
+        },
+      })) as {
+        data?: ListaOrdensServicoDto
+        error?: unknown
+        response: Response
       }
-      if (params.status) query.status = params.status
-      if (params.clienteId) query.clienteId = params.clienteId
-      if (params.abertaDe) query.abertaDe = params.abertaDe
-      if (params.abertaAte) query.abertaAte = params.abertaAte
-
-      const result = await api.GET('/api/ordens', { params: { query } })
-      return receberPaginado<OrdemServicoResumoDto>(result)
+      if (result.error || !result.data) throw toApiError(result.error, result.response.status)
+      return result.data
     },
   })
 }

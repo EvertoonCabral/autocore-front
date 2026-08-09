@@ -17,6 +17,8 @@ interface ServicoFormProps {
   precoReadonly?: boolean
   onSubmit: (values: ServicoFormValues) => Promise<void>
   onCancel?: () => void
+  /** Notifica quando o form fica "sujo" (usado pelo drawer para confirmar descarte). */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 export function ServicoForm({
@@ -25,13 +27,14 @@ export function ServicoForm({
   precoReadonly = false,
   onSubmit,
   onCancel,
+  onDirtyChange,
 }: ServicoFormProps) {
   const {
     register,
     handleSubmit,
     setError,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<ServicoFormValues>({
     resolver: zodResolver(servicoSchema),
     defaultValues: {
@@ -53,6 +56,10 @@ export function ServicoForm({
       })
     }
   }, [defaultValues, reset])
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty)
+  }, [isDirty, onDirtyChange])
 
   async function submit(values: ServicoFormValues) {
     try {

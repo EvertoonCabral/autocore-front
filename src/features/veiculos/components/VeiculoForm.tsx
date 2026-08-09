@@ -22,6 +22,8 @@ interface VeiculoFormProps {
   modoEdicao?: boolean
   /** Nome do cliente exibido (read-only) em modo edição. */
   clienteNome?: string | null | undefined
+  /** Notifica quando o form fica "sujo" (usado pelo drawer para confirmar descarte). */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 export function VeiculoForm({
@@ -31,6 +33,7 @@ export function VeiculoForm({
   onCancel,
   modoEdicao = false,
   clienteNome,
+  onDirtyChange,
 }: VeiculoFormProps) {
   const {
     register,
@@ -38,7 +41,7 @@ export function VeiculoForm({
     control,
     setError,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<VeiculoFormValues>({
     resolver: zodResolver(veiculoSchema),
     // Sem cast completo: campos texto começam como '' e a coerção do schema
@@ -72,6 +75,10 @@ export function VeiculoForm({
       } as Partial<VeiculoFormValues> as VeiculoFormValues)
     }
   }, [defaultValues, reset])
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty)
+  }, [isDirty, onDirtyChange])
 
   async function submit(values: VeiculoFormValues) {
     try {

@@ -16,6 +16,8 @@ interface ProdutoFormProps {
   esconderEstoqueInicial?: boolean
   onSubmit: (values: ProdutoFormValues) => Promise<void>
   onCancel?: () => void
+  /** Notifica quando o form fica "sujo" (usado pelo drawer para confirmar descarte). */
+  onDirtyChange?: (dirty: boolean) => void
 }
 
 export function ProdutoForm({
@@ -24,13 +26,14 @@ export function ProdutoForm({
   esconderEstoqueInicial = false,
   onSubmit,
   onCancel,
+  onDirtyChange,
 }: ProdutoFormProps) {
   const {
     register,
     handleSubmit,
     setError,
     reset,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<ProdutoFormValues>({
     resolver: zodResolver(produtoSchema),
     defaultValues: {
@@ -56,6 +59,10 @@ export function ProdutoForm({
       })
     }
   }, [defaultValues, reset])
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty)
+  }, [isDirty, onDirtyChange])
 
   async function submit(values: ProdutoFormValues) {
     try {
