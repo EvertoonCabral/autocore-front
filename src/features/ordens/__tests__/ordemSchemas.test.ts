@@ -41,6 +41,25 @@ describe('abrirOrdemSchema', () => {
   it.each([-1, 1.5])('rejeita quilometragem inválida (%s)', (quilometragemEntrada) => {
     expect(abrirOrdemSchema.safeParse({ clienteId: 1, quilometragemEntrada }).success).toBe(false)
   })
+
+  it('agendada=true exige dataAgendamentoInicio', () => {
+    expect(abrirOrdemSchema.safeParse({ clienteId: 1, agendada: true }).success).toBe(false)
+    expect(
+      abrirOrdemSchema.safeParse({
+        clienteId: 1,
+        agendada: true,
+        dataAgendamentoInicio: '2026-08-20T14:30',
+      }).success,
+    ).toBe(true)
+  })
+
+  it('agendada=false/ausente normaliza dataAgendamentoInicio vazio para null', () => {
+    const r = abrirOrdemSchema.parse({ clienteId: 1, agendada: false, dataAgendamentoInicio: '' })
+    expect(r.agendada).toBe(false)
+    expect(r.dataAgendamentoInicio).toBeNull()
+    // Campo totalmente ausente permanece undefined (o hook trata como null).
+    expect(abrirOrdemSchema.parse({ clienteId: 1 }).dataAgendamentoInicio).toBeUndefined()
+  })
 })
 
 describe('atualizarOrdemSchema', () => {
@@ -74,6 +93,37 @@ describe('atualizarOrdemSchema', () => {
       quilometragemEntrada: '',
     })
     expect(r.quilometragemEntrada).toBeNull()
+  })
+
+  it('agendada=true exige dataAgendamentoInicio', () => {
+    expect(
+      atualizarOrdemSchema.safeParse({
+        descricaoProblema: '',
+        observacoes: '',
+        status: 1,
+        agendada: true,
+      }).success,
+    ).toBe(false)
+    expect(
+      atualizarOrdemSchema.safeParse({
+        descricaoProblema: '',
+        observacoes: '',
+        status: 1,
+        agendada: true,
+        dataAgendamentoInicio: '2026-08-20T09:00',
+      }).success,
+    ).toBe(true)
+  })
+
+  it('agendada=false normaliza dataAgendamentoInicio vazio para null', () => {
+    const r = atualizarOrdemSchema.parse({
+      descricaoProblema: '',
+      observacoes: '',
+      status: 2,
+      agendada: false,
+      dataAgendamentoInicio: '',
+    })
+    expect(r.dataAgendamentoInicio).toBeNull()
   })
 })
 

@@ -1,11 +1,13 @@
 import { useEffect } from 'react'
 import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
 import { Loader2, Save } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { VeiculoSelect } from '@/features/veiculos/components/VeiculoSelect'
 import {
@@ -35,11 +37,17 @@ interface Props {
   quilometragemEntrada?: number | null | undefined
   descricaoProblema?: string | null | undefined
   observacoes?: string | null | undefined
+  /** UTC ISO vindo do back; convertido para wall-clock local no form. */
+  dataAgendamentoInicio?: string | null | undefined
 }
 
 type StatusEditavel = 1 | 2 | 3
 const asStatusEditavel = (s: StatusOrdem): StatusEditavel =>
   s === 1 || s === 2 || s === 3 ? s : 1
+
+/** UTC ISO → valor esperado por `<input type="datetime-local">` (local). */
+const isoParaDatetimeLocal = (iso: string | null | undefined): string =>
+  iso ? format(new Date(iso), "yyyy-MM-dd'T'HH:mm") : ''
 
 /**
  * Painel inline para editar OS. Visível apenas quando `podeEditarItens(status)`.
@@ -54,6 +62,7 @@ export function EditarOrdemPanel({
   quilometragemEntrada,
   descricaoProblema,
   observacoes,
+  dataAgendamentoInicio,
 }: Props) {
   const atualizar = useAtualizarOrdem()
   const editavel = podeEditarItens(status)
@@ -74,6 +83,8 @@ export function EditarOrdemPanel({
       descricaoProblema: descricaoProblema ?? '',
       observacoes: observacoes ?? '',
       status: asStatusEditavel(status),
+      agendada: !!dataAgendamentoInicio,
+      dataAgendamentoInicio: isoParaDatetimeLocal(dataAgendamentoInicio),
     },
   })
 
@@ -85,10 +96,21 @@ export function EditarOrdemPanel({
       descricaoProblema: descricaoProblema ?? '',
       observacoes: observacoes ?? '',
       status: asStatusEditavel(status),
+      agendada: !!dataAgendamentoInicio,
+      dataAgendamentoInicio: isoParaDatetimeLocal(dataAgendamentoInicio),
     })
-  }, [veiculoId, quilometragemEntrada, descricaoProblema, observacoes, status, reset])
+  }, [
+    veiculoId,
+    quilometragemEntrada,
+    descricaoProblema,
+    observacoes,
+    status,
+    dataAgendamentoInicio,
+    reset,
+  ])
 
   const statusValue = watch('status')
+  const agendada = watch('agendada')
 
   const onSubmit: SubmitHandler<AtualizarOrdemFormValues> = async (values) => {
     try {
@@ -176,6 +198,44 @@ export function EditarOrdemPanel({
             <p role="alert" className="text-sm text-destructive">
               {errors.quilometragemEntrada.message}
             </p>
+          )}
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor="agendada">OS agendada</Label>
+            <Controller
+              control={control}
+              name="agendada"
+              render={({ field }) => (
+                <Switch
+                  id="agendada"
+                  checked={field.value ?? false}
+                  disabled={!editavel}
+                  onCheckedChange={(checked) => {
+                    field.onChange(checked)
+                    if (!checked) setValue('dataAgendamentoInicio', '', { shouldDirty: true })
+                  }}
+                />
+              )}
+            />
+          </div>
+          {agendada && (
+            <>
+              <Label htmlFor="dataAgendamentoInicio">Data e hora do agendamento</Label>
+              <Input
+                id="dataAgendamentoInicio"
+                type="datetime-local"
+                disabled={!editavel}
+                aria-invalid={!!errors.dataAgendamentoInicio}
+                {...register('dataAgendamentoInicio')}
+              />
+              {errors.dataAgendamentoInicio && (
+                <p role="alert" className="text-sm text-destructive">
+                  {errors.dataAgendamentoInicio.message}
+                </p>
+              )}
+            </>
           )}
         </div>
       </div>

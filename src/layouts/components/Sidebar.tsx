@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   BarChart3,
+  CalendarDays,
   Car,
   ClipboardList,
   CreditCard,
@@ -46,6 +47,7 @@ const items: NavItem[] = [
     end: false,
     badge: 'ordens',
   },
+  { to: '/agenda', label: 'Agenda', icon: CalendarDays, end: false },
   { to: '/pendencias', label: 'Pendências', icon: CreditCard, end: false, badge: 'pendencias' },
   { to: '/cobrancas', label: 'Cobranças', icon: MessageCircle, end: false, badge: 'cobrancas' },
   {

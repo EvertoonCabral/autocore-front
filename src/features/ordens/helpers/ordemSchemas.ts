@@ -38,30 +38,69 @@ const optionalQuilometragem = z
     'Quilometragem deve ser um número inteiro maior ou igual a zero.',
   )
 
-export const abrirOrdemSchema = z.object({
-  clienteId: z.coerce
-    .number({ invalid_type_error: 'Selecione um cliente.' })
-    .int('Cliente inválido.')
-    .positive('Selecione um cliente.'),
-  veiculoId: optionalVeiculoId,
-  quilometragemEntrada: optionalQuilometragem,
-  descricaoProblema: optionalText(1000, 'Descrição'),
-  observacoes: optionalText(1000, 'Observações'),
-})
+/**
+ * Data/hora de agendamento no formato do `<input type="datetime-local">`
+ * (`yyyy-MM-ddTHH:mm`, wall-clock local). Vazio/ausente → null. A conversão
+ * local → UTC ISO acontece só no hook de mutação (não aqui). Mesmo padrão de
+ * null-transform de `optionalText`.
+ */
+const optionalDatetimeLocal = z
+  .string()
+  .trim()
+  .or(z.literal(''))
+  .transform((v) => (v === '' ? null : v))
+  .nullable()
+  .optional()
+
+/**
+ * Regra compartilhada: quando `agendada` é true, `dataAgendamentoInicio` é
+ * obrigatório; quando false/ausente, o hook envia null (o campo é ignorado).
+ */
+function refinarAgendamento(
+  val: { agendada?: boolean | undefined; dataAgendamentoInicio?: string | null | undefined },
+  ctx: z.RefinementCtx,
+) {
+  if (val.agendada && !val.dataAgendamentoInicio) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Informe a data e hora do agendamento.',
+      path: ['dataAgendamentoInicio'],
+    })
+  }
+}
+
+export const abrirOrdemSchema = z
+  .object({
+    clienteId: z.coerce
+      .number({ invalid_type_error: 'Selecione um cliente.' })
+      .int('Cliente inválido.')
+      .positive('Selecione um cliente.'),
+    veiculoId: optionalVeiculoId,
+    quilometragemEntrada: optionalQuilometragem,
+    descricaoProblema: optionalText(1000, 'Descrição'),
+    observacoes: optionalText(1000, 'Observações'),
+    agendada: z.boolean().optional().default(false),
+    dataAgendamentoInicio: optionalDatetimeLocal,
+  })
+  .superRefine(refinarAgendamento)
 
 export type AbrirOrdemFormValues = z.infer<typeof abrirOrdemSchema>
 
 /** Schema do PUT /api/ordens/{id} — descricao, observacoes, status (não-final). */
-export const atualizarOrdemSchema = z.object({
-  veiculoId: optionalVeiculoId,
-  quilometragemEntrada: optionalQuilometragem,
-  descricaoProblema: optionalText(1000, 'Descrição'),
-  observacoes: optionalText(1000, 'Observações'),
-  status: z.coerce
-    .number({ invalid_type_error: 'Status inválido.' })
-    .int()
-    .refine((v): v is 1 | 2 | 3 => [1, 2, 3].includes(v), 'Status inválido para edição.'),
-})
+export const atualizarOrdemSchema = z
+  .object({
+    veiculoId: optionalVeiculoId,
+    quilometragemEntrada: optionalQuilometragem,
+    descricaoProblema: optionalText(1000, 'Descrição'),
+    observacoes: optionalText(1000, 'Observações'),
+    status: z.coerce
+      .number({ invalid_type_error: 'Status inválido.' })
+      .int()
+      .refine((v): v is 1 | 2 | 3 => [1, 2, 3].includes(v), 'Status inválido para edição.'),
+    agendada: z.boolean().optional().default(false),
+    dataAgendamentoInicio: optionalDatetimeLocal,
+  })
+  .superRefine(refinarAgendamento)
 
 export type AtualizarOrdemFormValues = z.infer<typeof atualizarOrdemSchema>
 

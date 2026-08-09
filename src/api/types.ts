@@ -19,6 +19,7 @@ export type CatalogoServicoDto      = components['schemas']['CatalogoServicoDto'
 export type OrdemServicoResumoDto   = components['schemas']['OrdemServicoResumoDto']
 export type OrdemServicoDetalheDto  = components['schemas']['OrdemServicoDetalheDto']
 export type ListaOrdensServicoDto   = components['schemas']['ListaOrdensServicoDto']
+export type AgendaOrdemDto          = components['schemas']['AgendaOrdemDto']
 export type VeiculoResumoDto        = components['schemas']['VeiculoResumoDto']
 export type VeiculoDetalheDto       = components['schemas']['VeiculoDetalheDto']
 /**

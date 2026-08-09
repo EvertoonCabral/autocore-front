@@ -219,6 +219,7 @@ export function OrdemDetalhePage() {
           quilometragemEntrada={ordem.quilometragemEntrada}
           descricaoProblema={ordem.descricaoProblema}
           observacoes={ordem.observacoes}
+          dataAgendamentoInicio={ordem.dataAgendamentoInicio}
         />
       ) : (
         <ReadOnlyDadosOS ordem={ordem} />

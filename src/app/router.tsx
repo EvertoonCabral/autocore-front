@@ -30,6 +30,7 @@ const VeiculoDetalhePage = lazy(() => import('@/features/veiculos/routes/Veiculo
 const OrdensListPage = lazy(() => import('@/features/ordens/routes/OrdensListPage').then((m) => ({ default: m.OrdensListPage })))
 const NovaOrdemModal = lazy(() => import('@/features/ordens/routes/NovaOrdemModal').then((m) => ({ default: m.NovaOrdemModal })))
 const OrdemDetalhePage = lazy(() => import('@/features/ordens/routes/OrdemDetalhePage').then((m) => ({ default: m.OrdemDetalhePage })))
+const AgendaPage = lazy(() => import('@/features/agenda/routes/AgendaPage').then((m) => ({ default: m.AgendaPage })))
 const PendenciasPage = lazy(() => import('@/features/pagamentos/routes/PendenciasPage').then((m) => ({ default: m.PendenciasPage })))
 const HistoricoCobrancaPage = lazy(() => import('@/features/cobrancas/routes/HistoricoCobrancaPage').then((m) => ({ default: m.HistoricoCobrancaPage })))
 const ConfiguracoesPage = lazy(() => import('@/features/configuracoes/routes/ConfiguracoesPage').then((m) => ({ default: m.ConfiguracoesPage })))
@@ -100,6 +101,7 @@ const router = createBrowserRouter([
         children: [{ path: 'nova', element: <NovaOrdemModal /> }],
       },
       { path: '/ordens/:id', element: <OrdemDetalhePage /> },
+      { path: '/agenda', element: <AgendaPage /> },
       { path: '/pendencias', element: <PendenciasPage /> },
       { path: '/cobrancas', element: <HistoricoCobrancaPage /> },
       { path: '/relatorios', element: <RelatoriosPage /> },

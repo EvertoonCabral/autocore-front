@@ -2011,6 +2011,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/ordens/agenda": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    de?: string;
+                    ate?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["AgendaOrdemDtoIReadOnlyListApiResponse"];
+                        "application/json": components["schemas"]["AgendaOrdemDtoIReadOnlyListApiResponse"];
+                        "text/json": components["schemas"]["AgendaOrdemDtoIReadOnlyListApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/ordens/{id}": {
         parameters: {
             query?: never;
@@ -4089,6 +4129,8 @@ export interface components {
             veiculoId?: number | null;
             /** Format: int32 */
             quilometragemEntrada?: number | null;
+            /** Format: date-time */
+            dataAgendamentoInicio?: string | null;
         };
         AdicionarItemProdutoBody: {
             /** Format: int64 */
@@ -4105,6 +4147,21 @@ export interface components {
             catalogoServicoId?: number;
             /** Format: int32 */
             quantidade?: number;
+        };
+        AgendaOrdemDto: {
+            /** Format: int64 */
+            id?: number;
+            numero?: string | null;
+            /** Format: int64 */
+            clienteId?: number;
+            clienteNome?: string | null;
+            veiculoDescricao?: string | null;
+            status?: components["schemas"]["StatusOrdem"];
+            /** Format: date-time */
+            dataAgendamentoInicio?: string;
+        };
+        AgendaOrdemDtoIReadOnlyListApiResponse: {
+            dados?: components["schemas"]["AgendaOrdemDto"][] | null;
         };
         AgingFaixaDto: {
             faixa?: string | null;
@@ -4196,6 +4253,8 @@ export interface components {
             veiculoId?: number | null;
             /** Format: int32 */
             quilometragemEntrada?: number | null;
+            /** Format: date-time */
+            dataAgendamentoInicio?: string | null;
         };
         AtualizarPermissaoAuditoriaDto: {
             podeVerAuditoria?: boolean;
@@ -4745,6 +4804,8 @@ export interface components {
             observacoes?: string | null;
             /** Format: int32 */
             quilometragemEntrada?: number | null;
+            /** Format: date-time */
+            dataAgendamentoInicio?: string | null;
             status?: components["schemas"]["StatusOrdem"];
             /** Format: date-time */
             abertaEm?: string;

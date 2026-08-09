@@ -22,6 +22,10 @@ export function useAtualizarOrdem() {
           descricaoProblema: values.descricaoProblema ?? null,
           observacoes: values.observacoes ?? null,
           status: values.status,
+          dataAgendamentoInicio:
+            values.agendada && values.dataAgendamentoInicio
+              ? new Date(values.dataAgendamentoInicio).toISOString()
+              : null,
         },
       })
       if (error) throw toApiError(error, response.status)

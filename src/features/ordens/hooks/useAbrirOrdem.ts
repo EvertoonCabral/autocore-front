@@ -16,6 +16,10 @@ export function useAbrirOrdem() {
           quilometragemEntrada: form.quilometragemEntrada ?? null,
           descricaoProblema: form.descricaoProblema ?? null,
           observacoes: form.observacoes ?? null,
+          dataAgendamentoInicio:
+            form.agendada && form.dataAgendamentoInicio
+              ? new Date(form.dataAgendamentoInicio).toISOString()
+              : null,
         },
       })
       if (error || !data) throw toApiError(error, response.status)

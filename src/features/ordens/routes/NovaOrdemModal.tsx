@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Dialog,
@@ -42,10 +43,16 @@ export function NovaOrdemModal() {
     formState: { errors, isSubmitting },
   } = useForm<AbrirOrdemFormValues>({
     resolver: zodResolver(abrirOrdemSchema),
-    defaultValues: { descricaoProblema: '', observacoes: '' } as Partial<AbrirOrdemFormValues>,
+    defaultValues: {
+      descricaoProblema: '',
+      observacoes: '',
+      agendada: false,
+      dataAgendamentoInicio: '',
+    } as Partial<AbrirOrdemFormValues>,
   })
 
   const clienteSelecionado = watch('clienteId')
+  const agendada = watch('agendada')
 
   const fechar = () => navigate('/ordens')
 
@@ -150,6 +157,45 @@ export function NovaOrdemModal() {
                     {errors.quilometragemEntrada.message}
                   </p>
                 )}
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center justify-between gap-3">
+                  <Label htmlFor="agendada">OS agendada</Label>
+                  <Controller
+                    control={control}
+                    name="agendada"
+                    render={({ field }) => (
+                      <Switch
+                        id="agendada"
+                        checked={field.value ?? false}
+                        onCheckedChange={(checked) => {
+                          field.onChange(checked)
+                          if (!checked) setValue('dataAgendamentoInicio', '')
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+                {agendada && (
+                  <>
+                    <Label htmlFor="dataAgendamentoInicio">Data e hora do agendamento *</Label>
+                    <Input
+                      id="dataAgendamentoInicio"
+                      type="datetime-local"
+                      aria-invalid={!!errors.dataAgendamentoInicio}
+                      {...register('dataAgendamentoInicio')}
+                    />
+                    {errors.dataAgendamentoInicio && (
+                      <p role="alert" className="text-sm text-destructive">
+                        {errors.dataAgendamentoInicio.message}
+                      </p>
+                    )}
+                  </>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Opcional. Marque para reservar um horário na agenda.
+                </p>
               </div>
 
               <ClienteResumoCard clienteId={clienteSelecionado} />

@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import { http, HttpResponse } from 'msw'
 import { Routes, Route } from 'react-router-dom'
 import userEvent from '@testing-library/user-event'
-import { renderWithProviders, screen, waitFor } from '@/test/render'
+import { renderWithProviders, screen, waitFor, fireEvent } from '@/test/render'
 import { server } from '@/test/msw/server'
 import { NovaOrdemModal } from '../routes/NovaOrdemModal'
 
@@ -113,5 +113,37 @@ describe('NovaOrdemModal', () => {
 
     await waitFor(() => expect(corpo).not.toBeNull())
     expect(corpo).toMatchObject({ clienteId: 10, quilometragemEntrada: 45000 })
+  })
+
+  it('envia dataAgendamentoInicio em UTC ao marcar Agendada', async () => {
+    setup()
+    let corpo: Record<string, unknown> | null = null
+    server.use(
+      http.post(`${API}/api/ordens`, async ({ request }) => {
+        corpo = (await request.json()) as Record<string, unknown>
+        return HttpResponse.json({ dados: { id: 99 } }, { status: 201 })
+      }),
+    )
+    const user = userEvent.setup()
+    renderModal()
+
+    const clienteTrigger = screen.getAllByRole('combobox')[0]!
+    await user.click(clienteTrigger)
+    const opcao = await screen.findByRole('option', { name: /João Silva/i })
+    await user.click(opcao)
+
+    // Liga o toggle e preenche o horário local (wall-clock).
+    await user.click(screen.getByRole('switch', { name: /os agendada/i }))
+    const input = await screen.findByLabelText(/data e hora do agendamento/i)
+    fireEvent.change(input, { target: { value: '2026-08-20T14:30' } })
+
+    await user.click(screen.getByRole('button', { name: /abrir os/i }))
+
+    await waitFor(() => expect(corpo).not.toBeNull())
+    // O corpo carrega o instante convertido de local → UTC ISO.
+    expect(corpo).toMatchObject({
+      clienteId: 10,
+      dataAgendamentoInicio: new Date('2026-08-20T14:30').toISOString(),
+    })
   })
 })
