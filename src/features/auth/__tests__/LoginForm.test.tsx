@@ -12,6 +12,19 @@ beforeEach(() => {
 })
 
 describe('LoginForm', () => {
+  it('não renderiza o botão do Google quando VITE_GOOGLE_CLIENT_ID está vazio', () => {
+    renderWithProviders(<LoginForm onSuccess={() => {}} />)
+    expect(screen.queryByTestId('google-login-button')).not.toBeInTheDocument()
+  })
+
+  it('exibe o link "Esqueci minha senha"', () => {
+    renderWithProviders(<LoginForm onSuccess={() => {}} />)
+    expect(screen.getByRole('link', { name: /esqueci minha senha/i })).toHaveAttribute(
+      'href',
+      '/esqueci-senha',
+    )
+  })
+
   it('valida campos obrigatórios antes de submeter', async () => {
     const user = userEvent.setup()
     renderWithProviders(<LoginForm onSuccess={() => {}} />)

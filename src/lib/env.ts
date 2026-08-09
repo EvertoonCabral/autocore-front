@@ -5,6 +5,10 @@ const schema = z.object({
   // (/api/...) e o nginx do front faz proxy para a API. Uma URL absoluta
   // aponta para uma API em outra origem (exige CORS + SameSite compatível).
   VITE_API_BASE_URL: z.string().url().or(z.literal('')).default(''),
+  // Client ID do Google Identity Services. Vazio ('') = login com Google
+  // desabilitado (o botão nem é renderizado). Preenchido = habilita o fluxo
+  // "Entrar com Google" na tela de login.
+  VITE_GOOGLE_CLIENT_ID: z.string().default(''),
 })
 
 const parsed = schema.safeParse(import.meta.env)

@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { LogOut, Settings, User, Users } from 'lucide-react'
+import { KeyRound, LogOut, Settings, User, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -12,11 +13,13 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useAuth } from '@/features/auth/auth-context'
 import { useLogout } from '@/features/auth/hooks/useLogout'
+import { TrocarSenhaDialog } from '@/features/auth/components/TrocarSenhaDialog'
 
 export function UserMenu() {
   const navigate = useNavigate()
   const { user } = useAuth()
   const logout = useLogout()
+  const [trocarSenhaAberto, setTrocarSenhaAberto] = useState(false)
 
   if (!user) return null
 
@@ -63,6 +66,16 @@ export function UserMenu() {
         <DropdownMenuItem
           onSelect={(e) => {
             e.preventDefault()
+            setTrocarSenhaAberto(true)
+          }}
+        >
+          <KeyRound className="h-4 w-4" />
+          Trocar senha
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onSelect={(e) => {
+            e.preventDefault()
             logout.mutate()
           }}
           disabled={logout.isPending}
@@ -71,6 +84,7 @@ export function UserMenu() {
           Sair
         </DropdownMenuItem>
       </DropdownMenuContent>
+      <TrocarSenhaDialog open={trocarSenhaAberto} onOpenChange={setTrocarSenhaAberto} />
     </DropdownMenu>
   )
 }

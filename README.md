@@ -32,6 +32,22 @@ npm run dev             # http://localhost:5173
 
 Acesso inicial: `admin@autocore.com` / `AutoCore@2024!`.
 
+## Autenticação
+
+Além do login por e-mail/senha, a tela de login oferece:
+
+- **Entrar com Google** — usa o Google Identity Services. O botão **só aparece** quando
+  `VITE_GOOGLE_CLIENT_ID` está definido no `.env` (mesmo Client ID configurado no back em
+  `Google:ClientId`). O back só autentica contas Google já cadastradas e ativas — não há
+  autocadastro.
+- **Esqueci minha senha** (`/esqueci-senha`) → recebe um link por e-mail → **Redefinir senha**
+  (`/redefinir-senha`). Rotas públicas.
+- **Trocar senha** — no menu do usuário (usuário autenticado).
+
+> `VITE_GOOGLE_CLIENT_ID` é **opcional**: vazio (default) apenas oculta o botão do Google; o
+> restante do login segue normal. O envio dos e-mails de recuperação depende do SMTP
+> configurado no back (Configurações → E-mail).
+
 ## Scripts
 
 | Comando | O que faz |

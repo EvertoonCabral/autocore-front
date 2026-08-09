@@ -143,6 +143,236 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/login/google": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["LoginGoogleDto"];
+                    "text/json": components["schemas"]["LoginGoogleDto"];
+                    "application/*+json": components["schemas"]["LoginGoogleDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["LoginResultDtoApiResponse"];
+                        "application/json": components["schemas"]["LoginResultDtoApiResponse"];
+                        "text/json": components["schemas"]["LoginResultDtoApiResponse"];
+                    };
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/senha": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["TrocarSenhaDto"];
+                    "text/json": components["schemas"]["TrocarSenhaDto"];
+                    "application/*+json": components["schemas"]["TrocarSenhaDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/esqueci-senha": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["EsqueciSenhaDto"];
+                    "text/json": components["schemas"]["EsqueciSenhaDto"];
+                    "application/*+json": components["schemas"]["EsqueciSenhaDto"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StringApiResponse"];
+                        "application/json": components["schemas"]["StringApiResponse"];
+                        "text/json": components["schemas"]["StringApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/redefinir-senha": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["RedefinirSenhaDto"];
+                    "text/json": components["schemas"]["RedefinirSenhaDto"];
+                    "application/*+json": components["schemas"]["RedefinirSenhaDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/logout": {
         parameters: {
             query?: never;
@@ -4292,6 +4522,9 @@ export interface components {
             campo?: string | null;
             mensagem?: string | null;
         };
+        EsqueciSenhaDto: {
+            email?: string | null;
+        };
         FaturamentoDiaDto: {
             /** Format: date */
             dia?: string;
@@ -4396,6 +4629,9 @@ export interface components {
         LoginDto: {
             email?: string | null;
             senha?: string | null;
+        };
+        LoginGoogleDto: {
+            idToken?: string | null;
         };
         LoginResultDto: {
             token?: string | null;
@@ -4630,6 +4866,11 @@ export interface components {
         RankingClientesDtoApiResponse: {
             dados?: components["schemas"]["RankingClientesDto"];
         };
+        RedefinirSenhaDto: {
+            email?: string | null;
+            token?: string | null;
+            novaSenha?: string | null;
+        };
         RegistrarPagamentoCommand: {
             /** Format: int64 */
             ordemServicoId?: number;
@@ -4685,6 +4926,9 @@ export interface components {
          * @enum {integer}
          */
         StatusOrdem: 1 | 2 | 3 | 4 | 5;
+        StringApiResponse: {
+            dados?: string | null;
+        };
         TimelineEntradaOrdemDto: {
             tipo?: components["schemas"]["TipoEntradaTimelineOrdem"];
             /** Format: date-time */
@@ -4712,6 +4956,10 @@ export interface components {
          * @enum {integer}
          */
         TipoPdfOrdemServico: 1 | 2;
+        TrocarSenhaDto: {
+            senhaAtual?: string | null;
+            novaSenha?: string | null;
+        };
         UsuarioDto: {
             /** Format: int64 */
             id?: number;

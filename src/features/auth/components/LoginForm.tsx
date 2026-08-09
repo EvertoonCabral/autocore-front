@@ -1,13 +1,16 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Link } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { env } from '@/lib/env'
 import { useLogin } from '../hooks/useLogin'
 import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import { loginSchema, type LoginFormValues } from '../helpers/loginSchema'
+import { GoogleLoginButton } from './GoogleLoginButton'
 
 interface LoginFormProps {
   onSuccess: () => void
@@ -41,7 +44,8 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+    <div className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
       <div className="space-y-2">
         <Label htmlFor="email">E-mail</Label>
         <Input
@@ -59,7 +63,15 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="senha">Senha</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="senha">Senha</Label>
+          <Link
+            to="/esqueci-senha"
+            className="text-sm font-medium text-primary hover:underline"
+          >
+            Esqueci minha senha
+          </Link>
+        </div>
         <Input
           id="senha"
           type="password"
@@ -84,6 +96,11 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           'Entrar'
         )}
       </Button>
-    </form>
+      </form>
+
+      {env.VITE_GOOGLE_CLIENT_ID && (
+        <GoogleLoginButton clientId={env.VITE_GOOGLE_CLIENT_ID} onSuccess={onSuccess} />
+      )}
+    </div>
   )
 }

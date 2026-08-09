@@ -11,6 +11,8 @@ import { NotFound } from './NotFound'
 // inicial. As páginas usam named export, daí o wrapper para o default do lazy.
 // Layouts e guards ficam eager (estão no caminho crítico de toda navegação).
 const LoginPage = lazy(() => import('@/features/auth/routes/LoginPage').then((m) => ({ default: m.LoginPage })))
+const EsqueciSenhaPage = lazy(() => import('@/features/auth/routes/EsqueciSenhaPage').then((m) => ({ default: m.EsqueciSenhaPage })))
+const RedefinirSenhaPage = lazy(() => import('@/features/auth/routes/RedefinirSenhaPage').then((m) => ({ default: m.RedefinirSenhaPage })))
 const DashboardPage = lazy(() => import('@/features/dashboard/routes/DashboardPage').then((m) => ({ default: m.DashboardPage })))
 const ClientesListPage = lazy(() => import('@/features/clientes/routes/ClientesListPage').then((m) => ({ default: m.ClientesListPage })))
 const ClienteFormDrawer = lazy(() => import('@/features/clientes/components/ClienteFormDrawer').then((m) => ({ default: m.ClienteFormDrawer })))
@@ -41,7 +43,11 @@ const RankingClientesPage = lazy(() => import('@/features/relatorios/routes/Rank
 const router = createBrowserRouter([
   {
     element: <PublicLayout />,
-    children: [{ path: '/login', element: <LoginPage /> }],
+    children: [
+      { path: '/login', element: <LoginPage /> },
+      { path: '/esqueci-senha', element: <EsqueciSenhaPage /> },
+      { path: '/redefinir-senha', element: <RedefinirSenhaPage /> },
+    ],
   },
   {
     element: (
