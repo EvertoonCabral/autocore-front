@@ -1554,6 +1554,114 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/configuracoes/pagamento": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ConfiguracaoPagamentoDtoApiResponse"];
+                        "application/json": components["schemas"]["ConfiguracaoPagamentoDtoApiResponse"];
+                        "text/json": components["schemas"]["ConfiguracaoPagamentoDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["AtualizarConfiguracaoPagamentoDto"];
+                    "text/json": components["schemas"]["AtualizarConfiguracaoPagamentoDto"];
+                    "application/*+json": components["schemas"]["AtualizarConfiguracaoPagamentoDto"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/configuracoes/pagamento/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["StatusPagamentoDtoApiResponse"];
+                        "application/json": components["schemas"]["StatusPagamentoDtoApiResponse"];
+                        "text/json": components["schemas"]["StatusPagamentoDtoApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/configuracoes/empresa": {
         parameters: {
             query?: never;
@@ -4174,6 +4282,11 @@ export interface components {
             /** Format: int32 */
             quantidade?: number;
         };
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        AmbientePagamento: 1 | 2;
         ApiConflitoResponse: {
             erro?: string | null;
             conflito?: unknown;
@@ -4242,6 +4355,28 @@ export interface components {
         };
         AtualizarConfiguracaoEmpresaDto: {
             nomeEmpresa?: string | null;
+        };
+        AtualizarConfiguracaoPagamentoDto: {
+            accessToken?: string | null;
+            publicKey?: string | null;
+            webhookSecret?: string | null;
+            ambiente?: components["schemas"]["AmbientePagamento"];
+            usarStub?: boolean;
+            baseUrlPublica?: string | null;
+            emailFallbackPagador?: string | null;
+            /** Format: int32 */
+            pixExpiraMinutosBancada?: number;
+            /** Format: int32 */
+            pixExpiraMinutosRemoto?: number;
+            repassarTaxa?: boolean;
+            /** Format: double */
+            taxaPixPercentual?: number;
+            /** Format: double */
+            taxaCartaoPercentual?: number;
+            jurosParcelamentoAoCliente?: boolean;
+            /** Format: int32 */
+            parcelasMaximas?: number;
+            boletoHabilitado?: boolean;
         };
         AtualizarOrdemServicoCommand: {
             /** Format: int64 */
@@ -4486,6 +4621,36 @@ export interface components {
         };
         ConfiguracaoEmpresaDtoApiResponse: {
             dados?: components["schemas"]["ConfiguracaoEmpresaDto"];
+        };
+        ConfiguracaoPagamentoDto: {
+            accessTokenDefinido?: boolean;
+            publicKey?: string | null;
+            webhookSecretDefinido?: boolean;
+            ambiente?: components["schemas"]["AmbientePagamento"];
+            usarStub?: boolean;
+            baseUrlPublica?: string | null;
+            emailFallbackPagador?: string | null;
+            /** Format: int32 */
+            pixExpiraMinutosBancada?: number;
+            /** Format: int32 */
+            pixExpiraMinutosRemoto?: number;
+            repassarTaxa?: boolean;
+            /** Format: double */
+            taxaPixPercentual?: number;
+            /** Format: double */
+            taxaCartaoPercentual?: number;
+            jurosParcelamentoAoCliente?: boolean;
+            /** Format: int32 */
+            parcelasMaximas?: number;
+            boletoHabilitado?: boolean;
+            /** Format: date-time */
+            atualizadoEm?: string | null;
+            /** Format: int64 */
+            atualizadoPorUsuarioId?: number | null;
+            atualizadoPorUsuarioNome?: string | null;
+        };
+        ConfiguracaoPagamentoDtoApiResponse: {
+            dados?: components["schemas"]["ConfiguracaoPagamentoDto"];
         };
         ContagensPendenciasDto: {
             /** Format: int32 */
@@ -5026,6 +5191,17 @@ export interface components {
          * @enum {integer}
          */
         StatusOrdem: 1 | 2 | 3 | 4 | 5;
+        StatusPagamentoDto: {
+            valido?: boolean;
+            apelido?: string | null;
+            modo?: string | null;
+            erroMensagem?: string | null;
+            /** Format: date-time */
+            consultadoEm?: string;
+        };
+        StatusPagamentoDtoApiResponse: {
+            dados?: components["schemas"]["StatusPagamentoDto"];
+        };
         StringApiResponse: {
             dados?: string | null;
         };
