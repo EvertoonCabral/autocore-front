@@ -1140,6 +1140,71 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/cobranca-online/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CriarLinkBody"];
+                    "text/json": components["schemas"]["CriarLinkBody"];
+                    "application/*+json": components["schemas"]["CriarLinkBody"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                        "application/json": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                        "text/json": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/cobranca-online/simular": {
         parameters: {
             query?: never;
@@ -5006,6 +5071,13 @@ export interface components {
             cidade?: string | null;
             uf?: string | null;
             segundoTelefone?: string | null;
+        };
+        CriarLinkBody: {
+            /** Format: int64 */
+            ordemServicoId?: number;
+            /** Format: double */
+            valor?: number | null;
+            adiantar?: boolean | null;
         };
         CriarPixBody: {
             /** Format: int64 */

@@ -63,7 +63,7 @@ describe('<CobrarNaBancadaDialog>', () => {
       { withAuth: false },
     )
 
-    const trigger = screen.getByRole('button', { name: /cobrar na bancada/i })
+    const trigger = screen.getByRole('button', { name: /cobrar online/i })
     expect(trigger).toBeDisabled()
   })
 
@@ -98,7 +98,7 @@ describe('<CobrarNaBancadaDialog>', () => {
       { withAuth: false },
     )
 
-    await userEvent.click(screen.getByRole('button', { name: /cobrar na bancada/i }))
+    await userEvent.click(screen.getByRole('button', { name: /cobrar online/i }))
     // resumo do valor (via /simular)
     await waitFor(() => expect(screen.getByText(/total a cobrar/i)).toBeInTheDocument())
 
@@ -132,7 +132,7 @@ describe('<CobrarNaBancadaDialog>', () => {
       { withAuth: false },
     )
 
-    await userEvent.click(screen.getByRole('button', { name: /cobrar na bancada/i }))
+    await userEvent.click(screen.getByRole('button', { name: /cobrar online/i }))
     // aviso de adiantamento presente
     expect(screen.getByText(/entra como/i)).toBeInTheDocument()
 
@@ -144,6 +144,52 @@ describe('<CobrarNaBancadaDialog>', () => {
     await userEvent.click(screen.getByRole('switch', { name: /confirmar adiantamento/i }))
     await waitFor(() => expect(screen.getByText(/total a cobrar/i)).toBeInTheDocument())
     expect(screen.getByRole('button', { name: /gerar qr pix/i })).toBeEnabled()
+  })
+
+  it('gera link de checkout e reflete a aprovação via polling', async () => {
+    mockSimular()
+    const link = intencao({
+      tipo: 2,
+      pixCopiaECola: null,
+      urlCheckout: 'https://mp.example/checkout/abc',
+      expiraEm: null,
+    })
+    server.use(
+      http.post(`${API}/api/cobranca-online/link`, () => HttpResponse.json({ dados: link })),
+    )
+    let chamadas = 0
+    server.use(
+      http.get(`${API}/api/cobranca-online/:id`, () => {
+        chamadas += 1
+        return HttpResponse.json({
+          dados: chamadas >= 2 ? { ...link, status: 2, pagamentoId: 55 } : link,
+        })
+      }),
+    )
+
+    renderWithProviders(
+      <CobrarNaBancadaDialog
+        ordemId={7}
+        numero="OS-2026-0007"
+        saldoDevedor={100}
+        saldoAPagar={100}
+        concluida
+        cancelada={false}
+        clienteTemDocumento
+      />,
+      { withAuth: false },
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: /cobrar online/i }))
+    // troca para a aba Link
+    await userEvent.click(screen.getByRole('tab', { name: /link de pagamento/i }))
+    await waitFor(() => expect(screen.getByText(/total a cobrar/i)).toBeInTheDocument())
+
+    await userEvent.click(screen.getByRole('button', { name: /gerar link/i }))
+
+    await waitFor(() => expect(screen.getByText(/pagamento aprovado/i)).toBeInTheDocument(), {
+      timeout: 6000,
+    })
   })
 
   it('mostra estado expirado quando o QR já venceu', async () => {
@@ -167,7 +213,7 @@ describe('<CobrarNaBancadaDialog>', () => {
       { withAuth: false },
     )
 
-    await userEvent.click(screen.getByRole('button', { name: /cobrar na bancada/i }))
+    await userEvent.click(screen.getByRole('button', { name: /cobrar online/i }))
     await waitFor(() => expect(screen.getByText(/total a cobrar/i)).toBeInTheDocument())
     await userEvent.click(screen.getByRole('button', { name: /gerar qr pix/i }))
 

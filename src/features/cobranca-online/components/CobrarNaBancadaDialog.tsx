@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Dialog,
   DialogContent,
@@ -17,11 +18,14 @@ import {
 } from '@/components/ui/dialog'
 import { formatBRL } from '@/lib/format'
 import { StatusIntencaoValues } from '@/shared/enums/statusIntencaoPagamento'
+import { TipoIntencaoValues } from '@/shared/enums/tipoIntencaoPagamento'
 import { useSimularCobranca } from '../hooks/useSimularCobranca'
 import { useCriarPixOrdem } from '../hooks/useCriarPixOrdem'
+import { useCriarLinkOrdem } from '../hooks/useCriarLinkOrdem'
 import { useObterIntencao } from '../hooks/useObterIntencao'
 import { ResumoValorCobrado } from './ResumoValorCobrado'
 import { QrPixPanel } from './QrPixPanel'
+import { LinkPagamentoPanel } from './LinkPagamentoPanel'
 
 interface Props {
   ordemId: number
@@ -33,14 +37,14 @@ interface Props {
   concluida: boolean
   /** OS cancelada — cobrança bloqueada. */
   cancelada: boolean
-  /** Cliente tem CPF/CNPJ — exigido pelo Mercado Pago no Pix. */
+  /** Cliente tem CPF/CNPJ — exigido pelo Mercado Pago. */
   clienteTemDocumento: boolean
 }
 
 /**
- * Fluxo de cobrança Pix na bancada. Em OS concluída, quita o saldo. Em OS não
- * concluída, exige confirmação explícita de adiantamento (a regra "pagamento só
- * na OS concluída" é preservada: o adiantamento vira pagamento no fechamento).
+ * Cobrança online da OS: aba Pix (QR pago na hora) ou Link (Checkout Pro, com
+ * crédito/débito/Pix/boleto). Em OS não concluída, exige confirmação explícita
+ * de adiantamento (a regra "pagamento só na OS concluída" é preservada).
  */
 export function CobrarNaBancadaDialog({
   ordemId,
@@ -54,24 +58,25 @@ export function CobrarNaBancadaDialog({
   const maximo = concluida ? saldoDevedor : saldoAPagar
 
   const [open, setOpen] = useState(false)
+  const [tipo, setTipo] = useState<1 | 2>(TipoIntencaoValues.PixQr)
   const [valorStr, setValorStr] = useState(maximo.toFixed(2))
   const [intencaoId, setIntencaoId] = useState<number | null>(null)
   const [aprovadoNotificado, setAprovadoNotificado] = useState(false)
   const [adiantamentoConfirmado, setAdiantamentoConfirmado] = useState(false)
 
   const queryClient = useQueryClient()
-  const criar = useCriarPixOrdem()
+  const criarPix = useCriarPixOrdem()
+  const criarLink = useCriarLinkOrdem()
+  const criando = criarPix.isPending || criarLink.isPending
 
   const valorNum = Number(valorStr.replace(',', '.'))
   const valorValido = Number.isFinite(valorNum) && valorNum > 0 && valorNum <= maximo + 0.001
-
-  // Em adiantamento, só simula/gera após o opt-in.
   const liberado = concluida || adiantamentoConfirmado
 
   const simulacao = useSimularCobranca(
     ordemId,
     valorValido ? valorNum : undefined,
-    1,
+    tipo,
     open && intencaoId == null && liberado,
   )
 
@@ -81,9 +86,7 @@ export function CobrarNaBancadaDialog({
   useEffect(() => {
     if (intencao?.status === StatusIntencaoValues.Aprovada && !aprovadoNotificado) {
       setAprovadoNotificado(true)
-      toast.success(
-        concluida ? 'Pagamento aprovado — registrado na OS.' : 'Adiantamento aprovado.',
-      )
+      toast.success(concluida ? 'Pagamento aprovado — registrado na OS.' : 'Adiantamento aprovado.')
       void queryClient.invalidateQueries({ queryKey: ['pagamentos', 'ordem', ordemId] })
       void queryClient.invalidateQueries({ queryKey: ['ordens', 'detail', ordemId] })
       void queryClient.invalidateQueries({ queryKey: ['cobranca-online', 'ordem', ordemId] })
@@ -97,20 +100,19 @@ export function CobrarNaBancadaDialog({
     setValorStr(maximo.toFixed(2))
   }
 
-  async function gerarQr() {
+  async function gerar() {
     try {
-      const nova = await criar.mutateAsync({
-        ordemServicoId: ordemId,
-        valor: valorNum,
-        origem: 1,
-        adiantar: !concluida,
-      })
+      const vars = { ordemServicoId: ordemId, valor: valorNum, adiantar: !concluida }
+      const nova =
+        tipo === TipoIntencaoValues.PixQr
+          ? await criarPix.mutateAsync({ ...vars, origem: 1 })
+          : await criarLink.mutateAsync(vars)
       if (nova.id != null) {
         setIntencaoId(nova.id)
         setAprovadoNotificado(false)
       }
     } catch (err) {
-      const msg = err instanceof Error ? err.message : 'Não foi possível gerar o QR.'
+      const msg = err instanceof Error ? err.message : 'Não foi possível gerar a cobrança.'
       toast.error(msg)
     }
   }
@@ -128,18 +130,18 @@ export function CobrarNaBancadaDialog({
       <DialogTrigger asChild>
         <Button variant="outline" disabled={bloqueado}>
           <QrCode className="h-4 w-4" />
-          Cobrar na bancada (QR)
+          Cobrar online
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            {concluida ? 'Cobrança Pix' : 'Adiantamento via Pix'} — {numero}
+            {concluida ? 'Cobrança online' : 'Adiantamento'} — {numero}
           </DialogTitle>
           <DialogDescription>
             {intencaoId == null
-              ? 'Defina o valor e gere o QR Pix para o cliente pagar na hora.'
-              : 'Aguardando o pagamento. O QR some quando o pagamento é confirmado.'}
+              ? 'Escolha o meio, defina o valor e gere a cobrança.'
+              : 'Aguardando o pagamento. Some quando o pagamento é confirmado.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -150,6 +152,13 @@ export function CobrarNaBancadaDialog({
           </p>
         ) : intencaoId == null ? (
           <div className="space-y-4">
+            <Tabs value={String(tipo)} onValueChange={(v) => setTipo(Number(v) as 1 | 2)}>
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="1">Pix (QR)</TabsTrigger>
+                <TabsTrigger value="2">Link de pagamento</TabsTrigger>
+              </TabsList>
+            </Tabs>
+
             {!concluida && (
               <div className="flex items-start justify-between gap-3 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm">
                 <span className="text-amber-800 dark:text-amber-200">
@@ -166,9 +175,9 @@ export function CobrarNaBancadaDialog({
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="valor-pix">Valor (R$)</Label>
+              <Label htmlFor="valor-cobranca">Valor (R$)</Label>
               <Input
-                id="valor-pix"
+                id="valor-cobranca"
                 type="number"
                 step="0.01"
                 min="0.01"
@@ -195,20 +204,20 @@ export function CobrarNaBancadaDialog({
             <DialogFooter>
               <Button
                 type="button"
-                onClick={gerarQr}
-                disabled={!valorValido || !liberado || criar.isPending || simulacao.isLoading}
+                onClick={gerar}
+                disabled={!valorValido || !liberado || criando || simulacao.isLoading}
               >
-                {criar.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <QrCode className="h-4 w-4" />
-                )}
-                Gerar QR Pix
+                {criando ? <Loader2 className="h-4 w-4 animate-spin" /> : <QrCode className="h-4 w-4" />}
+                {tipo === TipoIntencaoValues.PixQr ? 'Gerar QR Pix' : 'Gerar link'}
               </Button>
             </DialogFooter>
           </div>
         ) : intencao ? (
-          <QrPixPanel intencao={intencao} onGerarNovo={resetar} gerandoNovo={criar.isPending} />
+          intencao.tipo === TipoIntencaoValues.LinkCheckout ? (
+            <LinkPagamentoPanel intencao={intencao} onGerarNovo={resetar} gerandoNovo={criando} />
+          ) : (
+            <QrPixPanel intencao={intencao} onGerarNovo={resetar} gerandoNovo={criando} />
+          )
         ) : (
           <div className="flex items-center justify-center py-10">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
