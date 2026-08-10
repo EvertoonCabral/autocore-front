@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { AlertCircle, CheckCircle2, Send } from 'lucide-react'
+import { AlertCircle, CheckCircle2, Paperclip, Send } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -51,6 +51,20 @@ export function HistoricoCobrancaPage() {
       header: 'Destino',
       className: 'w-44',
       cell: (h) => <span className="tabular-nums">{formatTelefone(h.telefoneDestino)}</span>,
+    },
+    {
+      id: 'anexo',
+      header: 'Anexo',
+      className: 'w-20',
+      cell: (h) =>
+        h.comAnexo ? (
+          <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+            <Paperclip className="h-3 w-3" />
+            PDF
+          </span>
+        ) : (
+          <span className="text-muted-foreground">—</span>
+        ),
     },
     {
       id: 'status',

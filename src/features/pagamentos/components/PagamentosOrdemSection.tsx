@@ -1,4 +1,5 @@
 import { CobrarNaBancadaDialog } from '@/features/cobranca-online/components/CobrarNaBancadaDialog'
+import { EnviarCobrancaDialog } from '@/features/cobranca-online/components/EnviarCobrancaDialog'
 import { IntencoesPagamentoTable } from '@/features/cobranca-online/components/IntencoesPagamentoTable'
 import { AdiantamentoAviso } from '@/features/cobranca-online/components/AdiantamentoAviso'
 import { useListarPagamentosDaOrdem } from '../hooks/useListarPagamentosDaOrdem'
@@ -52,6 +53,12 @@ export function PagamentosOrdemSection({
             concluida={podeRegistrar}
             cancelada={cancelada}
             clienteTemDocumento={clienteTemDocumento}
+          />
+          <EnviarCobrancaDialog
+            ordemId={ordemId}
+            numero={numero}
+            clienteTemDocumento={clienteTemDocumento}
+            cancelada={cancelada}
           />
           <RegistrarPagamentoDialog
             ordemId={ordemId}

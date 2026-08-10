@@ -1440,6 +1440,84 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/cobrancas/enviar-documento/{ordemServicoId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    ordemServicoId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["EnviarComDocumentoBody"];
+                    "text/json": components["schemas"]["EnviarComDocumentoBody"];
+                    "application/*+json": components["schemas"]["EnviarComDocumentoBody"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["EnviarCobrancaComDocumentoResultadoApiResponse"];
+                        "application/json": components["schemas"]["EnviarCobrancaComDocumentoResultadoApiResponse"];
+                        "text/json": components["schemas"]["EnviarCobrancaComDocumentoResultadoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Bad Gateway */
+                502: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["EnviarCobrancaComDocumentoResultadoApiResponse"];
+                        "application/json": components["schemas"]["EnviarCobrancaComDocumentoResultadoApiResponse"];
+                        "text/json": components["schemas"]["EnviarCobrancaComDocumentoResultadoApiResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/cobrancas/disparar": {
         parameters: {
             query?: never;
@@ -5176,6 +5254,20 @@ export interface components {
             campo?: string | null;
             mensagem?: string | null;
         };
+        EnviarCobrancaComDocumentoResultado: {
+            status?: string | null;
+            mensagem?: string | null;
+            /** Format: int64 */
+            intencaoPagamentoId?: number | null;
+            canalUsado?: string | null;
+            erroEnvio?: string | null;
+        };
+        EnviarCobrancaComDocumentoResultadoApiResponse: {
+            dados?: components["schemas"]["EnviarCobrancaComDocumentoResultado"];
+        };
+        EnviarComDocumentoBody: {
+            meio?: components["schemas"]["TipoIntencaoPagamento"];
+        };
         EsqueciSenhaDto: {
             email?: string | null;
         };
@@ -5230,6 +5322,9 @@ export interface components {
             /** Format: int64 */
             criadoPorUsuarioId?: number | null;
             criadoPorUsuarioNome?: string | null;
+            comAnexo?: boolean;
+            /** Format: int64 */
+            intencaoPagamentoId?: number | null;
         };
         HistoricoCobrancaDtoResultadoPaginadoDto: {
             dados?: components["schemas"]["HistoricoCobrancaDto"][] | null;
@@ -5699,7 +5794,7 @@ export interface components {
          * Format: int32
          * @enum {integer}
          */
-        TipoPdfOrdemServico: 1 | 2;
+        TipoPdfOrdemServico: 1 | 2 | 3;
         TrocarSenhaDto: {
             senhaAtual?: string | null;
             novaSenha?: string | null;
