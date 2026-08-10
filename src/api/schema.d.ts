@@ -1064,6 +1064,275 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/cobranca-online/pix": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["CriarPixBody"];
+                    "text/json": components["schemas"]["CriarPixBody"];
+                    "application/*+json": components["schemas"]["CriarPixBody"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                        "application/json": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                        "text/json": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Unprocessable Content */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiValidationErrorResponse"];
+                        "application/json": components["schemas"]["ApiValidationErrorResponse"];
+                        "text/json": components["schemas"]["ApiValidationErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cobranca-online/simular": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: {
+                    ordemId?: number;
+                    valor?: number;
+                    tipo?: components["schemas"]["TipoIntencaoPagamento"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["SimulacaoCobrancaDtoApiResponse"];
+                        "application/json": components["schemas"]["SimulacaoCobrancaDtoApiResponse"];
+                        "text/json": components["schemas"]["SimulacaoCobrancaDtoApiResponse"];
+                    };
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cobranca-online/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                        "application/json": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                        "text/json": components["schemas"]["IntencaoPagamentoDtoApiResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/cobranca-online/ordem/{ordemId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    ordemId: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["IntencaoPagamentoDtoListApiResponse"];
+                        "application/json": components["schemas"]["IntencaoPagamentoDtoListApiResponse"];
+                        "text/json": components["schemas"]["IntencaoPagamentoDtoListApiResponse"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/cobrancas/historico": {
         parameters: {
             query?: never;
@@ -4224,6 +4493,50 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/webhooks/mercadopago": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Unauthorized */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ProblemDetails"];
+                        "application/json": components["schemas"]["ProblemDetails"];
+                        "text/json": components["schemas"]["ProblemDetails"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4694,6 +5007,13 @@ export interface components {
             uf?: string | null;
             segundoTelefone?: string | null;
         };
+        CriarPixBody: {
+            /** Format: int64 */
+            ordemServicoId?: number;
+            /** Format: double */
+            valor?: number | null;
+            origem?: components["schemas"]["OrigemCobranca"];
+        };
         CriarProdutoCommand: {
             nome?: string | null;
             referencia?: string | null;
@@ -4847,6 +5167,40 @@ export interface components {
             /** Format: int32 */
             porPagina?: number;
         };
+        IntencaoPagamentoDto: {
+            /** Format: int64 */
+            id?: number;
+            /** Format: int64 */
+            ordemServicoId?: number;
+            tipo?: components["schemas"]["TipoIntencaoPagamento"];
+            modalidade?: components["schemas"]["ModalidadeCobranca"];
+            origem?: components["schemas"]["OrigemCobranca"];
+            status?: components["schemas"]["StatusIntencaoPagamento"];
+            /** Format: double */
+            valorBase?: number;
+            /** Format: double */
+            taxaPercentualAplicada?: number;
+            /** Format: double */
+            valorAcrescimo?: number;
+            /** Format: double */
+            valorCobrado?: number;
+            pixCopiaECola?: string | null;
+            urlCheckout?: string | null;
+            /** Format: date-time */
+            expiraEm?: string | null;
+            /** Format: int64 */
+            pagamentoId?: number | null;
+            formaDetectada?: components["schemas"]["FormaPagamento"];
+            motivoRecusa?: string | null;
+            /** Format: date-time */
+            criadoEm?: string;
+        };
+        IntencaoPagamentoDtoApiResponse: {
+            dados?: components["schemas"]["IntencaoPagamentoDto"];
+        };
+        IntencaoPagamentoDtoListApiResponse: {
+            dados?: components["schemas"]["IntencaoPagamentoDto"][] | null;
+        };
         ItemProdutoDto: {
             /** Format: int64 */
             id?: number;
@@ -4923,6 +5277,11 @@ export interface components {
         MesFaturamentoDtoIReadOnlyListApiResponse: {
             dados?: components["schemas"]["MesFaturamentoDto"][] | null;
         };
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        ModalidadeCobranca: 1 | 2;
         MudarStatusBody: {
             status?: components["schemas"]["StatusOrdem"];
         };
@@ -4962,6 +5321,7 @@ export interface components {
             /** Format: int64 */
             clienteId?: number;
             clienteNome?: string | null;
+            clienteCpfCnpj?: string | null;
             /** Format: int64 */
             veiculoId?: number | null;
             veiculoDescricao?: string | null;
@@ -5027,6 +5387,11 @@ export interface components {
         OrdemServicoResumoDtoIReadOnlyListApiResponse: {
             dados?: components["schemas"]["OrdemServicoResumoDto"][] | null;
         };
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        OrigemCobranca: 1 | 2;
         PagamentoDto: {
             /** Format: int64 */
             id?: number;
@@ -5175,6 +5540,20 @@ export interface components {
         ResumoFinanceiroDtoApiResponse: {
             dados?: components["schemas"]["ResumoFinanceiroDto"];
         };
+        SimulacaoCobrancaDto: {
+            /** Format: double */
+            valorBase?: number;
+            /** Format: double */
+            taxaPercentual?: number;
+            /** Format: double */
+            valorAcrescimo?: number;
+            /** Format: double */
+            valorCobrado?: number;
+            repasseAtivo?: boolean;
+        };
+        SimulacaoCobrancaDtoApiResponse: {
+            dados?: components["schemas"]["SimulacaoCobrancaDto"];
+        };
         StatusConexaoCobrancaDto: {
             conectado?: boolean;
             numero?: string | null;
@@ -5186,6 +5565,11 @@ export interface components {
         StatusConexaoCobrancaDtoApiResponse: {
             dados?: components["schemas"]["StatusConexaoCobrancaDto"];
         };
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        StatusIntencaoPagamento: 1 | 2 | 3 | 4 | 5 | 6;
         /**
          * Format: int32
          * @enum {integer}
@@ -5227,6 +5611,11 @@ export interface components {
          * @enum {integer}
          */
         TipoEntradaTimelineOrdem: 1 | 2 | 3 | 4 | 5;
+        /**
+         * Format: int32
+         * @enum {integer}
+         */
+        TipoIntencaoPagamento: 1 | 2;
         /**
          * Format: int32
          * @enum {integer}

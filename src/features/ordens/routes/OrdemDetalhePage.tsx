@@ -249,6 +249,7 @@ export function OrdemDetalhePage() {
         numero={ordem.numero ?? ''}
         saldoDevedor={ordem.saldoDevedor ?? 0}
         podeRegistrar={concluida}
+        clienteCpfCnpj={ordem.clienteCpfCnpj}
       />
 
       <section className="space-y-3">
