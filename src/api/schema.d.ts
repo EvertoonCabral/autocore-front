@@ -5013,6 +5013,7 @@ export interface components {
             /** Format: double */
             valor?: number | null;
             origem?: components["schemas"]["OrigemCobranca"];
+            adiantar?: boolean | null;
         };
         CriarProdutoCommand: {
             nome?: string | null;
@@ -5350,6 +5351,12 @@ export interface components {
             totalPago?: number;
             /** Format: double */
             saldoDevedor?: number;
+            /** Format: double */
+            totalAdiantado?: number;
+            /** Format: double */
+            saldoAPagar?: number;
+            /** Format: double */
+            totalExcedente?: number;
             /** Format: int64 */
             criadoPorUsuarioId?: number | null;
             criadoPorUsuarioNome?: string | null;

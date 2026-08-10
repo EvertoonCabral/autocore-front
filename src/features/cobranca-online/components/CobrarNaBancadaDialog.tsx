@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import {
   Dialog,
   DialogContent,
@@ -26,61 +27,84 @@ interface Props {
   ordemId: number
   numero: string
   saldoDevedor: number
-  /** OS concluída — pré-requisito da cobrança de quitação (regra do back). */
-  podeRegistrar: boolean
+  /** Saldo ainda a cobrar (saldo devedor − adiantado). Base do adiantamento. */
+  saldoAPagar: number
+  /** OS concluída — quitação direta. Caso contrário, é adiantamento (opt-in). */
+  concluida: boolean
+  /** OS cancelada — cobrança bloqueada. */
+  cancelada: boolean
   /** Cliente tem CPF/CNPJ — exigido pelo Mercado Pago no Pix. */
   clienteTemDocumento: boolean
 }
 
 /**
- * Fluxo de cobrança Pix na bancada: define o valor, mostra base + taxa, gera o
- * QR e faz polling até o pagamento cair (e ser registrado na OS pelo back).
+ * Fluxo de cobrança Pix na bancada. Em OS concluída, quita o saldo. Em OS não
+ * concluída, exige confirmação explícita de adiantamento (a regra "pagamento só
+ * na OS concluída" é preservada: o adiantamento vira pagamento no fechamento).
  */
 export function CobrarNaBancadaDialog({
   ordemId,
   numero,
   saldoDevedor,
-  podeRegistrar,
+  saldoAPagar,
+  concluida,
+  cancelada,
   clienteTemDocumento,
 }: Props) {
+  const maximo = concluida ? saldoDevedor : saldoAPagar
+
   const [open, setOpen] = useState(false)
-  const [valorStr, setValorStr] = useState(saldoDevedor.toFixed(2))
+  const [valorStr, setValorStr] = useState(maximo.toFixed(2))
   const [intencaoId, setIntencaoId] = useState<number | null>(null)
   const [aprovadoNotificado, setAprovadoNotificado] = useState(false)
+  const [adiantamentoConfirmado, setAdiantamentoConfirmado] = useState(false)
 
   const queryClient = useQueryClient()
   const criar = useCriarPixOrdem()
 
   const valorNum = Number(valorStr.replace(',', '.'))
-  const valorValido = Number.isFinite(valorNum) && valorNum > 0 && valorNum <= saldoDevedor + 0.001
+  const valorValido = Number.isFinite(valorNum) && valorNum > 0 && valorNum <= maximo + 0.001
 
-  // Simula só na tela de configuração (antes de gerar o QR).
-  const simulacao = useSimularCobranca(ordemId, valorValido ? valorNum : undefined, 1, open && intencaoId == null)
+  // Em adiantamento, só simula/gera após o opt-in.
+  const liberado = concluida || adiantamentoConfirmado
 
-  // Polling da intenção depois de criada.
+  const simulacao = useSimularCobranca(
+    ordemId,
+    valorValido ? valorNum : undefined,
+    1,
+    open && intencaoId == null && liberado,
+  )
+
   const intencaoQuery = useObterIntencao(intencaoId)
   const intencao = intencaoQuery.data
 
-  // Ao aprovar: invalida OS + pagamentos + intenções e avisa (uma vez).
   useEffect(() => {
     if (intencao?.status === StatusIntencaoValues.Aprovada && !aprovadoNotificado) {
       setAprovadoNotificado(true)
-      toast.success('Pagamento aprovado — registrado na OS.')
+      toast.success(
+        concluida ? 'Pagamento aprovado — registrado na OS.' : 'Adiantamento aprovado.',
+      )
       void queryClient.invalidateQueries({ queryKey: ['pagamentos', 'ordem', ordemId] })
       void queryClient.invalidateQueries({ queryKey: ['ordens', 'detail', ordemId] })
       void queryClient.invalidateQueries({ queryKey: ['cobranca-online', 'ordem', ordemId] })
     }
-  }, [intencao?.status, aprovadoNotificado, ordemId, queryClient])
+  }, [intencao?.status, aprovadoNotificado, ordemId, queryClient, concluida])
 
   function resetar() {
     setIntencaoId(null)
     setAprovadoNotificado(false)
-    setValorStr(saldoDevedor.toFixed(2))
+    setAdiantamentoConfirmado(false)
+    setValorStr(maximo.toFixed(2))
   }
 
   async function gerarQr() {
     try {
-      const nova = await criar.mutateAsync({ ordemServicoId: ordemId, valor: valorNum, origem: 1 })
+      const nova = await criar.mutateAsync({
+        ordemServicoId: ordemId,
+        valor: valorNum,
+        origem: 1,
+        adiantar: !concluida,
+      })
       if (nova.id != null) {
         setIntencaoId(nova.id)
         setAprovadoNotificado(false)
@@ -91,8 +115,7 @@ export function CobrarNaBancadaDialog({
     }
   }
 
-  const semSaldo = saldoDevedor <= 0
-  const bloqueado = !podeRegistrar || semSaldo || !clienteTemDocumento
+  const bloqueado = cancelada || maximo <= 0 || !clienteTemDocumento
 
   return (
     <Dialog
@@ -110,7 +133,9 @@ export function CobrarNaBancadaDialog({
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Cobrança Pix — {numero}</DialogTitle>
+          <DialogTitle>
+            {concluida ? 'Cobrança Pix' : 'Adiantamento via Pix'} — {numero}
+          </DialogTitle>
           <DialogDescription>
             {intencaoId == null
               ? 'Defina o valor e gere o QR Pix para o cliente pagar na hora.'
@@ -125,6 +150,21 @@ export function CobrarNaBancadaDialog({
           </p>
         ) : intencaoId == null ? (
           <div className="space-y-4">
+            {!concluida && (
+              <div className="flex items-start justify-between gap-3 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-sm">
+                <span className="text-amber-800 dark:text-amber-200">
+                  Esta OS ainda não foi concluída. O valor entra como <strong>adiantamento</strong> e
+                  será registrado como pagamento automaticamente ao concluir a OS.
+                </span>
+                <Switch
+                  checked={adiantamentoConfirmado}
+                  onCheckedChange={(v) => setAdiantamentoConfirmado(v === true)}
+                  aria-label="Confirmar adiantamento"
+                  className="mt-0.5"
+                />
+              </div>
+            )}
+
             <div className="space-y-2">
               <Label htmlFor="valor-pix">Valor (R$)</Label>
               <Input
@@ -135,25 +175,28 @@ export function CobrarNaBancadaDialog({
                 inputMode="decimal"
                 value={valorStr}
                 onChange={(e) => setValorStr(e.target.value)}
+                disabled={!liberado}
                 aria-invalid={!valorValido}
               />
               {!valorValido && (
                 <p role="alert" className="text-sm text-destructive">
-                  Informe um valor entre R$ 0,01 e {formatBRL(saldoDevedor)}.
+                  Informe um valor entre R$ 0,01 e {formatBRL(maximo)}.
                 </p>
               )}
             </div>
 
-            <ResumoValorCobrado
-              simulacao={simulacao.data}
-              loading={simulacao.isLoading || simulacao.isFetching}
-            />
+            {liberado && (
+              <ResumoValorCobrado
+                simulacao={simulacao.data}
+                loading={simulacao.isLoading || simulacao.isFetching}
+              />
+            )}
 
             <DialogFooter>
               <Button
                 type="button"
                 onClick={gerarQr}
-                disabled={!valorValido || criar.isPending || simulacao.isLoading}
+                disabled={!valorValido || !liberado || criar.isPending || simulacao.isLoading}
               >
                 {criar.isPending ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

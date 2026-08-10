@@ -249,6 +249,10 @@ export function OrdemDetalhePage() {
         numero={ordem.numero ?? ''}
         saldoDevedor={ordem.saldoDevedor ?? 0}
         podeRegistrar={concluida}
+        cancelada={cancelada}
+        saldoAPagar={ordem.saldoAPagar ?? ordem.saldoDevedor ?? 0}
+        totalAdiantado={ordem.totalAdiantado ?? 0}
+        totalExcedente={ordem.totalExcedente ?? 0}
         clienteCpfCnpj={ordem.clienteCpfCnpj}
       />
 

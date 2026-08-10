@@ -55,7 +55,9 @@ describe('<CobrarNaBancadaDialog>', () => {
         ordemId={7}
         numero="OS-2026-0007"
         saldoDevedor={100}
-        podeRegistrar
+        saldoAPagar={100}
+        concluida
+        cancelada={false}
         clienteTemDocumento={false}
       />,
       { withAuth: false },
@@ -88,7 +90,9 @@ describe('<CobrarNaBancadaDialog>', () => {
         ordemId={7}
         numero="OS-2026-0007"
         saldoDevedor={100}
-        podeRegistrar
+        saldoAPagar={100}
+        concluida
+        cancelada={false}
         clienteTemDocumento
       />,
       { withAuth: false },
@@ -106,6 +110,42 @@ describe('<CobrarNaBancadaDialog>', () => {
     })
   })
 
+  it('exige confirmar adiantamento em OS não concluída antes de gerar', async () => {
+    mockSimular()
+    server.use(
+      http.post(`${API}/api/cobranca-online/pix`, () =>
+        HttpResponse.json({ dados: intencao({ modalidade: 2 }) }),
+      ),
+      http.get(`${API}/api/cobranca-online/:id`, () => HttpResponse.json({ dados: intencao({ modalidade: 2 }) })),
+    )
+
+    renderWithProviders(
+      <CobrarNaBancadaDialog
+        ordemId={7}
+        numero="OS-2026-0007"
+        saldoDevedor={100}
+        saldoAPagar={100}
+        concluida={false}
+        cancelada={false}
+        clienteTemDocumento
+      />,
+      { withAuth: false },
+    )
+
+    await userEvent.click(screen.getByRole('button', { name: /cobrar na bancada/i }))
+    // aviso de adiantamento presente
+    expect(screen.getByText(/entra como/i)).toBeInTheDocument()
+
+    // sem opt-in, o botão Gerar QR fica desabilitado
+    const gerar = screen.getByRole('button', { name: /gerar qr pix/i })
+    expect(gerar).toBeDisabled()
+
+    // liga o opt-in → habilita
+    await userEvent.click(screen.getByRole('switch', { name: /confirmar adiantamento/i }))
+    await waitFor(() => expect(screen.getByText(/total a cobrar/i)).toBeInTheDocument())
+    expect(screen.getByRole('button', { name: /gerar qr pix/i })).toBeEnabled()
+  })
+
   it('mostra estado expirado quando o QR já venceu', async () => {
     mockSimular()
     const expirada = intencao({ expiraEm: new Date(Date.now() - 1000).toISOString() })
@@ -119,7 +159,9 @@ describe('<CobrarNaBancadaDialog>', () => {
         ordemId={7}
         numero="OS-2026-0007"
         saldoDevedor={100}
-        podeRegistrar
+        saldoAPagar={100}
+        concluida
+        cancelada={false}
         clienteTemDocumento
       />,
       { withAuth: false },

@@ -9,15 +9,17 @@ export interface CriarPixVars {
   valor?: number
   /** OrigemCobranca: 1 = Bancada, 2 = Remota. */
   origem?: 1 | 2
+  /** Opt-in explícito de adiantamento (OS ainda não concluída). */
+  adiantar?: boolean
 }
 
 /** `POST /api/cobranca-online/pix` — gera o QR Pix da OS. */
 export function useCriarPixOrdem() {
   const queryClient = useQueryClient()
   return useMutation<IntencaoPagamentoDto, ApiError, CriarPixVars>({
-    mutationFn: async ({ ordemServicoId, valor, origem }) => {
+    mutationFn: async ({ ordemServicoId, valor, origem, adiantar }) => {
       const result = (await api.POST('/api/cobranca-online/pix', {
-        body: { ordemServicoId, valor: valor ?? null, origem: origem ?? 1 },
+        body: { ordemServicoId, valor: valor ?? null, origem: origem ?? 1, adiantar: adiantar ?? false },
       })) as {
         data?: { dados?: IntencaoPagamentoDto | null }
         error?: unknown
