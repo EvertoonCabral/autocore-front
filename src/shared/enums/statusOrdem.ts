@@ -21,7 +21,12 @@ export type StatusOrdemNome = keyof typeof StatusOrdemValues
 interface StatusMeta {
   nome: StatusOrdemNome
   label: string
-  /** Tailwind classes para o badge (não usa variant porque precisa de cores específicas). */
+  /**
+   * Tailwind classes para o badge — usa os **tokens semânticos** (soft + fg),
+   * o MESMO mapeamento do quadro/dashboard (Aberta=info, Em andamento=warning,
+   * Aguardando=neutralc, Concluída=success). Reconcilia a divergência antiga
+   * (o badge usava paleta crua blue/amber/orange/emerald/zinc).
+   */
   badgeClass: string
 }
 
@@ -29,27 +34,27 @@ export const STATUS_ORDEM_META: Record<StatusOrdem, StatusMeta> = {
   1: {
     nome: 'Aberta',
     label: 'Aberta',
-    badgeClass: 'bg-blue-100 text-blue-900 dark:bg-blue-900/30 dark:text-blue-200',
+    badgeClass: 'bg-info-soft text-info-foreground',
   },
   2: {
     nome: 'EmAndamento',
     label: 'Em andamento',
-    badgeClass: 'bg-amber-100 text-amber-900 dark:bg-amber-900/30 dark:text-amber-200',
+    badgeClass: 'bg-warning-soft text-warning-foreground',
   },
   3: {
     nome: 'AguardandoProduto',
     label: 'Aguardando produto',
-    badgeClass: 'bg-orange-100 text-orange-900 dark:bg-orange-900/30 dark:text-orange-200',
+    badgeClass: 'bg-neutralc-soft text-neutralc-foreground',
   },
   4: {
     nome: 'Concluida',
     label: 'Concluída',
-    badgeClass: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200',
+    badgeClass: 'bg-success-soft text-success-foreground',
   },
   5: {
     nome: 'Cancelada',
     label: 'Cancelada',
-    badgeClass: 'bg-zinc-200 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300',
+    badgeClass: 'bg-muted text-muted-foreground',
   },
 }
 

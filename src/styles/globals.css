@@ -72,6 +72,12 @@
     --accent: 19.4 100% 93.9%; /* #FBEEE4 soft-bg */
     --accent-foreground: 22 100% 38%; /* #B44A07 on-soft */
 
+    /* Cor da marca (tenant) — SEMPRE o accent, mesmo quando o botão primário
+       vira tinta no casco "sidebar-colorida". AccentProvider sobrescreve --brand
+       em runtime; --brand-foreground é branco fixo (texto/logo sobre a marca). */
+    --brand: 23.2 90.3% 44.3%; /* #D75A0B */
+    --brand-foreground: 0 0% 100%; /* #FFFFFF */
+
     /* Charts: chart-1 = accent (runtime); 2-5 da paleta */
     --chart-1: 23.2 90.3% 44.3%; /* #D75A0B */
     --chart-2: 204.4 63.5% 33.3%; /* #1F5F8B */
@@ -135,12 +141,67 @@
     --accent: 24 34.9% 16.9%; /* soft-bg (rgba .14 → opaco sobre surface) */
     --accent-foreground: 23 88.3% 56.5%; /* #F2792E on-soft */
 
+    --brand: 23 88.3% 56.5%; /* #F2792E */
+    --brand-foreground: 0 0% 100%; /* #FFFFFF */
+
     --chart-1: 23 88.3% 56.5%; /* #F2792E */
     --chart-2: 204.4 53.2% 54.7%; /* #4E97C9 */
     --chart-3: 146.3 32.3% 49.8%; /* #56A87A */
     --chart-4: 35.8 78.8% 57.5%; /* #E8A33D */
     --chart-5: 21.1 61.2% 52.5%; /* #D0703C */
   }
+
+  /*
+   * ─── Casco (shell): onde a cor do tenant "mora" ──────────────────────────
+   * Tokens de superfície da navegação (sidebar) e da appbar. Valores são
+   * cores COMPLETAS (não triplets) porque referenciam --brand — no
+   * tailwind.config são mapeados via `var(--nav-*)` direto (sem hsl()).
+   *
+   * O casco SEGUE O TEMA (não é uma escolha à parte):
+   *  - Tema CLARO  → "sidebar colorida" (3b): a coluna assume a cor da marca,
+   *    appbar branca, item ativo inverte para o card.
+   *  - Tema ESCURO → "casco escuro" (3a): sidebar + appbar num bloco escuro,
+   *    a cor da marca carrega só o item ativo.
+   */
+  :root {
+    --nav-bg: hsl(var(--brand));
+    --nav-fg: hsl(var(--brand-foreground));
+    --nav-muted: hsl(var(--brand-foreground) / 0.72);
+    --nav-border: hsl(var(--brand-foreground) / 0.16);
+    --nav-hover-bg: hsl(var(--brand-foreground) / 0.12);
+    --nav-active-bg: hsl(var(--card));
+    --nav-active-fg: hsl(var(--brand));
+    --appbar-bg: hsl(var(--card));
+    --appbar-fg: hsl(var(--foreground));
+    --appbar-border: hsl(var(--border));
+  }
+
+  .dark {
+    --nav-bg: hsl(30 8% 6%);
+    --nav-fg: hsl(37 20% 90%);
+    --nav-muted: hsl(36 8% 56%);
+    --nav-border: hsl(36 8% 15%);
+    --nav-hover-bg: hsl(0 0% 100% / 0.06);
+    --nav-active-bg: hsl(var(--brand));
+    --nav-active-fg: hsl(var(--brand-foreground));
+    --appbar-bg: hsl(30 8% 6%);
+    --appbar-fg: hsl(37 20% 90%);
+    --appbar-border: hsl(36 8% 15%);
+  }
+}
+
+/*
+ * Primário TINTA só na ÁREA AUTENTICADA em tema claro (sidebar colorida): a cor
+ * da marca já domina a coluna, então o botão primário/links viram tinta para
+ * não competir. Escopado a `[data-app-shell]` (raiz do AuthenticatedLayout) —
+ * o login NÃO é afetado (lá o primário continua a cor da marca, como no 3c).
+ * No tema escuro (casco escuro) o primário volta a ser a marca. Definir a var
+ * direto no elemento vence o valor herdado do `:root` do <AccentProvider>.
+ */
+html:not(.dark) [data-app-shell] {
+  --primary: var(--foreground);
+  --primary-foreground: var(--background);
+  --primary-hover: var(--content-secondary);
 }
 
 @layer base {

@@ -63,7 +63,7 @@ function UsuariosPageInner() {
       className: 'w-24',
       cell: (u) =>
         u.ativo ? (
-          <Badge className="bg-green-600 hover:bg-green-600 text-white">Ativo</Badge>
+          <Badge className="bg-success text-white hover:bg-success">Ativo</Badge>
         ) : (
           <Badge variant="secondary">Inativo</Badge>
         ),

@@ -68,6 +68,27 @@ const config: Config = {
           DEFAULT: hslVar('--accent'),
           foreground: hslVar('--accent-foreground'),
         },
+        // ── Marca (tenant) — sempre o accent, mesmo quando o primário vira tinta ──
+        brand: {
+          DEFAULT: hslVar('--brand'),
+          foreground: hslVar('--brand-foreground'),
+        },
+        // ── Casco (shell): sidebar + appbar. Cores COMPLETAS (var direto, sem
+        //    hsl()) porque derivam de --brand / color-mix; comutadas por data-shell.
+        nav: {
+          DEFAULT: 'var(--nav-bg)',
+          foreground: 'var(--nav-fg)',
+          muted: 'var(--nav-muted)',
+          border: 'var(--nav-border)',
+          hover: 'var(--nav-hover-bg)',
+          active: 'var(--nav-active-bg)',
+          'active-foreground': 'var(--nav-active-fg)',
+        },
+        appbar: {
+          DEFAULT: 'var(--appbar-bg)',
+          foreground: 'var(--appbar-fg)',
+          border: 'var(--appbar-border)',
+        },
         popover: {
           DEFAULT: hslVar('--popover'),
           foreground: hslVar('--popover-foreground'),

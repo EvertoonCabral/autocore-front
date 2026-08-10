@@ -277,7 +277,7 @@ function GrupoTema({ titulo, tema, valor, swatches, onChange, legenda }: GrupoTe
         </p>
       )}
 
-      {/* Preview ao vivo */}
+      {/* Preview ao vivo do accent */}
       {vars && (
         <div
           className="space-y-3 rounded-md border p-4"
@@ -315,3 +315,4 @@ function GrupoTema({ titulo, tema, valor, swatches, onChange, legenda }: GrupoTe
     </section>
   )
 }
+

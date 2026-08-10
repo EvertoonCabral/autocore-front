@@ -127,7 +127,7 @@ function corDeFundo(item: TimelineEntradaOrdem): string {
     return 'border-destructive/40 bg-destructive/10 text-destructive'
   }
   if (item.tipo === TIPO_PAGAMENTO) {
-    return 'border-green-500/40 bg-green-500/10 text-green-700 dark:text-green-300'
+    return 'border-success/40 bg-success/10 text-success-foreground'
   }
   return 'bg-muted text-muted-foreground'
 }

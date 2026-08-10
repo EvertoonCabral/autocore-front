@@ -37,7 +37,7 @@ function Coluna({ label, cor, quantidade, legenda, loading }: ColunaProps) {
       ) : (
         <span
           className={cn(
-            'text-[30px] font-semibold leading-none tabular-nums',
+            'text-[30px] font-semibold tabular-nums leading-none',
             zerado ? 'text-content-disabled' : 'text-foreground',
           )}
         >
@@ -133,11 +133,7 @@ export function FaixaFluxo({ fluxo, loading = false }: Props) {
         {total > 0 &&
           segmentos.map((s, i) =>
             s.valor > 0 ? (
-              <div
-                key={i}
-                className={s.cor}
-                style={{ width: `${(s.valor / total) * 100}%` }}
-              />
+              <div key={i} className={s.cor} style={{ width: `${(s.valor / total) * 100}%` }} />
             ) : null,
           )}
       </div>

@@ -15,13 +15,16 @@ export function AuthenticatedLayout() {
   }, [location.pathname])
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="flex min-h-screen bg-background" data-app-shell>
       {/* Sidebar fixa (desktop) */}
       <Sidebar />
 
       {/* Drawer da sidebar (mobile < md) */}
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="flex w-72 flex-col p-0 md:hidden">
+        <SheetContent
+          side="left"
+          className="flex w-72 flex-col border-nav-border bg-nav p-0 text-nav-foreground md:hidden"
+        >
           <SheetTitle className="sr-only">Menu principal</SheetTitle>
           <SidebarContent onNavigate={() => setMobileOpen(false)} />
         </SheetContent>

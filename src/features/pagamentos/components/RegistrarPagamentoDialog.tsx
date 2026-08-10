@@ -190,7 +190,7 @@ export function RegistrarPagamentoDialog({ ordemId, numero, saldoDevedor, podeRe
             <div className="mt-1 flex items-center justify-between">
               <span className="text-muted-foreground">Após este pagamento</span>
               <span
-                className={`tabular-nums font-medium ${restante === 0 ? 'text-emerald-700 dark:text-emerald-400' : ''}`}
+                className={`tabular-nums font-medium ${restante === 0 ? 'text-success-foreground' : ''}`}
               >
                 {formatBRL(restante)}
               </span>

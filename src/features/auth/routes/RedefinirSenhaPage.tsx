@@ -4,17 +4,10 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, ShieldCheck, TriangleAlert } from 'lucide-react'
 import { toast } from 'sonner'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { MarcaEmpresa } from '@/shared/components/MarcaEmpresa'
+import { AuthShell } from '../components/AuthShell'
 import { aplicarErrosValidacao, isValidationError } from '@/api/errors'
 import { useRedefinirSenha } from '../hooks/useRedefinirSenha'
 import {
@@ -24,8 +17,8 @@ import {
 
 function LinkInvalido() {
   return (
-    <div className="space-y-4 text-center">
-      <TriangleAlert className="mx-auto h-10 w-10 text-destructive" aria-hidden="true" />
+    <div className="space-y-4">
+      <TriangleAlert className="h-10 w-10 text-destructive" aria-hidden="true" />
       <p className="text-sm text-muted-foreground">O link é inválido ou expirou.</p>
       <Button asChild variant="outline" className="w-full">
         <Link to="/esqueci-senha">Solicitar novo link</Link>
@@ -78,8 +71,8 @@ export function RedefinirSenhaPage() {
 
     if (redefinida) {
       return (
-        <div className="space-y-4 text-center">
-          <ShieldCheck className="mx-auto h-10 w-10 text-primary" aria-hidden="true" />
+        <div className="space-y-4">
+          <ShieldCheck className="h-10 w-10 text-primary" aria-hidden="true" />
           <p className="text-sm text-muted-foreground">
             Sua senha foi redefinida. Você já pode entrar com a nova senha.
           </p>
@@ -139,15 +132,8 @@ export function RedefinirSenhaPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-3 text-center">
-          <MarcaEmpresa size="lg" fallback="icon-circle" className="mx-auto" />
-          <CardTitle>Redefinir senha</CardTitle>
-          <CardDescription>Escolha uma nova senha para sua conta.</CardDescription>
-        </CardHeader>
-        <CardContent>{conteudo()}</CardContent>
-      </Card>
-    </div>
+    <AuthShell title="Redefinir senha" subtitle="Escolha uma nova senha para sua conta.">
+      {conteudo()}
+    </AuthShell>
   )
 }

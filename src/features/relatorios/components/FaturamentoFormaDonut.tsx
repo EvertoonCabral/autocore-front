@@ -14,13 +14,16 @@ interface Props {
 
 /**
  * Cor por enum `FormaPagamento` (Dinheiro=1, Pix=2, Cartao=3,
- * Transferencia=4). Mesma paleta do donut do dashboard.
+ * Transferencia=4). Usa os tokens `--chart-*` do design system (seguem tema
+ * claro/escuro), em vez de hex cru. `chart-1` é o accent (reservado às barras),
+ * então o donut usa 2..5.
  */
+const COR_FALLBACK = 'hsl(var(--muted-foreground))'
 const CORES: Record<number, string> = {
-  1: '#10b981', // emerald-500 — Dinheiro
-  2: '#3b82f6', // blue-500    — Pix
-  3: '#f59e0b', // amber-500   — Cartão
-  4: '#8b5cf6', // violet-500  — Transferência
+  1: 'hsl(var(--chart-3))', // Dinheiro
+  2: 'hsl(var(--chart-2))', // Pix
+  3: 'hsl(var(--chart-4))', // Cartão
+  4: 'hsl(var(--chart-5))', // Transferência
 }
 
 const config: ChartConfig = {
@@ -61,7 +64,7 @@ export function FaturamentoFormaDonut({ porForma }: Props) {
               isAnimationActive={false}
             >
               {porForma.map((p) => (
-                <Cell key={`forma-${p.forma ?? 0}`} fill={CORES[p.forma ?? 0] ?? '#a1a1aa'} />
+                <Cell key={`forma-${p.forma ?? 0}`} fill={CORES[p.forma ?? 0] ?? COR_FALLBACK} />
               ))}
             </Pie>
           </PieChart>
@@ -83,7 +86,7 @@ export function FaturamentoFormaDonut({ porForma }: Props) {
               <div className="flex min-w-0 items-center gap-2">
                 <span
                   className="h-2.5 w-2.5 shrink-0 rounded-[2px]"
-                  style={{ backgroundColor: CORES[p.forma ?? 0] ?? '#a1a1aa' }}
+                  style={{ backgroundColor: CORES[p.forma ?? 0] ?? COR_FALLBACK }}
                 />
                 <span className="truncate">{p.formaLabel}</span>
               </div>

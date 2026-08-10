@@ -58,7 +58,7 @@ export function HistoricoCobrancaPage() {
       className: 'w-32',
       cell: (h) =>
         h.sucesso ? (
-          <Badge className="bg-emerald-100 text-emerald-900 dark:bg-emerald-900/30 dark:text-emerald-200">
+          <Badge className="bg-success-soft text-success-foreground">
             <CheckCircle2 className="h-3 w-3" />
             Enviado
           </Badge>

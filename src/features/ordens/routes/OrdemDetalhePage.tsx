@@ -285,7 +285,7 @@ function SummaryCard({ label, value, highlight, tone }: SummaryCardProps) {
     tone === 'destructive'
       ? 'text-destructive'
       : tone === 'success'
-        ? 'text-emerald-700 dark:text-emerald-400'
+        ? 'text-success-foreground'
         : ''
 
   return (

@@ -34,35 +34,44 @@ interface NavItem {
   badge?: BadgeKey
 }
 
-const items: NavItem[] = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/clientes', label: 'Clientes', icon: Users, end: false },
-  { to: '/veiculos', label: 'Veículos', icon: Car, end: false },
-  { to: '/servicos', label: 'Serviços', icon: Settings2, end: false },
-  { to: '/produtos', label: 'Produtos', icon: Package, end: false },
+interface NavGroup {
+  label: string
+  items: NavItem[]
+}
+
+// Grupos nomeados quebram a lista de 11 itens em três blocos (redesign — casco).
+const groups: NavGroup[] = [
   {
-    to: '/ordens',
-    label: 'Ordens de Serviço',
-    icon: ClipboardList,
-    end: false,
-    badge: 'ordens',
-  },
-  { to: '/agenda', label: 'Agenda', icon: CalendarDays, end: false },
-  { to: '/pendencias', label: 'Pendências', icon: CreditCard, end: false, badge: 'pendencias' },
-  { to: '/cobrancas', label: 'Cobranças', icon: MessageCircle, end: false, badge: 'cobrancas' },
-  {
-    to: '/relatorios',
-    label: 'Relatórios',
-    icon: BarChart3,
-    end: false,
-    permission: 'relatorios.ver',
+    label: 'Operação',
+    items: [
+      { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
+      { to: '/ordens', label: 'Ordens de Serviço', icon: ClipboardList, end: false, badge: 'ordens' },
+      { to: '/agenda', label: 'Agenda', icon: CalendarDays, end: false },
+    ],
   },
   {
-    to: '/relatorios/auditoria',
-    label: 'Auditoria',
-    icon: FileSearch,
-    end: false,
-    permission: 'auditoria.ver',
+    label: 'Financeiro',
+    items: [
+      { to: '/pendencias', label: 'Pendências', icon: CreditCard, end: false, badge: 'pendencias' },
+      { to: '/cobrancas', label: 'Cobranças', icon: MessageCircle, end: false, badge: 'cobrancas' },
+      { to: '/relatorios', label: 'Relatórios', icon: BarChart3, end: false, permission: 'relatorios.ver' },
+      {
+        to: '/relatorios/auditoria',
+        label: 'Auditoria',
+        icon: FileSearch,
+        end: false,
+        permission: 'auditoria.ver',
+      },
+    ],
+  },
+  {
+    label: 'Cadastros',
+    items: [
+      { to: '/clientes', label: 'Clientes', icon: Users, end: false },
+      { to: '/veiculos', label: 'Veículos', icon: Car, end: false },
+      { to: '/servicos', label: 'Serviços', icon: Settings2, end: false },
+      { to: '/produtos', label: 'Produtos', icon: Package, end: false },
+    ],
   },
   // Configurações fica no UserMenu (Admin-only)
 ]
@@ -78,20 +87,32 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      <div className="flex h-16 shrink-0 items-center border-b border-border-faint px-6">
+      <div className="flex h-16 shrink-0 items-center border-b border-nav-border px-6">
         <MarcaEmpresa size="md" fallback="icon-square" label="AutoCore" />
       </div>
-      <nav className="flex-1 space-y-1 overflow-y-auto p-3" aria-label="Menu principal">
-        {items.map((item) => (
-          <SidebarItem key={item.to} item={item} contadores={contadores} onNavigate={onNavigate} />
+      <nav className="flex-1 space-y-5 overflow-y-auto p-3" aria-label="Menu principal">
+        {groups.map((grupo) => (
+          <div key={grupo.label} className="space-y-1">
+            <p className="px-3 pb-1 text-[11px] font-semibold uppercase tracking-wider text-nav-muted">
+              {grupo.label}
+            </p>
+            {grupo.items.map((item) => (
+              <SidebarItem
+                key={item.to}
+                item={item}
+                contadores={contadores}
+                onNavigate={onNavigate}
+              />
+            ))}
+          </div>
         ))}
       </nav>
-      <div className="shrink-0 border-t border-border-faint p-3">
+      <div className="shrink-0 border-t border-nav-border p-3">
         <ConfirmDialog
           trigger={
             <button
               type="button"
-              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+              className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-nav-muted transition-colors hover:bg-nav-hover hover:text-nav-foreground"
             >
               <LogOut className="h-4 w-4 shrink-0" />
               <span className="flex-1 text-left">Sair</span>
@@ -111,7 +132,7 @@ export function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
 /** Sidebar fixa (desktop ≥ md). No mobile some — vira drawer no layout. */
 export function Sidebar() {
   return (
-    <aside className="hidden w-60 shrink-0 border-r bg-card md:flex md:flex-col">
+    <aside className="hidden w-60 shrink-0 border-r border-nav-border bg-nav text-nav-foreground md:flex md:flex-col">
       <SidebarContent />
     </aside>
   )
@@ -130,7 +151,6 @@ function SidebarItem({ item, contadores, onNavigate }: SidebarItemProps) {
   if (item.permission && !allowed) return null
 
   const valor = item.badge ? contadores[item.badge] : 0
-  const alerta = item.badge === 'pendencias'
 
   return (
     <NavLink
@@ -141,23 +161,20 @@ function SidebarItem({ item, contadores, onNavigate }: SidebarItemProps) {
         cn(
           'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
           isActive
-            ? 'bg-accent text-accent-foreground'
-            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+            ? 'bg-nav-active text-nav-active-foreground'
+            : 'text-nav-muted hover:bg-nav-hover hover:text-nav-foreground',
         )
       }
     >
       <item.icon className="h-4 w-4 shrink-0" />
       <span className="flex-1 truncate">{item.label}</span>
-      {valor > 0 &&
-        (alerta ? (
-          <span className="ml-auto inline-flex min-w-[1.25rem] items-center justify-center rounded-pill bg-danger-soft px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-danger">
-            {valor > 99 ? '99+' : valor}
-          </span>
-        ) : (
-          <span className="ml-auto inline-flex min-w-[1.25rem] items-center justify-center text-[11px] font-medium tabular-nums text-muted-foreground">
-            {valor > 99 ? '99+' : valor}
-          </span>
-        ))}
+      {valor > 0 && (
+        // Contadores usam a cor de destaque do casco (chapado no casco escuro,
+        // invertido no sidebar-colorida) — igual ao item ativo.
+        <span className="ml-auto inline-flex min-w-[1.25rem] items-center justify-center rounded-pill bg-nav-active px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-nav-active-foreground">
+          {valor > 99 ? '99+' : valor}
+        </span>
+      )}
     </NavLink>
   )
 }

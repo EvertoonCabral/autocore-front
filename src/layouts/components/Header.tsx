@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export function Header({ onOpenMenu }: HeaderProps) {
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-4 md:px-6">
+    <header className="flex h-16 items-center justify-between border-b border-appbar-border bg-appbar px-4 text-appbar-foreground md:px-6">
       <div className="flex items-center gap-3">
         {/* A marca fica só na sidebar. No mobile, hambúrguer abre o drawer. */}
         <Button

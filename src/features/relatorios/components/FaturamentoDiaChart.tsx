@@ -15,7 +15,7 @@ interface Props {
 const config: ChartConfig = {
   total: {
     label: 'Recebido',
-    color: '#F97316', // orange-500 (paleta do projeto)
+    color: 'hsl(var(--chart-1))', // accent do tenant (segue tema + Aparência)
   },
 }
 
@@ -43,7 +43,7 @@ export function FaturamentoDiaChart({ porDia }: Props) {
           }
         />
         <ChartTooltip
-          cursor={{ fill: 'rgba(0,0,0,0.04)' }}
+          cursor={{ fill: 'hsl(var(--foreground) / 0.05)' }}
           content={
             <ChartTooltipContent
               labelFormatter={(label) => formatData(String(label))}

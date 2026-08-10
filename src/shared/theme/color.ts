@@ -277,7 +277,8 @@ export function montarCssAccent(
     --ring: ${v.ring};
     --accent: ${v.accent};
     --accent-foreground: ${v.accentForeground};
-    --chart-1: ${v.chart1};`
+    --chart-1: ${v.chart1};
+    --brand: ${v.primary};`
 
   return `:root {${bloco(vl)}\n}\n.dark {${bloco(vd)}\n}\n`
 }

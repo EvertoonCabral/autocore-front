@@ -81,7 +81,7 @@ export function BadgeNotificacoes() {
                   to="/ordens?status=3"
                   className="flex items-start gap-3"
                 >
-                  <Clock className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <Clock className="mt-0.5 h-4 w-4 shrink-0 text-warning-foreground" />
                   <div className="flex-1">
                     <div className="text-sm font-medium">
                       {aguardando}{' '}

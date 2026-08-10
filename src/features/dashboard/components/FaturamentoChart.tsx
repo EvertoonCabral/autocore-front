@@ -90,7 +90,7 @@ export function FaturamentoChart() {
                 }
               />
               <ChartTooltip
-                cursor={{ fill: 'rgba(0,0,0,0.04)' }}
+                cursor={{ fill: 'hsl(var(--foreground) / 0.05)' }}
                 content={
                   <ChartTooltipContent
                     formatter={(value) => formatBRL(value)}

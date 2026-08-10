@@ -42,7 +42,7 @@ export function BadgeVencimento({
       {comData && <span className="tabular-nums">{formatData(dataVencimento)}</span>}
       {muitoAtrasada ? (
         <Badge
-          className="mt-1 self-start text-xs bg-red-800 text-white hover:bg-red-800 dark:bg-red-900"
+          className="mt-1 self-start bg-danger text-xs text-white hover:bg-danger"
           title={`Vencida há ${diasAtraso} dias`}
         >
           <AlertTriangle className="h-3 w-3" />

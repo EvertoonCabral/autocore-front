@@ -53,6 +53,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           type="email"
           autoComplete="email"
           aria-invalid={!!errors.email}
+          className="h-12 text-base"
           {...register('email')}
         />
         {errors.email && (
@@ -77,6 +78,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
           type="password"
           autoComplete="current-password"
           aria-invalid={!!errors.senha}
+          className="h-12 text-base"
           {...register('senha')}
         />
         {errors.senha && (

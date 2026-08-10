@@ -65,7 +65,7 @@ export function ProdutosAbaixoMinimoPage() {
         onRowClick={(p) => navigate(`/produtos/${p.id}`)}
         empty={
           <EmptyState
-            icon={<AlertTriangle className="h-5 w-5 text-emerald-600" />}
+            icon={<AlertTriangle className="h-5 w-5 text-success" />}
             title="Tudo em ordem"
             description="Nenhum produto está abaixo do estoque mínimo no momento."
           />
