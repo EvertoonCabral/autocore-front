@@ -1398,6 +1398,69 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/cobranca-online/{id}/reembolso": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": components["schemas"]["ReembolsarBody"];
+                    "text/json": components["schemas"]["ReembolsarBody"];
+                    "application/*+json": components["schemas"]["ReembolsarBody"];
+                };
+            };
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Bad Request */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+                /** @description Not Found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "text/plain": components["schemas"]["ApiErrorResponse"];
+                        "application/json": components["schemas"]["ApiErrorResponse"];
+                        "text/json": components["schemas"]["ApiErrorResponse"];
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/cobrancas/historico": {
         parameters: {
             query?: never;
@@ -5674,6 +5737,10 @@ export interface components {
             email?: string | null;
             token?: string | null;
             novaSenha?: string | null;
+        };
+        ReembolsarBody: {
+            /** Format: double */
+            valor?: number | null;
         };
         RegistrarPagamentoCommand: {
             /** Format: int64 */

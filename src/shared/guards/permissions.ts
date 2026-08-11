@@ -15,6 +15,7 @@ export const ADMIN_ONLY_PERMISSIONS = [
   'produtos.desativar',
   'pagamentos.estornar',
   'cobrancas.disparar',
+  'cobrancaOnline.reembolsar',
   'configuracoes.ler',
   'configuracoes.atualizar',
 ] as const

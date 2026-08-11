@@ -5,7 +5,9 @@ import {
   statusIntencaoVariant,
 } from '@/shared/enums/statusIntencaoPagamento'
 import { tipoIntencaoLabel } from '@/shared/enums/tipoIntencaoPagamento'
+import { StatusIntencaoValues } from '@/shared/enums/statusIntencaoPagamento'
 import { useListarIntencoesDaOrdem } from '../hooks/useListarIntencoesDaOrdem'
+import { ReembolsarIntencaoButton } from './ReembolsarIntencaoButton'
 
 interface Props {
   ordemId: number
@@ -29,6 +31,7 @@ export function IntencoesPagamentoTable({ ordemId }: Props) {
             <th className="px-3 py-2 text-right font-medium">Acréscimo</th>
             <th className="px-3 py-2 text-right font-medium">Cobrado</th>
             <th className="px-3 py-2 font-medium">Gerado em</th>
+            <th className="px-3 py-2" />
           </tr>
         </thead>
         <tbody>
@@ -47,6 +50,11 @@ export function IntencoesPagamentoTable({ ordemId }: Props) {
               <td className="px-3 py-2 text-right tabular-nums">{formatBRL(i.valorCobrado)}</td>
               <td className="px-3 py-2 text-xs text-muted-foreground">
                 {formatDataHora(i.criadoEm)}
+              </td>
+              <td className="px-3 py-2 text-right">
+                {i.status === StatusIntencaoValues.Aprovada && (
+                  <ReembolsarIntencaoButton ordemId={ordemId} intencao={i} />
+                )}
               </td>
             </tr>
           ))}
