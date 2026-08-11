@@ -191,18 +191,12 @@
 }
 
 /*
- * Primário TINTA só na ÁREA AUTENTICADA em tema claro (sidebar colorida): a cor
- * da marca já domina a coluna, então o botão primário/links viram tinta para
- * não competir. Escopado a `[data-app-shell]` (raiz do AuthenticatedLayout) —
- * o login NÃO é afetado (lá o primário continua a cor da marca, como no 3c).
- * No tema escuro (casco escuro) o primário volta a ser a marca. Definir a var
- * direto no elemento vence o valor herdado do `:root` do <AccentProvider>.
+ * Primário = cor da marca (accent) em AMBOS os temas, inclusive na área
+ * autenticada de tema claro. O <AccentProvider> define --primary no :root e o
+ * casco não sobrescreve mais — botões primários (Nova OS, Disparar agora, …)
+ * usam o accent, não tinta. A sidebar tem sua própria paleta (--nav-*), então
+ * o botão primário não "some" contra ela mesmo compartilhando o mesmo matiz.
  */
-html:not(.dark) [data-app-shell] {
-  --primary: var(--foreground);
-  --primary-foreground: var(--background);
-  --primary-hover: var(--content-secondary);
-}
 
 @layer base {
   * {

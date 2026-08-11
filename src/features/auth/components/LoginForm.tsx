@@ -44,7 +44,9 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
   }
 
   return (
-    <div className="space-y-4">
+    // Container fino e delicado em volta dos campos — borda na cor da marca
+    // (--brand, escolhida pelo tenant no AccentProvider) com leve tint de fundo.
+    <div className="space-y-4 rounded-xl border border-brand/30 bg-brand/[0.03] p-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
       <div className="space-y-2">
         <Label htmlFor="email">E-mail</Label>

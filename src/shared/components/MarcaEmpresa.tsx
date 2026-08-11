@@ -12,8 +12,12 @@ interface Props {
   /**
    * O que mostrar quando a empresa não tem logo definida:
    *  - `text-only`: apenas o nome da empresa em texto (default — Header global)
-   *  - `icon-square`: ícone de raio (Zap) em quadrado da cor de destaque + nome ao lado (Sidebar)
-   *  - `icon-circle`: ícone de raio (Zap) em círculo da cor de destaque (LoginPage com layout vertical)
+   *  - `icon-square`: ícone de raio (Zap) num quadrado do casco (branco no
+   *    sidebar-colorida claro, marca no casco escuro) + nome ao lado (Sidebar).
+   *    Usa os tokens `--nav-active-*` para SEMPRE contrastar com a sidebar,
+   *    diferente do primário (que compartilha o matiz da marca).
+   *  - `icon-circle`: ícone de raio (Zap) em círculo da cor da marca (LoginPage
+   *    com layout vertical) — fora do casco, usa `--brand` direto.
    */
   fallback?: Fallback
   /**
@@ -100,7 +104,7 @@ export function MarcaEmpresa({
       <div className={cn('flex items-center gap-2', className)}>
         <div
           className={cn(
-            'flex items-center justify-center rounded-md bg-primary text-primary-foreground',
+            'flex items-center justify-center rounded-md bg-nav-active text-nav-active-foreground',
             iconBox,
           )}
         >
@@ -116,7 +120,7 @@ export function MarcaEmpresa({
       <div className={cn('flex flex-col items-center gap-2', className)}>
         <div
           className={cn(
-            'flex items-center justify-center rounded-full bg-primary text-primary-foreground',
+            'flex items-center justify-center rounded-full bg-brand text-brand-foreground',
             iconBox,
           )}
         >

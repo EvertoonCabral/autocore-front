@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { Settings } from 'lucide-react'
 import { useObterConfiguracaoEmpresa } from '@/features/configuracoes/hooks/useObterConfiguracaoEmpresa'
 
 interface Props {
@@ -31,7 +32,7 @@ export function AuthShell({ eyebrow, title, subtitle, children }: Props) {
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       {/* Painel da marca */}
-      <aside className="flex min-h-[120px] shrink-0 flex-col justify-between bg-brand p-8 text-brand-foreground md:min-h-screen md:w-[44%] md:p-12">
+      <aside className="flex min-h-[120px] shrink-0 flex-col justify-between bg-brand p-8 text-brand-foreground md:min-h-screen md:w-[40%] md:p-12">
         <span className="text-lg font-semibold tracking-tight">{nomeEmpresa}</span>
 
         {/* Discurso institucional — some na faixa estreita para caber em 120px. */}
@@ -40,8 +41,8 @@ export function AuthShell({ eyebrow, title, subtitle, children }: Props) {
             A oficina inteira em uma tela só.
           </h1>
           <p className="mt-4 text-base text-brand-foreground/80">
-            Ordens de serviço, veículos, peças e recebimentos no mesmo lugar — do orçamento
-            à baixa no caixa.
+            Ordens de serviço, veículos, peças e recebimentos no mesmo lugar — do orçamento à baixa
+            no caixa.
           </p>
         </div>
 
@@ -51,8 +52,21 @@ export function AuthShell({ eyebrow, title, subtitle, children }: Props) {
       </aside>
 
       {/* Área do formulário */}
-      <main className="flex flex-1 items-center justify-center bg-background px-4 py-12">
-        <div className="w-full max-w-sm space-y-6">
+      <main className="relative flex flex-1 items-center justify-center overflow-hidden bg-background px-4 py-12">
+        {/* Engrenagens decorativas (mundo automotivo) — puramente visual, atrás
+            do formulário. Cor da marca em baixíssima opacidade; param para quem
+            prefere menos movimento. */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <Settings
+            strokeWidth={1}
+            className="absolute -bottom-20 -right-20 h-80 w-80 animate-gear-slow text-brand/[0.07] motion-reduce:animate-none"
+          />
+          <Settings
+            strokeWidth={1}
+            className="absolute bottom-28 right-40 h-44 w-44 animate-gear-slow-reverse text-brand/[0.06] motion-reduce:animate-none"
+          />
+        </div>
+        <div className="relative z-10 w-full max-w-md space-y-6">
           <div className="space-y-1">
             {eyebrow && (
               <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
