@@ -5,7 +5,7 @@ import type { AgendaOrdemDto } from '@/api/types'
 
 export const agendaKeys = {
   all: ['agenda'] as const,
-  semana: (de: string, ate: string) => ['agenda', 'semana', de, ate] as const,
+  janela: (de: string, ate: string) => ['agenda', 'janela', de, ate] as const,
 }
 
 /**
@@ -15,7 +15,7 @@ export const agendaKeys = {
  */
 export function useAgendaOrdens(de: string, ate: string) {
   return useQuery({
-    queryKey: agendaKeys.semana(de, ate),
+    queryKey: agendaKeys.janela(de, ate),
     placeholderData: keepPreviousData,
     queryFn: async () => {
       const result = await api.GET('/api/ordens/agenda', {
